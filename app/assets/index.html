@@ -374,7 +374,8 @@
   .rg-sidebtn.close{background:linear-gradient(180deg,#1e4620,#0f2912);color:#bbf7d0;border-color:rgba(74,222,128,.4);}
   .rg-sidebtn.close.hot{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border-color:#bbf7d0;
     box-shadow:0 0 20px rgba(74,222,128,.75);}
-  .rg-sidebtn:disabled{opacity:.42;cursor:default;}
+  .rg-sidebtn:disabled,.rg-sidebtn.dim{opacity:.44;}
+  .rg-sidebtn.dim{cursor:pointer;}
 
   .rg-rack{flex:1;min-width:0;border-radius:18px;padding:6px 10px 8px;display:flex;flex-direction:column;gap:5px;
     background:
@@ -956,7 +957,7 @@ function resolveSequence(tiles){
   const variants = [];
   if (nums.includes(1)){
     variants.push([...nums].sort((a,b)=>a-b));
-    if (nums.includes(12) && nums.includes(13)){
+    if ((nums.includes(12) && nums.includes(13)) || (jokers >= 1 && nums.some(v=>v>=11))){
       variants.push([...nums.filter(v=>v!==1)].sort((a,b)=>a-b).concat([14]));
     }
   } else variants.push([...nums].sort((a,b)=>a-b));
@@ -2157,11 +2158,11 @@ function renderGame(){
     ` : `
       <div class="rg-rackwrap">
         ${isTabla
-          ? `<button class="rg-sidebtn meld ${canCloseTablaBtn?"hot":""}" id="btnCloseTabla" ${canCloseTablaBtn?"":"disabled"} title="Închide runda când celelalte 14 piese sunt în formații valide">
+          ? `<button class="rg-sidebtn meld ${canCloseTablaBtn?"hot":"dim"}" id="btnCloseTabla" title="Închide runda când celelalte 14 piese sunt în formații valide">
                <div>🏁</div>
                <span>${meldLabel}</span>
              </button>`
-          : `<button class="rg-sidebtn meld ${(canMeldBtn||canTargetBtn)?"hot":""}" id="${canTargetBtn?"btnTarget":"btnMeld"}" ${(canMeldBtn||canTargetBtn)?"":"disabled"} title="Etalează sau lipește">
+          : `<button class="rg-sidebtn meld ${(canMeldBtn||canTargetBtn)?"hot":"dim"}" id="${canTargetBtn?"btnTarget":"btnMeld"}" title="Etalează sau lipește">
                <div>★+</div>
                <span>${meldLabel}</span>
              </button>`}
@@ -2198,7 +2199,7 @@ function renderGame(){
           </div>
         </div>
 
-        <button class="rg-sidebtn close ${canDiscardBtn?"hot":""}" id="btnDiscard" ${canDiscardBtn?"":"disabled"} title="Aruncă sau închide">
+        <button class="rg-sidebtn close ${canDiscardBtn?"hot":"dim"}" id="btnDiscard" title="Aruncă sau închide">
           <div>${isCloseBtn?"🏁":"🃏↑"}</div>
           <span>${isCloseBtn?"Închide":"Aruncă"}</span>
         </button>
@@ -2334,7 +2335,9 @@ function actionButtons(me){
   return btns.join("");
 }
 
+let _rackDragCleanup = null;
 function bindGame(){
+  if (_rackDragCleanup){ _rackDragCleanup(); _rackDragCleanup = null; }
   const onTile = (el) => {
     const id = Number(el.dataset.tile);
     vibrate(6);
@@ -2353,8 +2356,73 @@ function bindGame(){
     if (dragSt.ghost) dragSt.ghost.remove();
     if (dragSt.srcEl) dragSt.srcEl.classList.remove("dragging");
     if (dragSt.hoverEl) dragSt.hoverEl.classList.remove("drop-hover");
+    window.removeEventListener("pointermove", onWinMove);
+    window.removeEventListener("pointerup", onWinUp);
+    window.removeEventListener("pointercancel", onWinCancel);
     dragSt = null;
   };
+  function onWinMove(e){
+    if (!dragSt || e.pointerId !== dragSt.pid) return;
+    const dx = e.clientX - dragSt.sx, dy = e.clientY - dragSt.sy;
+    if (!dragSt.moved){
+      if (dx*dx + dy*dy < 144) return; // 12px threshold
+      dragSt.moved = true;
+      dragSt.srcEl.classList.add("dragging");
+      const g = dragSt.srcEl.cloneNode(true);
+      g.classList.remove("dragging", "sel");
+      g.classList.add("drag-ghost");
+      g.style.width = dragSt.w + "px";
+      g.style.height = dragSt.h + "px";
+      document.body.appendChild(g);
+      dragSt.ghost = g;
+    }
+    if (dragSt.ghost){
+      dragSt.ghost.style.transform = `translate3d(${(e.clientX - dragSt.ox).toFixed(1)}px, ${(e.clientY - dragSt.oy).toFixed(1)}px, 0) scale(1.08)`;
+    }
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const slotEl = under ? under.closest(".rg-slot") : null;
+    const discEl = (!slotEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
+    const nextHover = slotEl || discEl;
+    if (dragSt.hoverEl && dragSt.hoverEl !== nextHover){
+      dragSt.hoverEl.classList.remove("drop-hover");
+    }
+    dragSt.hoverEl = nextHover;
+    if (nextHover) nextHover.classList.add("drop-hover");
+  }
+  function finishPointer(e, cancelled){
+    if (!dragSt || e.pointerId !== dragSt.pid) return;
+    const st = dragSt;
+    const under = !cancelled && st.moved ? document.elementFromPoint(e.clientX, e.clientY) : null;
+    const targetSlot = under ? under.closest(".rg-slot") : null;
+    const targetDiscard = (!targetSlot && !cancelled && st.moved && S.me && S.me.canDiscard && under)
+      ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
+    clearDrag();
+    if (cancelled) return;
+    if (st.moved){
+      if (targetSlot){
+        const toIdx = Number(targetSlot.dataset.slot);
+        if (Number.isInteger(toIdx) && toIdx !== st.fromIdx){
+          const tmp = rRackSlots[toIdx];
+          rRackSlots[toIdx] = rRackSlots[st.fromIdx];
+          rRackSlots[st.fromIdx] = tmp;
+          sfx.tileTap();
+          render();
+        }
+      } else if (targetDiscard){
+        const tileId = Number(st.el.dataset.tile);
+        const isClose = S.me && S.me.canClose;
+        if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
+        sel.clear();
+        act({type:"discard", tile:tileId}, "discard");
+      }
+      return;
+    }
+    onTile(st.el);
+  }
+  function onWinUp(e){ finishPointer(e, false); }
+  function onWinCancel(e){ finishPointer(e, true); }
+  _rackDragCleanup = clearDrag;
+
   $$("#myHand .tile").forEach(el=>{
     el.addEventListener("pointerdown", (e)=>{
       if (e.button && e.button !== 0) return;
@@ -2377,68 +2445,10 @@ function bindGame(){
         ghost: null,
         hoverEl: null,
       };
-      try{ el.setPointerCapture(e.pointerId); }catch(_){}
+      window.addEventListener("pointermove", onWinMove);
+      window.addEventListener("pointerup", onWinUp);
+      window.addEventListener("pointercancel", onWinCancel);
     });
-    el.addEventListener("pointermove", (e)=>{
-      if (!dragSt || e.pointerId !== dragSt.pid) return;
-      const dx = e.clientX - dragSt.sx, dy = e.clientY - dragSt.sy;
-      if (!dragSt.moved){
-        if (dx*dx + dy*dy < 49) return;
-        dragSt.moved = true;
-        dragSt.srcEl.classList.add("dragging");
-        const g = dragSt.srcEl.cloneNode(true);
-        g.classList.remove("dragging", "sel");
-        g.classList.add("drag-ghost");
-        g.style.width = dragSt.w + "px";
-        g.style.height = dragSt.h + "px";
-        document.body.appendChild(g);
-        dragSt.ghost = g;
-      }
-      if (dragSt.ghost){
-        dragSt.ghost.style.transform = `translate3d(${(e.clientX - dragSt.ox).toFixed(1)}px, ${(e.clientY - dragSt.oy).toFixed(1)}px, 0) scale(1.08)`;
-      }
-      const under = document.elementFromPoint(e.clientX, e.clientY);
-      const slotEl = under ? under.closest(".rg-slot") : null;
-      const discEl = (!slotEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
-      const nextHover = slotEl || discEl;
-      if (dragSt.hoverEl && dragSt.hoverEl !== nextHover){
-        dragSt.hoverEl.classList.remove("drop-hover");
-      }
-      dragSt.hoverEl = nextHover;
-      if (nextHover) nextHover.classList.add("drop-hover");
-    });
-    const finishPointer = (e, cancelled) => {
-      if (!dragSt || e.pointerId !== dragSt.pid) return;
-      const st = dragSt;
-      const under = !cancelled && st.moved ? document.elementFromPoint(e.clientX, e.clientY) : null;
-      const targetSlot = under ? under.closest(".rg-slot") : null;
-      const targetDiscard = (!targetSlot && !cancelled && st.moved && S.me && S.me.canDiscard && under)
-        ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
-      clearDrag();
-      if (cancelled) return;
-      if (st.moved){
-        if (targetSlot){
-          const toIdx = Number(targetSlot.dataset.slot);
-          if (Number.isInteger(toIdx) && toIdx !== st.fromIdx){
-            const tmp = rRackSlots[toIdx];
-            rRackSlots[toIdx] = rRackSlots[st.fromIdx];
-            rRackSlots[st.fromIdx] = tmp;
-            sfx.tileTap();
-            render();
-          }
-        } else if (targetDiscard){
-          const tileId = Number(st.el.dataset.tile);
-          const isClose = S.me && S.me.canClose;
-          if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
-          sel.clear();
-          act({type:"discard", tile:tileId}, "discard");
-        }
-        return;
-      }
-      onTile(st.el);
-    };
-    el.addEventListener("pointerup", (e)=>finishPointer(e, false));
-    el.addEventListener("pointercancel", (e)=>finishPointer(e, true));
   });
   $$("#myHand .rg-slot.empty").forEach(slotEl=>{
     slotEl.addEventListener("click", ()=>{
@@ -2486,15 +2496,32 @@ function bindGame(){
   b("#btnMenu", ()=>{ rQuickOpen = false; ui.menuOpen = true; render(); });
   b("#btnAtu", ()=>act({type:"announce_atu"}, "meld"));
   b("#btnMeld", ()=>{
+    if (!S.me || !S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
+    if (!S.me.drew){ toast("Trage întâi o piesă (+)."); return; }
+    if (!S.me.canMeld){ toast("Primul jucător începe cu aruncarea unei piese; etalarea începe imediat după."); return; }
+    if (!sel.size){ toast("Selectează piesele pentru suită/tertă și apoi apasă Etalează."); return; }
     const groups = partitionGroups([...sel]);
-    if (!groups) return;
+    if (!groups){ toast("Piesele selectate nu formează o suită sau tertă validă.", "err"); return; }
+    const info = groupsPoints(groups);
+    if (!info || !info.ok){ toast("Formație invalidă.", "err"); return; }
+    if (!S.me.firstMeld){
+      if (!info.hasSeq){ toast("Prima etalare trebuie să conțină cel puțin o suită.", "err"); return; }
+      if (info.pts < 45){ toast(`Prima etalare cere minim 45 puncte (ai ${info.pts}p).`, "err"); return; }
+    }
     act({type:"meld", groups}, "meld");
   });
   b("#btnDiscard", ()=>{
+    if (!S.me || !S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
+    if (!S.me.drew){ toast("Trage întâi o piesă din grămadă (+)."); return; }
+    if (sel.size !== 1){ toast("Selectează o singură piesă de aruncat (sau trage piesa direct în Aruncate)."); return; }
     const t = [...sel][0];
-    if (t === undefined) return;
+    if (S.opts && S.opts.mode === "tabla" && S.me.drawnFrom === "discard" && S.me.takenDiscardTile === t){
+      toast("Nu poți arunca imediat aceeași piesă pe care ai luat-o de jos.", "err");
+      return;
+    }
     const isClose = S.me && S.me.canClose;
     if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
+    sel.clear();
     act({type:"discard", tile:t}, "discard");
   });
   b("#btnCloseTabla", ()=>{
@@ -3274,7 +3301,7 @@ function scoreRows(){
       <td>${r.meld_ed? r.melded : "—"}</td>
       <td>${r.meld_ed? (r.rack ? "−"+r.rack : "0") : (isTabla ? "−100" : "—")}</td>
       <td>${r.atu? "+"+r.atu : "—"}</td>
-      <td>${r.close? "+"+r.close : "—"}</td>
+      <td>${r.close? "+"+r.close : "—"}${r.double?" <small style=\"color:#fde047\">×2</small>":""}</td>
       <td class="${r.total>=0?"pos":"neg"}">${r.total>=0?"+":""}${r.total}</td>
       <td><b>${total}</b></td>
     </tr>`;
@@ -3370,7 +3397,7 @@ function showRules(tab){
     </ul>
     <h3>Punctaj</h3>
     <ul>
-      <li>Cine închide runda primește <b>+250 puncte</b> (sau <b>+500 puncte</b> dacă închide cu un Joker!).</li>
+      <li>Cine închide runda primește <b>+250 puncte</b> (sau <b>+500 puncte — joc dublu</b> dacă închide cu <b>1</b> sau cu un <b>Joker</b>!).</li>
       <li>Cine are <b>Atu</b> anunțat în prima tură primește <b>+50 puncte</b>.</li>
       <li>Ceilalți jucători pierd valoarea pieselor nelegate în formații (sau <b>−100 puncte</b> dacă nu au nicio formație validă).</li>
     </ul>`;
@@ -3382,14 +3409,14 @@ function showRules(tab){
     <ul>
       <li>4 culori (roșu, galben, albastru, negru), piese 1–13, fiecare de două ori + 2 jokeri.</li>
       <li>Piesele <b>2–9</b> valorează <b>5 puncte</b>, piesele <b>10–13</b> valorează <b>10 puncte</b>.</li>
-      <li>Piesa <b>1</b> valorează <b>25 de puncte</b> la final (în suită 1-2-3 = 5p, în 12-13-1 = 10p, în tertă = 25p, la prima etalare).</li>
-      <li><b>Jokerul</b> înlocuiește orice piesă: 50 de puncte după etalare, iar la prima etalare ia valoarea piesei înlocuite.</li>
+      <li>Piesa <b>1</b>: în suită <b>1-2-3 = 5p</b>, după 13 (<b>12-13-1 = 10p</b>), iar pusă cu alți <b>1</b> în tertă (<b>1-1-1 = 75p</b>) valorează <b>25 puncte</b> fiecare!</li>
+      <li><b>Jokerul</b> înlocuiește orice piesă: 50 de puncte la final, iar la prima etalare ia valoarea piesei înlocuite.</li>
     </ul>
     <h3>Desfășurarea jocului</h3>
     <ul>
-      <li>Primul jucător primește <b>15 piese</b>, ceilalți câte <b>14</b>. Se întoarce o piesă de <b>atu</b>.</li>
-      <li>La rândul tău tragi o piesă (din grămadă sau piesa aruncată de jucătorul anterior, doar dacă o folosești imediat) și arunci una.</li>
-      <li><b>Prima etalare</b> trebuie să valoreze minim <b>45 de puncte</b> și să conțină cel puțin o <b>suită</b>. Nu se poate etala în prima tură a jocului.</li>
+      <li>Primul jucător primește <b>15 piese</b> și începe aruncând o piesă; ceilalți primesc câte <b>14</b>. Se întoarce o piesă de <b>atu</b>.</li>
+      <li>La rândul tău tragi o piesă (din grămadă sau piesa aruncată de jucătorul anterior, doar dacă o folosești imediat) și arunci una (tragi piesa în <b>Aruncate</b> sau o selectezi și apeși <b>Aruncă</b>).</li>
+      <li><b>Prima etalare</b> trebuie să valoreze minim <b>45 de puncte</b> și să conțină cel puțin o <b>suită</b>.</li>
       <li>După etalare poți lipi piese la orice formație de pe masă și poți înlocui un joker cu piesa reală (jokerul îți rămâne în mână).</li>
       <li>Poți închide runda când rămâi cu <b>o singură piesă</b> pe tablă: o arunci cu fața în jos.</li>
     </ul>
@@ -3402,7 +3429,8 @@ function showRules(tab){
     <h3>Punctaj la finalul rundei</h3>
     <ul>
       <li>Punctele pieselor etalate și lipite se <b>adună</b>, cele rămase pe tablă se <b>scad</b>.</li>
-      <li>Cine închide primește <b>+50</b> (sau <b>+100</b> dacă închide aruncând un joker).</li>
+      <li>Cine închide primește <b>+50</b>; dacă închide cu <b>1</b> sau cu un <b>Joker</b>, punctele sale se <b>dublează (×2)</b>!</li>
+      <li>Dacă <b>Atu-ul</b> este <b>1</b> sau <b>Joker</b>, tot jocul se <b>dublează (×2)</b>.</li>
       <li>Cine a anunțat <b>atu</b> (are perechea piesei întoarse) primește <b>+50</b>.</li>
       <li>Cine nu s-a etalat până la finalul rundei: <b>−100</b> puncte.</li>
     </ul>`;
