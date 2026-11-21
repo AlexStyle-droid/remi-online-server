@@ -36,7 +36,7 @@ COLORS = ("R", "Y", "B", "K")          # rosu, galben, albastru, negru
 COLOR_NAMES = {"R": "roșu", "Y": "galben", "B": "albastru", "K": "negru"}
 JOKER_COLOR = "J"
 
-TURN_SECONDS_DEFAULT = 30
+TURN_SECONDS_DEFAULT = 45
 LONG_POLL_SECONDS = 8
 ROOM_IDLE_TIMEOUT = 60 * 60          # 1 ora fara activitate -> camera este stearsa
 MAX_PLAYERS_DEFAULT = 4
