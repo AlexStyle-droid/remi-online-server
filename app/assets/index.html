@@ -198,28 +198,153 @@
   .group .meta .pts{color:var(--gold);}
   .empty-table{width:100%;text-align:center;color:rgba(255,255,255,.25);font-size:13px;font-weight:700;padding:26px 10px;}
 
-  /* ---------- TILES ---------- */
-  .tile{position:relative;border-radius:7px;display:flex;align-items:center;justify-content:center;
-    font-weight:900;letter-spacing:-.5px;box-shadow:0 2px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
-    border:1px solid rgba(0,0,0,.35);flex:none;overflow:hidden;}
+  /* ---------- TILES (classic ivory Rummy tile with colored number + pip dot) ---------- */
+  .tile{position:relative;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-weight:900;letter-spacing:-.8px;
+    background:linear-gradient(175deg,#fffcf2 0%,#f5ebd6 68%,#e2d2b3 100%);
+    box-shadow:0 3px 0 #b8a37e, 0 5px 10px rgba(0,0,0,.45), inset 0 1px 0 #fff;
+    border:1px solid #d5c39f;flex:none;overflow:hidden;padding-bottom:4px;}
   .tile:after{content:"";position:absolute;inset:0;border-radius:inherit;
-    background:linear-gradient(160deg,rgba(255,255,255,.28),transparent 42%);pointer-events:none;}
-  .tile.cR{background:linear-gradient(165deg,#f26468,#c82b33);color:#fff;}
-  .tile.cY{background:linear-gradient(165deg,#ffd964,#e0a70f);color:#3b2a00;}
-  .tile.cB{background:linear-gradient(165deg,#6aa8ff,#2563eb);color:#fff;}
-  .tile.cK{background:linear-gradient(165deg,#5a5a6e,#23232c);color:#fff;}
-  .tile.cJ{background:linear-gradient(165deg,#3c2f6b,#1b1436);color:#ffe9a3;border-color:#8c7a3a;}
-  .tile .num{position:relative;z-index:1;line-height:1;}
+    background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 42%);pointer-events:none;}
+  .tile.cR{color:#dc2626;}
+  .tile.cY{color:#ea580c;}
+  .tile.cB{color:#2563eb;}
+  .tile.cK{color:#18181b;}
+  .tile.cJ{color:#7c3aed;border-color:#c4b5fd;}
+  .tile .num{position:relative;z-index:1;line-height:.95;}
+  .tile .pip{width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:2px;opacity:.92;position:relative;z-index:1;}
   .tile .jk{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;line-height:1;}
-  .tile .jk b{font-size:.62em;opacity:.95;margin-top:1px;}
-  .tile.sm{width:26px;height:36px;font-size:15px;border-radius:5px;}
-  .tile.md{width:33px;height:45px;font-size:18px;}
-  .tile.lg{width:44px;height:60px;font-size:24px;}
-  .tile.xl{width:42px;height:58px;font-size:23px;}
-  .tile.sel{box-shadow:0 0 0 3px var(--gold), 0 6px 14px rgba(0,0,0,.5);transform:translateY(-8px);}
-  .tile.back{background:repeating-linear-gradient(45deg,#164336 0 4px,#0d2c23 4px 8px);
-    border:1px solid rgba(232,198,106,.45);color:rgba(232,198,106,.8);}
+  .tile .jk b{font-size:.42em;opacity:.92;margin-top:1px;letter-spacing:0;}
+  .tile.sm{width:28px;height:38px;font-size:17px;border-radius:5px;padding-bottom:3px;}
+  .tile.sm .pip{width:3.5px;height:3.5px;margin-top:1px;}
+  .tile.md{width:34px;height:46px;font-size:21px;}
+  .tile.lg{width:42px;height:56px;font-size:25px;}
+  .tile.xl{width:44px;height:60px;font-size:26px;}
+  .tile.sel{box-shadow:0 0 0 3px #facc15, 0 8px 18px rgba(250,204,21,.55);transform:translateY(-8px);}
+  .tile.back{background:repeating-linear-gradient(45deg,#4c1d95 0 4px,#2e1065 4px 8px);
+    border:1px solid rgba(232,198,106,.55);color:rgba(250,204,21,.85);padding-bottom:0;box-shadow:0 3px 0 #1e0945;}
   .tile.back .num{font-size:.7em;}
+
+  /* ---------- REMI LUXURY STAGE (Screenshot 2026-11-21 182926.jpg style) ---------- */
+  .rgame{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;padding:6px 10px 8px;gap:6px;
+    background:radial-gradient(ellipse at 50% 35%, #2b0f47 0%, #150626 60%, #090212 100%);color:#f8fafc;}
+  .rg-head{display:flex;align-items:center;justify-content:center;gap:10px;flex:none;padding:2px 60px;flex-wrap:wrap;}
+  .rg-title{font-size:13px;font-weight:900;letter-spacing:.6px;color:#fff;text-transform:uppercase;
+    text-shadow:0 2px 6px rgba(0,0,0,.6);}
+  .rg-stage{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:10px;}
+  .rg-col{width:118px;flex:none;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:4px 0;}
+  .rg-pcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 6px;
+    border-radius:14px;background:linear-gradient(180deg,rgba(35,14,58,.9),rgba(17,6,30,.95));
+    border:2px solid rgba(168,85,247,.32);box-shadow:0 6px 18px rgba(0,0,0,.55);transition:.2s;}
+  .rg-pcard.turn{border-color:#4ade80;box-shadow:0 0 20px rgba(74,222,128,.55), inset 0 0 10px rgba(74,222,128,.14);}
+  .rg-pav{width:56px;height:56px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.22);
+    background:#1e0b36;flex:none;position:relative;}
+  .rg-pav img,.rg-pav svg{width:100%;height:100%;object-fit:cover;display:block;}
+  .rg-cnt{position:absolute;top:-7px;right:-7px;min-width:24px;height:24px;padding:0 5px;border-radius:99px;
+    background:linear-gradient(180deg,#a855f7,#6b21a8);border:2px solid #f3e8ff;color:#fff;
+    font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.6);}
+  .rg-pname{font-size:11.5px;font-weight:800;color:#f8fafc;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rg-pscore{width:100%;text-align:center;font-size:12px;font-weight:900;color:#fde68a;padding:2px 6px;border-radius:8px;
+    background:rgba(0,0,0,.48);border:1px solid rgba(255,255,255,.1);}
+  .rg-badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;}
+  .rg-b{font-size:8.5px;font-weight:900;padding:1px 5px;border-radius:99px;background:#0e2c23;border:1px solid #34d399;color:#6ee7b7;}
+  .rg-b.no{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);color:#94a3b8;}
+  .rg-b.atu{background:#422006;border-color:#facc15;color:#fde047;}
+  .rg-ptimer{position:absolute;left:4px;right:4px;bottom:3px;height:3px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;}
+  .rg-ptimer i{display:block;height:100%;background:linear-gradient(90deg,#4ade80,#facc15);transition:width .9s linear;}
+  .rg-bubble{position:absolute;top:8px;z-index:60;max-width:180px;padding:6px 11px;border-radius:14px;
+    background:linear-gradient(180deg,#ffffff,#e2e8f0);color:#0f172a;font-size:12.5px;font-weight:900;
+    border:2px solid #facc15;box-shadow:0 8px 20px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    pointer-events:none;animation:tbPop .18s ease-out;}
+  .rg-col.left .rg-bubble{left:calc(100% + 8px);}
+  .rg-col.right .rg-bubble{right:calc(100% + 8px);}
+
+  .rg-board{flex:1;min-width:0;min-height:0;max-width:1120px;border-radius:20px;padding:10px 12px;
+    display:flex;flex-direction:column;position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse at center, rgba(147,51,234,.28) 0%, rgba(59,7,100,.65) 100%),
+      linear-gradient(180deg,#581c87,#3b0764);
+    border:2.5px solid #9333ea;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.55), 0 0 24px rgba(147,51,234,.3);}
+  .rg-groups{flex:1;min-height:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:4px;}
+  .rg-grp{display:flex;flex-direction:column;gap:3px;padding:5px 6px;border-radius:10px;
+    background:rgba(20,5,38,.45);border:1.5px solid rgba(192,132,252,.28);transition:.15s;}
+  .rg-grp.mine{border-color:rgba(250,204,21,.55);}
+  .rg-grp.target{border-color:#4ade80;box-shadow:0 0 18px rgba(74,222,128,.75);cursor:pointer;}
+  .rg-grp .gtiles{display:flex;gap:3px;}
+  .rg-grp .meta{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;font-weight:800;color:#d8b4fe;}
+  .rg-grp .meta .pts{color:#fde68a;}
+
+  /* Bottom 2-Row Wooden Rack Area */
+  .rg-rackwrap{flex:none;display:flex;align-items:stretch;justify-content:center;gap:8px;max-width:1200px;width:100%;margin:0 auto;}
+  .rg-sidebtn{width:64px;flex:none;border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:4px;font-size:20px;font-weight:900;color:#fff;cursor:pointer;transition:.15s;
+    border:2px solid rgba(250,204,21,.35);box-shadow:0 6px 16px rgba(0,0,0,.55);}
+  .rg-sidebtn span{font-size:10px;font-weight:900;text-align:center;line-height:1.15;}
+  .rg-sidebtn.meld{background:linear-gradient(180deg,#5b4b1e,#2e2409);color:#fde68a;}
+  .rg-sidebtn.meld.hot{background:linear-gradient(180deg,#eab308,#a16207);color:#1c1202;border-color:#fef08a;
+    box-shadow:0 0 20px rgba(250,204,21,.7);}
+  .rg-sidebtn.close{background:linear-gradient(180deg,#1e4620,#0f2912);color:#bbf7d0;border-color:rgba(74,222,128,.4);}
+  .rg-sidebtn.close.hot{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border-color:#bbf7d0;
+    box-shadow:0 0 20px rgba(74,222,128,.75);}
+  .rg-sidebtn:disabled{opacity:.42;cursor:default;}
+
+  .rg-rack{flex:1;min-width:0;border-radius:18px;padding:6px 10px 8px;display:flex;flex-direction:column;gap:5px;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0 4px, rgba(0,0,0,.05) 4px 9px),
+      linear-gradient(180deg,#8b542b 0%,#633718 52%,#46230d 100%);
+    border:2.5px solid #a66a3c;box-shadow:0 10px 28px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,220,170,.28);}
+  .rg-racktop{display:flex;align-items:center;gap:8px;min-height:48px;}
+  .rg-drawbtn{display:flex;align-items:center;gap:5px;padding:4px 9px 4px 6px;border-radius:99px;cursor:pointer;flex:none;
+    background:linear-gradient(180deg,#fde047,#ca8a04);border:2px solid #fef9c3;color:#271702;
+    font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.5);}
+  .rg-drawbtn.glow{box-shadow:0 0 20px rgba(250,204,21,.95);animation:tPulseBtn 1s infinite alternate;}
+  .rg-drawplus{width:28px;height:28px;border-radius:50%;background:#451a03;color:#fde047;display:flex;align-items:center;
+    justify-content:center;font-size:20px;line-height:1;}
+  .rg-drawcnt{font-size:12px;font-weight:900;}
+  .rg-discard{flex:1;min-width:0;height:46px;border-radius:12px;padding:3px 8px;display:flex;align-items:center;gap:4px;
+    overflow-x:auto;scrollbar-width:none;cursor:pointer;
+    background:linear-gradient(180deg,#3d200d,#291306);border:1.5px solid #754321;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.65);}
+  .rg-discard.glow{border-color:#fde047;box-shadow:0 0 16px rgba(250,204,21,.75), inset 0 2px 8px rgba(0,0,0,.65);}
+  .rg-sortbtns{display:flex;gap:5px;flex:none;}
+  .rg-sortbtn{height:38px;padding:0 10px;border-radius:99px;font-size:13px;font-weight:900;cursor:pointer;
+    background:linear-gradient(180deg,#fde047,#ca8a04);color:#271702;border:1.5px solid #fef9c3;
+    box-shadow:0 3px 8px rgba(0,0,0,.45);}
+
+  .rg-rows{display:flex;flex-direction:column;gap:4px;}
+  .rg-row{display:grid;grid-template-columns:repeat(15, minmax(0, 1fr));gap:3px;min-height:60px;padding:4px 5px;
+    border-radius:9px;background:linear-gradient(180deg,rgba(32,14,4,.62),rgba(55,27,10,.45));
+    border-bottom:2px solid rgba(255,205,150,.18);box-shadow:inset 0 3px 8px rgba(0,0,0,.55);}
+  .rg-slot{min-width:0;min-height:54px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+  .rg-slot.empty{cursor:pointer;}
+  .rg-slot.empty:hover{background:rgba(250,204,21,.12);}
+  .rg-slot .tile{width:100%;max-width:46px;height:56px;font-size:23px;}
+
+  /* Corner floating buttons (bottom-left •••, bottom-right 💬/😊) */
+  .rg-corner-l{position:fixed;left:12px;bottom:12px;z-index:45;}
+  .rg-corner-r{position:fixed;right:12px;bottom:12px;z-index:45;display:flex;flex-direction:column;gap:8px;}
+  .rg-roundbtn{width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#e2e8f0);color:#1e293b;
+    font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.9);}
+  .rg-roundbtn:hover{transform:scale(1.06);}
+
+  @media (max-width:719px){
+    .rgame{padding:4px 5px 6px;gap:4px;}
+    .rg-head{padding:0 6px;font-size:11px;}
+    .rg-stage{flex-direction:column;gap:4px;}
+    .rg-col{width:auto;flex-direction:row;padding:0;gap:4px;}
+    .rg-pcard{flex:1;flex-direction:row;padding:4px 6px;gap:6px;}
+    .rg-pav{width:34px;height:34px;border-radius:9px;}
+    .rg-cnt{top:-4px;right:-4px;min-width:18px;height:18px;font-size:10px;}
+    .rg-row{grid-template-columns:repeat(8, minmax(0, 1fr));min-height:48px;}
+    .rg-slot{min-height:44px;}
+    .rg-slot .tile{height:44px;font-size:18px;}
+    .rg-sidebtn{width:44px;font-size:16px;}
+    .rg-sidebtn span{font-size:8px;}
+    .rg-corner-l,.rg-corner-r{bottom:6px;}
+    .rg-roundbtn{width:36px;height:36px;font-size:16px;}
+  }
 
   /* ---------- MY AREA ---------- */
   .mybar{display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid rgba(255,255,255,.06);
@@ -1018,8 +1143,10 @@ function playDiceRoll(){
   for (const [d, p, v] of hits) playWoodTap(d, p, v);
 }
 const sfx = {
-  draw: ()=>playWoodTap(0, 280, 0.22),
-  discard: ()=>playWoodTap(0, 200, 0.30),
+  draw: ()=>playWoodTap(0, 280, 0.24),
+  discard: ()=>playWoodTap(0, 200, 0.34),
+  tileTap: ()=>playWoodTap(0, 360, 0.16),
+  sortTiles: ()=>{ playWoodTap(0,300,0.16); playWoodTap(0.05,360,0.16); playWoodTap(0.1,420,0.16); },
   wood: ()=>playWoodTap(0, 195, 0.44),
   rollDice: ()=>playDiceRoll(),
   meld: ()=>{playWoodTap(0, 230, 0.36); beep(560,.08,"sine",.22,.02); beep(760,.11,"sine",.20,.09);},
@@ -1092,6 +1219,7 @@ function onNewState(){
   if (meP && S.me){
     const hand = new Set(S.me.hand);
     for (const t of [...sel]) if (!hand.has(t)) sel.delete(t);
+    syncRemiRack(S.me.hand || []);
   }
   // sunet cand incepe tura mea
   const myTurn = S.me && S.me.isTurn && S.phase === "playing";
@@ -1123,7 +1251,16 @@ function onNewState(){
         }
       }
     } else {
-      toast("💬 " + lastM.name + ": " + lastM.text);
+      if (!tDialogMuted){
+        rBubbles[lastM.pid] = {text: lastM.text, until: Date.now() + 4200};
+        sfx.draw();
+        setTimeout(()=>{
+          if (rBubbles[lastM.pid] && Date.now() >= rBubbles[lastM.pid].until){
+            delete rBubbles[lastM.pid];
+            render();
+          }
+        }, 4300);
+      }
     }
   }
   ui.lastChatCount = S.chat.length;
@@ -1195,7 +1332,7 @@ function tileHTML(id, opts={}){
     const eff = (opts.eff !== undefined && opts.eff !== null) ? `<b>${opts.eff===1?"1":opts.eff}</b>` : `<b>JOKER</b>`;
     return `<div class="${cls}" ${dataAttr}><span class="jk">★${eff}</span></div>`;
   }
-  return `<div class="${cls}" ${dataAttr}><span class="num">${opts.eff ?? t.v}</span></div>`;
+  return `<div class="${cls}" ${dataAttr}><span class="num">${opts.eff ?? t.v}</span><span class="pip"></span></div>`;
 }
 function backTileHTML(size="md", extra=""){
   return `<div class="tile back ${size} ${extra}"><span class="num">★</span></div>`;
@@ -1417,120 +1554,249 @@ function startSession(r){
 /* ---------------------------- GAME ---------------------------- */
 function playerById(pid){ return (S.players||[]).find(p=>p.id===pid); }
 
+/* ---------------------------- REMI LUXURY RACK & DIALOG ---------------------------- */
+const REMI_SLOTS = 30; // 2 rânduri × 15 sloturi
+let rRackSlots = new Array(REMI_SLOTS).fill(null);
+let rRackKey = "";
+let rQuickOpen = false;
+const rBubbles = {};
+const REMI_PHRASES = ["Baftă","Bine jucat!","Piesă norocoasă!","Mulțumesc!","Trebuie să plec","Nuuu!"];
+
+function syncRemiRack(hand){
+  const key = `${S ? S.code : ""}:${S ? S.round : 0}`;
+  if (rRackKey !== key){
+    rRackKey = key;
+    rRackSlots = new Array(REMI_SLOTS).fill(null);
+  }
+  const handSet = new Set(hand);
+  const placed = new Set();
+  for (let i = 0; i < REMI_SLOTS; i++){
+    const t = rRackSlots[i];
+    if (t !== null && handSet.has(t) && !placed.has(t)){
+      placed.add(t);
+    } else {
+      rRackSlots[i] = null;
+    }
+  }
+  const missing = hand.filter(t => !placed.has(t));
+  for (const t of missing){
+    let idx = rRackSlots.indexOf(null);
+    if (idx < 0){ rRackSlots.push(t); }
+    else { rRackSlots[idx] = t; }
+  }
+}
+
+function sortRemiRack(mode){
+  const tiles = rRackSlots.filter(t => t !== null);
+  const colorOrder = {R:0, Y:1, B:2, K:3, J:4};
+  if (mode === "777"){
+    tiles.sort((a,b)=>{
+      const ta = tileInfo(a), tb = tileInfo(b);
+      if (ta.joker !== tb.joker) return ta.joker ? 1 : -1;
+      if (ta.v !== tb.v) return ta.v - tb.v;
+      return (colorOrder[ta.c]??9) - (colorOrder[tb.c]??9);
+    });
+  } else {
+    tiles.sort((a,b)=>{
+      const ta = tileInfo(a), tb = tileInfo(b);
+      if (ta.joker !== tb.joker) return ta.joker ? 1 : -1;
+      if (ta.c !== tb.c) return (colorOrder[ta.c]??9) - (colorOrder[tb.c]??9);
+      return ta.v - tb.v;
+    });
+  }
+  rRackSlots = new Array(REMI_SLOTS).fill(null);
+  // împarte frumos: primele max 15 pe rândul 1, restul pe rândul 2 (sau 14/15)
+  const split = tiles.length > 15 ? Math.ceil(tiles.length / 2) : tiles.length;
+  for (let i = 0; i < split && i < 15; i++) rRackSlots[i] = tiles[i];
+  for (let i = split; i < tiles.length && (15 + i - split) < REMI_SLOTS; i++){
+    rRackSlots[15 + (i - split)] = tiles[i];
+  }
+  sfx.sortTiles();
+  render();
+}
+
+function renderRemiPlayerCard(p){
+  if (!p) return "";
+  const isMe = p.id === YOU;
+  const isTurn = p.isTurn && S.phase === "playing";
+  const leftPct = isTurn ? Math.max(0, Math.min(100, (S.turnLeft / Math.max(1, S.turnSeconds)) * 100)) : 0;
+  const bbl = (rBubbles[p.id] && rBubbles[p.id].until > Date.now()) ? rBubbles[p.id].text : "";
+  const cnt = isMe ? ((S.me && S.me.hand) ? S.me.hand.length : 0) : p.handCount;
+  return `<div class="rg-pcard ${isTurn?"turn":""}">
+    <div style="position:relative">
+      <div class="rg-pav">${avatarHTML(p.avatar, p.seat??0, p.name)}</div>
+      <span class="rg-cnt">${cnt}</span>
+    </div>
+    <div class="rg-pname">${esc(p.name)}${isMe?" (tu)":""}</div>
+    <div class="rg-pscore">${p.score>=0?"":"−"}${Math.abs(p.score||0)}p</div>
+    <div class="rg-badges">
+      <span class="rg-b ${p.firstMeld?"":"no"}">${p.firstMeld?"ETALAT ✓":"–"}</span>
+      ${p.atu ? `<span class="rg-b atu">ATU</span>` : ""}
+    </div>
+    ${isTurn ? `<div class="rg-ptimer"><i style="width:${leftPct}%"></i></div>` : ""}
+    ${bbl ? `<div class="rg-bubble">${esc(bbl)}</div>` : ""}
+  </div>`;
+}
+
 function renderGame(){
   const me = S.me || {};
   const meP = playerById(YOU) || {};
   const inLobby = S.phase === "lobby";
   if (inLobby) return renderLobby();
 
-  const winner = S.winnerPid ? playerById(S.winnerPid) : null;
+  syncRemiRack(me.hand || []);
   const myTurn = !!me.isTurn && S.phase === "playing";
-  const others = (S.players||[]).filter(p=>p.id!==YOU);
-  const parts = [];
-
-  parts.push(`<div class="topbar">
-    <button class="btn icon-btn" id="btnMenu">☰</button>
-    <span class="chip">Masa <b>${esc(S.code)}</b></span>
-    <span class="chip">Runda <b>${S.round}</b></span>
-    <span class="chip">🎯 <b>${S.opts.target ? S.opts.target + "p" : "1 rundă"}</b></span>
-    <div class="spacer"></div>
-    <span class="conn ${ui.connected?"ok":""}">${ui.connected?"●":"○"}</span>
-  </div>`);
-
-  // adversari
-  parts.push(`<div class="opps">`);
-  for (const p of others){
-    const leftPct = p.isTurn && S.phase==="playing" ? Math.max(0, Math.min(100, (S.turnLeft / S.turnSeconds) * 100)) : 0;
-    parts.push(`<div class="opp ${p.isTurn && S.phase==="playing"?"turn":""}">
-      <div class="l1">
-        <div class="av">${avatarHTML(p.avatar, p.seat??0, p.name)}</div>
-        <div class="nm">${esc(p.name)}</div>
-      </div>
-      <div class="l2">
-        <span class="cnt"><i class="minicard"></i>${p.handCount}</span>
-        <span class="sc">${p.score>=0?"":"−"}${Math.abs(p.score)}p</span>
-        <span class="meld ${p.firstMeld?"":"no"}">${p.firstMeld?"etalat":"–"}</span>
-        ${p.atu ? `<span class="atu">ATU</span>` : ""}
-      </div>
-      ${p.isTurn && S.phase==="playing" ? `<div class="timer" style="width:${leftPct}%"></div>` : ""}
-    </div>`);
+  const players = S.players || [];
+  // Împărțire stânga / dreapta (inspirat din Screenshot 2026-11-21 182926.jpg)
+  const others = players.filter(p => p.id !== YOU);
+  let leftPlayers = [], rightPlayers = [];
+  if (players.length <= 2){
+    leftPlayers = others.slice(0, 1);
+    rightPlayers = [meP];
+  } else if (players.length === 3){
+    leftPlayers = others.slice(0, 2);
+    rightPlayers = [meP];
+  } else {
+    leftPlayers = others.slice(0, 2);
+    rightPlayers = [others[2], meP].filter(Boolean);
   }
-  parts.push(`</div>`);
 
-  // masa
-  parts.push(`<div class="tablewrap">
-    <div class="playzone" id="pileZone">
-    <div class="pzlabel">MASĂ DE JOC</div>
-    ${S.phase==="playing" && !myTurn ? `<div class="turnbanner wait">Rândul: ${esc((playerById(S.turnPid)||{}).name||"")} · ${S.turnLeft}s</div>` : ``}
-    ${S.phase==="playing" && myTurn ? `<div class="turnbanner">Rândul tău · <span id="turnCounter">${S.turnLeft}</span>s</div>` : ``}
-    <div class="piles">
-      <div class="pile">
-        <div class="deck ${me.canDraw?"glow":""}" id="pileStock">
-          <div class="back"></div>
-          <span class="count">${S.stockCount}</span>
-        </div>
-        <span class="lbl">Grămadă</span>
-      </div>
-      <div class="pile">
-        ${S.atuTile !== null && S.atuTile !== undefined ? tileHTML(S.atuTile, {size:"md", data:`data-group="atu"`}) : `<div class="tile md back"></div>`}
-        <span class="lbl">Atu</span>
-      </div>
-      <div class="pile discard">
-        <div class="deck ${me.canTakeDiscard?"glow":""}" id="pileDiscard" title="Ia piesa de jos">
-          ${S.discardTop !== null && S.discardTop !== undefined
-            ? `<div style="position:absolute;inset:0;transform:scale(.98)">${tileHTML(S.discardTop,{size:"lg"})}</div>`
-            : `<div class="back" style="opacity:.25"></div>`}
-          <span class="count">${S.discardCount}</span>
-        </div>
-        <span class="lbl">Aruncate</span>
-      </div>
-    </div>
-    </div>
-    <div class="groups" id="groupsArea">
-      ${S.groups.length ? S.groups.map(g=>{
-        const owner = playerById(g.owner)||{name:"?"};
-        const targetable = (ui.targetMode && sel.size === 1) ? canAddToGroup(g.tiles.map(x=>x.t), [...sel][0], g.type) : false;
-        return `<div class="group ${g.mine?"mine":""} ${targetable?"target":""}" ${targetable?`data-target-group="${g.id}"`:""}>
-          <div class="gtiles">${g.tiles.map(x=>tileHTML(x.t,{size:"sm", eff:x.eff})).join("")}</div>
-          <div class="meta"><span class="who">${esc(owner.name)}</span><span class="pts">${g.points}p</span></div>
-        </div>`;
-      }).join("") : `<div class="empty-table">Masa este goală — primul care se etalează cu 45 de puncte deschide jocul.</div>`}
-    </div>
-    <div class="logline">${esc((S.log[S.log.length-1]||{}).x || "")}</div>
-  </div>`);
+  // Calcule pentru butoanele stânga / dreapta ale suportului de lemn
+  const selArr = [...sel];
+  let canMeldBtn = false, meldLabel = "Etalează", canTargetBtn = false, canDiscardBtn = false, isCloseBtn = false;
+  if (S.phase === "playing" && myTurn && me.drew && sel.size > 0){
+    const groups = partitionGroups(selArr);
+    const info = groups ? groupsPoints(groups) : null;
+    const valid = !!(groups && info && info.ok);
+    if (me.canMeld && valid && (me.firstMeld || (info.pts >= 45 && info.hasSeq))){
+      canMeldBtn = true;
+      meldLabel = `Etalează ${info.pts}p`;
+    } else if (sel.size === 1 && me.canMeld && me.firstMeld){
+      const canAdd = (S.groups||[]).some(g=>canAddToGroup(g.tiles.map(x=>x.t), selArr[0], g.type));
+      const canSwap = (S.groups||[]).some(g=>canSwapJoker(g.tiles.map(x=>x.t), selArr[0]));
+      if (canAdd || canSwap){
+        canTargetBtn = true;
+        meldLabel = "Lipește";
+      }
+    }
+    if (sel.size === 1){
+      canDiscardBtn = true;
+      isCloseBtn = !!me.canClose;
+    }
+  }
 
-  // bara mea
-  const meldInfo = me.firstMeld ? `<span class="pill ok">etalat ✓</span>` : `<span class="pill warn">neetalat</span>`;
-  parts.push(`<div class="mybar">
-    <div class="me-av">${avatarHTML(meP.avatar, meP.seat??0, me.name)}</div>
-    <span class="nm">${esc(me.name)}</span>
-    <span class="pill">${(meP.score||0)}p</span>
-    ${meldInfo}
-    ${me.atu && !me.atuDeclared ? `<button class="btn small gold-outline" id="btnAtu" style="padding:3px 8px;font-size:10px">Anunță atu +50</button>`:``}
-    <span class="turnmsg">${S.phase==="playing" ? (myTurn ? (me.drew ? "alege o piesă sau aruncă" : "trage o piesă") : "așteaptă…") : ""}</span>
-  </div>`);
+  const trail = (S.discardTrail && S.discardTrail.length)
+    ? S.discardTrail
+    : (S.discardTop !== null && S.discardTop !== undefined ? [S.discardTop] : []);
 
-  // mana
   const hint = handHint(me);
-  parts.push(`<div class="hand-wrap">
-    <div class="handhint">${hint}</div>
-    <div class="hands" id="myHand">
-      ${(me.hand||[]).map(t=>tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}"`})).join("")}
-    </div>
-  </div>`);
-
-  // bara de actiuni
-  parts.push(`<div class="actionbar" id="actionBar">${actionButtons(me)}</div>`);
-
-  // modale
   const modals = [];
   if (ui.chatOpen) modals.push(renderChat());
   if (ui.menuOpen) modals.push(renderMenu());
   if (S.phase === "round_end" && S.roundScores && !(ui.hideResults === S.round)) modals.push(renderRoundResult());
   if (S.phase === "game_over" && S.roundScores && !(ui.hideResults === "over" + S.round)) modals.push(renderGameOver());
-  if (modals.length) parts.push(`<div class="overlay" id="overlay">${modals[modals.length-1]}</div>`);
 
-  return `<div class="screen game">${parts.join("")}</div>`;
+  return `<div class="screen rgame">
+    <div class="rg-head">
+      <span class="rg-title">RUNDA ${S.round} · 🎯 ${S.opts.target ? S.opts.target + "p" : "1 rundă"} · MASA ${esc(S.code)}</span>
+      ${S.phase==="playing" ? (myTurn
+        ? `<span class="turnbanner">Rândul tău · <span id="turnCounter">${S.turnLeft}</span>s</span>`
+        : `<span class="turnbanner wait">Rândul: ${esc((playerById(S.turnPid)||{}).name||"")} · ${S.turnLeft}s</span>`) : ""}
+      ${me.atu && !me.atuDeclared ? `<button class="btn small gold-outline" id="btnAtu" style="padding:3px 10px;font-size:11px">★ Anunță Atu +50p</button>`:``}
+      <span class="conn ${ui.connected?"ok":""}">${ui.connected?"●":"○"}</span>
+    </div>
+
+    <div class="rg-stage">
+      <div class="rg-col left">${leftPlayers.map(renderRemiPlayerCard).join("")}</div>
+
+      <div class="rg-board">
+        <div class="rg-groups" id="groupsArea">
+          ${S.groups.length ? S.groups.map(g=>{
+            const owner = playerById(g.owner)||{name:"?"};
+            const targetable = (ui.targetMode && sel.size === 1) ? canAddToGroup(g.tiles.map(x=>x.t), [...sel][0], g.type) : false;
+            return `<div class="rg-grp ${g.mine?"mine":""} ${targetable?"target":""}" ${targetable?`data-target-group="${g.id}"`:""}>
+              <div class="gtiles">${g.tiles.map(x=>tileHTML(x.t,{size:"sm", eff:x.eff})).join("")}</div>
+              <div class="meta"><span>${esc(owner.name)}</span><span class="pts">${g.points}p</span></div>
+            </div>`;
+          }).join("") : `<div class="empty-table" style="color:rgba(233,213,255,.45)">Masa este goală — primul care se etalează cu 45 de puncte deschide jocul.</div>`}
+        </div>
+        <div class="logline" style="color:rgba(233,213,255,.55)">${esc((S.log[S.log.length-1]||{}).x || "")}</div>
+      </div>
+
+      <div class="rg-col right">${rightPlayers.map(renderRemiPlayerCard).join("")}</div>
+    </div>
+
+    <div class="handhint" style="color:#e9d5ff">${hint}</div>
+
+    ${S.phase === "round_end" || S.phase === "game_over" ? `
+      <div class="actionbar" id="actionBar">${actionButtons(me)}</div>
+    ` : `
+      <div class="rg-rackwrap">
+        <button class="rg-sidebtn meld ${(canMeldBtn||canTargetBtn)?"hot":""}" id="${canTargetBtn?"btnTarget":"btnMeld"}" ${(canMeldBtn||canTargetBtn)?"":"disabled"} title="Etalează sau lipește">
+          <div>★+</div>
+          <span>${meldLabel}</span>
+        </button>
+
+        <div class="rg-rack">
+          <div class="rg-racktop">
+            <button class="rg-drawbtn ${me.canDraw?"glow":""}" id="pileStock" title="Trage o piesă din grămadă">
+              <span class="rg-drawplus">+</span>
+              <span class="rg-drawcnt">${S.stockCount}</span>
+            </button>
+            <div title="Atu">${S.atuTile !== null && S.atuTile !== undefined ? tileHTML(S.atuTile, {size:"sm", data:`data-group="atu"`}) : ""}</div>
+            <div class="rg-discard ${me.canTakeDiscard?"glow":""}" id="pileDiscard" title="Piese aruncate (apasă pentru a lua ultima piesă)">
+              <span style="color:#fde68a;font-size:13px;font-weight:900;margin-right:2px">←</span>
+              ${trail.length ? trail.map((t,i)=>tileHTML(t,{size:"sm", data: i===0 ? `style="box-shadow:0 0 0 2px #facc15"` : `style="opacity:.78"`})).join("")
+                : `<span style="font-size:11px;color:#d6b899;opacity:.6">Aruncate</span>`}
+            </div>
+            <div class="rg-sortbtns">
+              <button type="button" class="rg-sortbtn" id="btnSort777" title="Sortează după număr (terțe)">777</button>
+              <button type="button" class="rg-sortbtn" id="btnSort123" title="Sortează după culoare (suite)">123</button>
+            </div>
+          </div>
+
+          <div class="rg-rows" id="myHand">
+            <div class="rg-row">
+              ${rRackSlots.slice(0, 15).map((t, idx)=>t !== null
+                ? `<div class="rg-slot" data-slot="${idx}">${tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}" draggable="true"`})}</div>`
+                : `<div class="rg-slot empty" data-slot="${idx}"></div>`).join("")}
+            </div>
+            <div class="rg-row">
+              ${rRackSlots.slice(15, 30).map((t, idx)=>t !== null
+                ? `<div class="rg-slot" data-slot="${idx+15}">${tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}" draggable="true"`})}</div>`
+                : `<div class="rg-slot empty" data-slot="${idx+15}"></div>`).join("")}
+            </div>
+          </div>
+        </div>
+
+        <button class="rg-sidebtn close ${canDiscardBtn?"hot":""}" id="btnDiscard" ${canDiscardBtn?"":"disabled"} title="Aruncă sau închide">
+          <div>${isCloseBtn?"🏁":"🃏↑"}</div>
+          <span>${isCloseBtn?"Închide":"Aruncă"}</span>
+        </button>
+      </div>
+    `}
+
+    <div class="rg-corner-l">
+      <button class="rg-roundbtn" id="btnMenu" title="Meniu & Reguli">•••</button>
+    </div>
+    <div class="rg-corner-r">
+      <button class="rg-roundbtn" id="btnQuickDialogR" title="Dialog rapid">💬</button>
+      <button class="rg-roundbtn" id="btnQuickEmojiR" title="Emoji">😊</button>
+    </div>
+
+    ${rQuickOpen ? `<div class="qdialog" id="qDialogPanel" style="right:68px;bottom:14px;top:auto;">
+      ${REMI_PHRASES.map(ph=>`<button type="button" class="qd-phrase" data-rqd="${esc(ph)}">${esc(ph)}</button>`).join("")}
+      <div class="qd-emojis">
+        ${QUICK_EMOJIS.map(em=>`<button type="button" class="qd-emo" data-rqd="${em}">${em}</button>`).join("")}
+      </div>
+      <div class="qd-foot">
+        <button type="button" class="qd-footbtn" id="btnOpenFullChatR">✏️ Scrie</button>
+        <button type="button" class="qd-footbtn ${tDialogMuted?"muted":""}" id="btnMuteDialogR" title="Oprește/pornește bulele">${tDialogMuted?"🔇":"💬"}</button>
+      </div>
+    </div>` : ""}
+
+    ${modals.length ? `<div class="overlay" id="overlay">${modals[modals.length-1]}</div>` : ""}
+  </div>`;
 }
 
 function handHint(me){
@@ -1616,6 +1882,7 @@ function bindGame(){
   const onTile = (el) => {
     const id = Number(el.dataset.tile);
     vibrate(6);
+    sfx.tileTap();
     if (ui.targetMode) return;
     if (sel.has(id)) sel.delete(id);
     else {
@@ -1626,20 +1893,58 @@ function bindGame(){
   };
   $$("#myHand .tile").forEach(el=>{
     el.addEventListener("click", ()=>onTile(el));
+    el.addEventListener("dragstart", (e)=>{
+      const slot = el.closest(".rg-slot");
+      if (slot) e.dataTransfer.setData("text/plain", slot.dataset.slot);
+    });
+  });
+  $$("#myHand .rg-slot").forEach(slotEl=>{
+    slotEl.addEventListener("dragover", (e)=>e.preventDefault());
+    slotEl.addEventListener("drop", (e)=>{
+      e.preventDefault();
+      const fromIdx = Number(e.dataTransfer.getData("text/plain"));
+      const toIdx = Number(slotEl.dataset.slot);
+      if (Number.isInteger(fromIdx) && Number.isInteger(toIdx) && fromIdx !== toIdx){
+        const tmp = rRackSlots[toIdx];
+        rRackSlots[toIdx] = rRackSlots[fromIdx];
+        rRackSlots[fromIdx] = tmp;
+        sfx.tileTap();
+        render();
+      }
+    });
+  });
+  $$("#myHand .rg-slot.empty").forEach(slotEl=>{
+    slotEl.addEventListener("click", ()=>{
+      if (sel.size !== 1) return;
+      const tileId = [...sel][0];
+      const fromIdx = rRackSlots.indexOf(tileId);
+      const toIdx = Number(slotEl.dataset.slot);
+      if (fromIdx >= 0 && toIdx >= 0){
+        rRackSlots[fromIdx] = null;
+        rRackSlots[toIdx] = tileId;
+        sel.clear();
+        sfx.tileTap();
+        render();
+      }
+    });
   });
   const stock = $("#pileStock");
   if (stock && S.me && S.me.canDraw) stock.onclick = ()=>act({type:"draw_stock"}, "draw");
-  const pz = $("#pileZone");
-  if (pz && S.me && S.me.canDraw) pz.onclick = ()=>act({type:"draw_stock"}, "draw");
   const disc = $("#pileDiscard");
   if (disc && S.me && S.me.canTakeDiscard) disc.onclick = ()=>act({type:"draw_discard"}, "draw");
 
   const b = (id, fn)=>{ const el = $(id); if (el) el.onclick = fn; };
+  b("#btnSort777", ()=>sortRemiRack("777"));
+  b("#btnSort123", ()=>sortRemiRack("123"));
   b("#btnDraw", ()=>act({type:"draw_stock"}, "draw"));
   b("#btnTakeDiscard", ()=>act({type:"draw_discard"}, "draw"));
   b("#btnClear", ()=>{ sel.clear(); ui.targetMode=false; render(); });
   b("#btnChatQuick", ()=>{ ui.chatOpen = true; render(); });
-  b("#btnMenu", ()=>{ ui.menuOpen = true; render(); });
+  b("#btnQuickDialogR", ()=>{ rQuickOpen = !rQuickOpen; render(); });
+  b("#btnQuickEmojiR", ()=>{ rQuickOpen = !rQuickOpen; render(); });
+  b("#btnOpenFullChatR", ()=>{ rQuickOpen = false; ui.chatOpen = true; render(); });
+  b("#btnMuteDialogR", ()=>{ tDialogMuted = !tDialogMuted; toast(tDialogMuted?"Dialog oprit":"Dialog pornit"); render(); });
+  b("#btnMenu", ()=>{ rQuickOpen = false; ui.menuOpen = true; render(); });
   b("#btnAtu", ()=>act({type:"announce_atu"}, "meld"));
   b("#btnMeld", ()=>{
     const groups = partitionGroups([...sel]);
@@ -1658,10 +1963,20 @@ function bindGame(){
     toast("Alege formația la care vrei să lipești piesa.");
     render();
   });
+  $$("[data-rqd]").forEach(el=>{
+    el.onclick = ()=>{
+      const txt = el.dataset.rqd;
+      rQuickOpen = false;
+      rBubbles[YOU] = {text: txt, until: Date.now() + 4200};
+      sfx.tileTap();
+      render();
+      sendChat(txt);
+    };
+  });
   // lipire la formatie (modul tinta)
   if (ui.targetMode && sel.size === 1){
     const tile = [...sel][0];
-    $$("#groupsArea .group.target").forEach(el=>{
+    $$("#groupsArea .rg-grp.target").forEach(el=>{
       el.onclick = ()=>{
         const gid = Number(el.dataset.targetGroup);
         ui.targetMode = false;
@@ -2614,7 +2929,7 @@ function boot(){
     }
     // actualizeaza bara de timp a jucatorului de la rand
     if (S && S.phase === "playing"){
-      const t = $(".opp.turn .timer");
+      const t = $(".rg-pcard.turn .rg-ptimer i");
       if (t){
         const cur = parseFloat(t.style.width) || 0;
         t.style.width = Math.max(0, cur - (100/Math.max(1,S.turnSeconds))) + "%";
