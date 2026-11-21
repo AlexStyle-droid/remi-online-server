@@ -388,7 +388,7 @@ class Room:
         return len(self.players) >= self.opts["max_players"]
 
     # ---------------------------------------------------------- lobby logic
-    def add_player(self, name):
+    def add_player(self, name, avatar=""):
         name = (name or "").strip()[:18] or "Jucător"
         if self.is_full():
             raise GameError("Camera este plină.")
@@ -398,12 +398,14 @@ class Room:
         while name.lower() in names:
             name = f"{base}{i}"
             i += 1
+        av = avatar if isinstance(avatar, str) and len(avatar) <= 24000 else ""
         pid = secrets.token_hex(6)
         token = secrets.token_hex(24)
         p = {
             "id": pid,
             "token": token,
             "name": name,
+            "avatar": av,
             "seat": len(self.players),
             "connected": True,
             "ready": False,
@@ -929,6 +931,7 @@ class Room:
             players.append({
                 "id": p["id"],
                 "name": p["name"],
+                "avatar": p.get("avatar", ""),
                 "seat": p["seat"],
                 "connected": p["connected"] and (time.time() - p.get("last_seen", time.time()) < 20),
                 "ready": p["ready"],
@@ -1039,6 +1042,114 @@ def create_room(opts=None, private=True, game="remi"):
     return r
 
 
+LEADERBOARD_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaderboard.json")
+LEADERBOARD_LOCK = threading.Lock()
+
+
+def _load_lb():
+    try:
+        with open(LEADERBOARD_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+LEADERBOARD = _load_lb()
+
+
+def _save_lb():
+    try:
+        tmp = LEADERBOARD_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(LEADERBOARD, f, ensure_ascii=False)
+        os.replace(tmp, LEADERBOARD_FILE)
+    except Exception:
+        pass
+
+
+def record_leaderboard(entries):
+    if not entries:
+        return
+    now = int(time.time())
+    with LEADERBOARD_LOCK:
+        for e in entries:
+            name = (e.get("name") or "").strip()[:18]
+            if not name:
+                continue
+            key = name.lower()
+            cur = LEADERBOARD.get(key) or {
+                "name": name, "avatar": "", "games": 0, "wins": 0, "points": 0, "updated": now
+            }
+            cur["name"] = name
+            if e.get("avatar"):
+                cur["avatar"] = e["avatar"][:24000]
+            cur["games"] = int(cur.get("games", 0)) + 1
+            if e.get("won"):
+                cur["wins"] = int(cur.get("wins", 0)) + 1
+            cur["points"] = int(cur.get("points", 0)) + max(0, int(e.get("points", 0)))
+            cur["updated"] = now
+            LEADERBOARD[key] = cur
+        _save_lb()
+
+
+def get_leaderboard_top10():
+    with LEADERBOARD_LOCK:
+        rows = list(LEADERBOARD.values())
+    rows.sort(key=lambda r: (-int(r.get("wins", 0)), -int(r.get("points", 0)), int(r.get("games", 0))))
+    out = []
+    for r in rows[:10]:
+        g = int(r.get("games", 0))
+        w = int(r.get("wins", 0))
+        out.append({
+            "name": r.get("name", "Jucător"),
+            "avatar": r.get("avatar", ""),
+            "games": g,
+            "wins": w,
+            "points": int(r.get("points", 0)),
+            "winRate": round((w * 100 / g)) if g > 0 else 0,
+        })
+    return out
+
+
+def check_room_leaderboard(room):
+    kind = getattr(room, "kind", "remi")
+    if kind == "table":
+        if room.phase == "match_end" and room.match_winner:
+            key = f"{room.code}:m:{room.leg}:{room.match_winner}"
+            if getattr(room, "_lb_key", None) != key:
+                room._lb_key = key
+                entries = [
+                    {
+                        "name": p["name"],
+                        "avatar": p.get("avatar", ""),
+                        "won": p["id"] == room.match_winner,
+                        "points": max(0, int(p.get("score", 0))),
+                    }
+                    for p in room.players
+                ]
+                record_leaderboard(entries)
+    else:
+        if room.phase in ("round_end", "game_over"):
+            key = f"{room.code}:r:{room.round_no}"
+            if getattr(room, "_lb_key", None) != key:
+                room._lb_key = key
+                win_pid = room.winner_pid if room.phase == "game_over" else (
+                    (room.round_scores or {}).get("closer")
+                    or (max(room.players, key=lambda p: p.get("round_score", 0))["id"] if room.players else None)
+                )
+                entries = [
+                    {
+                        "name": p["name"],
+                        "avatar": p.get("avatar", ""),
+                        "won": p["id"] == win_pid,
+                        "points": max(0, int(p.get("round_score", 0))),
+                    }
+                    for p in room.players
+                ]
+                record_leaderboard(entries)
+
+
 def cleanup_rooms():
     now = time.time()
     with ROOMS_LOCK:
@@ -1055,6 +1166,7 @@ def ticker():
             for r in rooms:
                 with r.lock:
                     r.tick(time.time())
+                    check_room_leaderboard(r)
         except Exception as e:  # pragma: no cover
             print("ticker error:", e, file=sys.stderr)
         time.sleep(0.7)
@@ -1123,6 +1235,8 @@ class Handler(BaseHTTPRequestHandler):
                              "max": r.opts["max_players"], "game": getattr(r, "kind", "remi")}
                             for r in ROOMS.values()]
                 return self._json({"rooms": info})
+            if path == "/api/leaderboard":
+                return self._json({"top": get_leaderboard_top10()})
             return self.serve_static(path)
         except (BrokenPipeError, ConnectionResetError):
             pass
@@ -1210,7 +1324,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"error": str(e)}, 503)
         with room.lock:
             try:
-                p = room.add_player(body.get("name"))
+                p = room.add_player(body.get("name"), body.get("avatar", ""))
             except GameError as e:
                 return self._json({"error": str(e)}, 400)
             return self._json({"code": room.code, "token": p["token"], "pid": p["id"]})
@@ -1223,7 +1337,7 @@ class Handler(BaseHTTPRequestHandler):
             if room.phase != "lobby" and not (body.get("rejoin")):
                 return self._json({"error": "Jocul a început deja în această cameră."}, 400)
             try:
-                p = room.add_player(body.get("name"))
+                p = room.add_player(body.get("name"), body.get("avatar", ""))
             except GameError as e:
                 return self._json({"error": str(e)}, 400)
             return self._json({"code": room.code, "token": p["token"], "pid": p["id"]})
@@ -1248,7 +1362,7 @@ class Handler(BaseHTTPRequestHandler):
             room = create_room({}, private=False, game=game)
         with room.lock:
             try:
-                p = room.add_player(body.get("name"))
+                p = room.add_player(body.get("name"), body.get("avatar", ""))
             except GameError as e:
                 return self._json({"error": str(e)}, 400)
             # in camerele publice pornim automat cand sunt 2+ jucatori
@@ -1289,6 +1403,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 if getattr(room, "kind", "remi") == "table":
                     room.handle_action(pid, action)
+                    check_room_leaderboard(room)
                     return self._json({"ok": True, "v": room.version})
                 typ = action.get("type")
                 if typ == "draw_stock":
@@ -1328,6 +1443,7 @@ class Handler(BaseHTTPRequestHandler):
                     room.bump()
                 else:
                     raise GameError("Acțiune necunoscută.")
+                check_room_leaderboard(room)
             except GameError as e:
                 return self._json({"error": str(e)}, 400)
             except Exception as e:

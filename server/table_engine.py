@@ -113,7 +113,7 @@ class TableRoom:
         return len(self.players) >= 2
 
     # ------------------------------------------------------------- lobby
-    def add_player(self, name):
+    def add_player(self, name, avatar=""):
         name = (name or "").strip()[:18] or "Jucător"
         if self.is_full():
             raise TableError("Masa este plină (2 jucători).")
@@ -122,8 +122,10 @@ class TableRoom:
         while name.lower() in names:
             name = f"{base}{i}"
             i += 1
+        av = avatar if isinstance(avatar, str) and len(avatar) <= 24000 else ""
         p = {
             "id": secrets.token_hex(6), "token": secrets.token_hex(24), "name": name,
+            "avatar": av,
             "seat": len(self.players), "connected": True, "last_seen": time.time(),
             "ready": False, "score": 0,
         }
@@ -491,7 +493,7 @@ class TableRoom:
         players = []
         for p in self.players:
             players.append({
-                "id": p["id"], "name": p["name"], "seat": p["seat"],
+                "id": p["id"], "name": p["name"], "avatar": p.get("avatar", ""), "seat": p["seat"],
                 "connected": p["connected"] and (time.time() - p.get("last_seen", time.time()) < 20),
                 "ready": p["ready"], "score": p["score"],
                 "off": self.off[p["seat"]], "bar": self.bar[p["seat"]],
