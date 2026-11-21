@@ -1800,6 +1800,7 @@ function canMoveFrom(from){
 function optimisticTableMove(from, to){
   if (!S) return;
   const me = mySeat();
+  const mv = (S.legalMoves||[]).find(m=>String(m.from)===String(from) && String(m.to)===String(to));
   if (from === "bar"){
     S.bar[me] = Math.max(0, (S.bar[me]||0) - 1);
   } else {
@@ -1808,6 +1809,16 @@ function optimisticTableMove(from, to){
     if (fc){ fc.count = Math.max(0, fc.count - 1); }
     S.board = (S.board||[]).filter(c=>c.count > 0);
   }
+  const stepsPath = (mv && Array.isArray(mv.path) && mv.path.length) ? mv.path : [to];
+  for (let i = 0; i < stepsPath.length - 1; i++){
+    const midPt = Number(stepsPath[i]);
+    const mc = (S.board||[]).find(c=>c.i===midPt);
+    if (mc && mc.owner !== me && mc.count === 1){
+      S.bar[mc.owner] = (S.bar[mc.owner]||0) + 1;
+      mc.count = 0;
+    }
+  }
+  S.board = (S.board||[]).filter(c=>c.count > 0);
   if (to === "off"){
     S.off[me] = (S.off[me]||0) + 1;
   } else {
@@ -1823,11 +1834,14 @@ function optimisticTableMove(from, to){
       S.bar[opp] = (S.bar[opp]||0) + 1;
     }
   }
-  // scoate zarul folosit din previzualizare
-  const usedDie = legalDieMapFrom(from).get(String(to));
-  if (usedDie && Array.isArray(S.dice)){
-    const idx = S.dice.indexOf(usedDie);
-    if (idx >= 0) S.dice.splice(idx, 1);
+  // scoate zarurile folosite din previzualizare (inclusiv mutare combinată)
+  const usedDice = (mv && Array.isArray(mv.dice) && mv.dice.length) ? mv.dice : [legalDieMapFrom(from).get(String(to))];
+  if (Array.isArray(S.dice)){
+    for (const d of usedDice){
+      if (!d) continue;
+      const idx = S.dice.indexOf(d);
+      if (idx >= 0) S.dice.splice(idx, 1);
+    }
   }
   S.legalMoves = [];
 }
