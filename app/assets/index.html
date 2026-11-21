@@ -57,10 +57,92 @@
   .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.12);}
   .icon{width:1.1em;height:1.1em;display:inline-block;vertical-align:-.15em;}
 
-  /* ---------- HOME ---------- */
+  /* ---------- HOME (Screenshot 2026-11-21 230050.jpg style) ---------- */
   .screen{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;}
-  .home-wrap{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:22px;}
-  .home{width:min(420px,100%);display:flex;flex-direction:column;gap:12px;text-align:center;padding-bottom:30px;}
+  .home-wrap{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:14px 20px;}
+  .home{width:min(450px,100%);margin:auto 0;display:flex;flex-direction:column;gap:10px;text-align:center;padding-bottom:16px;}
+  .hv-screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;
+    background:radial-gradient(120% 80% at 50% 0%, #154552 0%, #0b2a34 55%, #071b22 100%);}
+  .hv-top{flex:none;height:52px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    background:linear-gradient(180deg,rgba(8,29,36,.96),rgba(11,39,48,.88));
+    border-bottom:1px solid rgba(255,255,255,.08);}
+  .hv-top-l,.hv-top-r{display:flex;align-items:center;gap:6px;min-width:0;}
+  .hv-ico{width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.07);color:#e2f1f5;display:flex;align-items:center;justify-content:center;
+    font-size:16px;cursor:pointer;flex:none;}
+  .hv-ico:active{transform:scale(.95);}
+  .hv-prof{display:flex;align-items:center;gap:7px;padding:3px 10px 3px 4px;border-radius:99px;
+    background:rgba(0,0,0,.32);border:1px solid rgba(232,198,106,.32);color:#fff;cursor:pointer;max-width:145px;}
+  .hv-prof .hv-av{width:28px;height:28px;border-radius:50%;overflow:hidden;flex:none;border:1.5px solid #e8c66a;background:#1a2b25;}
+  .hv-prof .hv-av img,.hv-prof .hv-av svg{width:100%;height:100%;object-fit:cover;display:block;}
+  .hv-prof span{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hv-logo{font-weight:900;font-size:18px;letter-spacing:.6px;line-height:1;
+    background:linear-gradient(180deg,#fff6d8,#e8c66a 60%,#b8891b);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 8px rgba(232,198,106,.3));white-space:nowrap;}
+  .hv-logo small{font-size:10px;letter-spacing:2px;margin-left:3px;opacity:.9;}
+
+  .hv-main{flex:1;min-height:0;overflow:auto;width:min(480px,100%);margin:0 auto;padding:12px 12px 10px;
+    display:flex;flex-direction:column;gap:11px;justify-content:center;}
+  .hv-hero{position:relative;border-radius:20px;padding:14px 16px 14px;min-height:185px;flex:1.1;
+    background:radial-gradient(90% 80% at 50% 25%, #b565ff 0%, #8b3dff 55%, #6520cc 100%);
+    border:2px solid rgba(255,255,255,.16);box-shadow:0 14px 32px rgba(59,13,120,.5), inset 0 1px 0 rgba(255,255,255,.35);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;overflow:hidden;transition:transform .14s, border-color .14s;}
+  .hv-hero:hover,.hv-card:hover{transform:translateY(-2px);}
+  .hv-hero.sel,.hv-card.sel{border-color:#fde047;box-shadow:0 0 0 3px rgba(253,224,71,.35), 0 16px 34px rgba(0,0,0,.45);}
+  .hv-hero-title{font-size:clamp(42px,10vw,64px);font-weight:900;letter-spacing:2px;line-height:.92;
+    background:linear-gradient(180deg,#fff3a8 0%,#facc15 55%,#d97706 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));margin-top:2px;}
+  .hv-subpill{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#f5e8ff;
+    background:rgba(0,0,0,.25);padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.18);}
+  .hv-tiles{display:flex;align-items:center;justify-content:center;margin-top:6px;padding:2px 0;}
+  .hv-tile{width:54px;height:76px;border-radius:10px;background:linear-gradient(180deg,#fffcf2,#efe4cb);
+    border:1.5px solid rgba(0,0,0,.18);box-shadow:0 8px 16px rgba(0,0,0,.38), inset 0 2px 0 #fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:7px 4px 8px;
+    font-weight:900;font-size:27px;line-height:1;margin-left:-10px;position:relative;}
+  .hv-tile:first-child{margin-left:0;transform:rotate(-8deg) translateY(4px);}
+  .hv-tile:nth-child(2){transform:rotate(-2deg) translateY(0px);z-index:2;}
+  .hv-tile:nth-child(3){transform:rotate(4deg) translateY(1px);z-index:3;}
+  .hv-tile:nth-child(4){transform:rotate(10deg) translateY(5px);z-index:4;}
+  .hv-tile .dot{width:14px;height:14px;border-radius:50%;background:currentColor;box-shadow:inset 0 2px 2px rgba(0,0,0,.2);}
+  .hv-tile.cb{color:#1d64d8;} .hv-tile.cr{color:#d92626;} .hv-tile.cy{color:#d97706;} .hv-tile.ck{color:#1f2937;}
+
+  .hv-row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;flex:1;min-height:150px;}
+  .hv-card{position:relative;border-radius:20px;padding:12px 10px 14px;display:flex;flex-direction:column;
+    align-items:center;justify-content:space-between;cursor:pointer;overflow:hidden;
+    border:2px solid rgba(255,255,255,.16);transition:transform .14s, border-color .14s;}
+  .hv-card.blue{background:radial-gradient(90% 80% at 50% 20%, #48a7ff 0%, #2575e8 60%, #164eb8 100%);
+    box-shadow:0 12px 26px rgba(17,64,168,.48), inset 0 1px 0 rgba(255,255,255,.35);}
+  .hv-card.red{background:radial-gradient(90% 80% at 50% 20%, #fb5a5a 0%, #dc2f2f 60%, #a51616 100%);
+    box-shadow:0 12px 26px rgba(145,18,18,.48), inset 0 1px 0 rgba(255,255,255,.35);}
+  .hv-card-title-red{font-size:clamp(22px,5.2vw,28px);font-weight:900;letter-spacing:.6px;line-height:1;
+    background:linear-gradient(180deg,#fff3a8,#facc15 60%,#d97706);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 3px 6px rgba(0,0,0,.38));}
+  .hv-card-title-blue{font-size:clamp(28px,6.5vw,36px);font-weight:900;font-style:italic;color:#fff;line-height:.95;
+    text-shadow:0 4px 0 #0f172a, 0 8px 16px rgba(0,0,0,.45);transform:rotate(-5deg);margin:4px 0;}
+  .hv-rackmini{width:100%;max-width:168px;background:linear-gradient(180deg,#5d331d,#3a1e10);
+    border:2px solid #7d4728;border-radius:12px;padding:8px 6px 6px;display:flex;justify-content:center;
+    box-shadow:0 6px 14px rgba(0,0,0,.42);}
+  .hv-rackmini .hv-tile{width:35px;height:49px;font-size:17px;border-radius:7px;padding:4px 2px 5px;margin-left:-8px;}
+  .hv-rackmini .hv-tile .dot{width:9px;height:9px;}
+  .hv-badge-sel{position:absolute;top:6px;right:8px;font-size:10px;font-weight:900;padding:1px 6px;border-radius:99px;
+    background:#facc15;color:#1b1200;box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none;}
+
+  .hv-nav{flex:none;height:62px;background:linear-gradient(180deg,#0e3844,#08232c);
+    border-top:1px solid rgba(255,255,255,.1);display:grid;grid-template-columns:repeat(5,1fr);padding:4px 4px;}
+  .hv-navbtn{background:transparent;border:0;color:#9cc2cc;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:2px;font-size:10px;font-weight:800;cursor:pointer;border-radius:10px;}
+  .hv-navbtn .ic{font-size:18px;line-height:1;}
+  .hv-navbtn.on{background:rgba(255,255,255,.08);color:#fde047;}
+  .hv-navbtn:active{transform:scale(.95);}
+  @media (max-height:560px){
+    .hv-hero{min-height:132px;padding:8px 12px 10px;}
+    .hv-tile{width:42px;height:58px;font-size:21px;}
+    .hv-row2{min-height:122px;}
+    .hv-nav{height:54px;}
+  }
   .brand{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;
     background:linear-gradient(180deg,#fff6d8,#e8c66a 55%,#a8851d);
     -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -276,7 +358,7 @@
   .rg-grp .meta .pts{color:#fde68a;}
 
   /* Bottom 2-Row Wooden Rack Area */
-  .rg-rackwrap{flex:none;display:flex;align-items:stretch;justify-content:center;gap:8px;max-width:1200px;width:100%;margin:0 auto;}
+  .rg-rackwrap{flex:none;display:flex;align-items:stretch;justify-content:center;gap:8px;max-width:1220px;width:100%;margin:0 auto;padding:0 54px;}
   .rg-sidebtn{width:64px;flex:none;border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;
     justify-content:center;gap:4px;font-size:20px;font-weight:900;color:#fff;cursor:pointer;transition:.15s;
     border:2px solid rgba(250,204,21,.35);box-shadow:0 6px 16px rgba(0,0,0,.55);}
@@ -428,10 +510,11 @@
 
   /* ---------- selector joc (home) ---------- */
   .gamepick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 4px;}
-  .gp{display:flex;flex-direction:column;align-items:center;gap:2px;padding:11px 8px;border-radius:14px;
+  .gamepick.tri{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  .gp{display:flex;flex-direction:column;align-items:center;gap:2px;padding:11px 6px;border-radius:14px;
     background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.09);color:var(--muted);
-    font-size:12px;transition:border-color .2s, background .2s, color .2s;}
-  .gp b{font-size:14px;color:var(--text);}
+    font-size:11.5px;transition:border-color .2s, background .2s, color .2s;text-align:center;}
+  .gp b{font-size:13.5px;color:var(--text);}
   .gp .ico{font-size:22px;line-height:1.1;}
   .gp.on{border-color:var(--gold);background:rgba(232,198,106,.12);color:var(--gold);}
   .gp.on b{color:var(--gold);}
@@ -998,6 +1081,134 @@ function combinations(arr, k){
   rec(0, []);
   return out;
 }
+
+/* Partitie exacta pe 14 piese (Remi pe Tabla) */
+function genValidGroupsFast(tiles){
+  const sorted = [...tiles].sort((a,b)=>a-b);
+  const jokers = sorted.filter(t=>tileInfo(t).joker);
+  const nats = sorted.filter(t=>!tileInfo(t).joker);
+  const out = [];
+  const seen = new Set();
+  const addGroup = (g) => {
+    const key = [...g].sort((a,b)=>a-b).join(",");
+    if (!seen.has(key)){ seen.add(key); out.push(g); }
+  };
+  // 1) Terte
+  const byVal = new Map();
+  for (const t of nats){
+    const v = tileInfo(t).v;
+    if (!byVal.has(v)) byVal.set(v, []);
+    byVal.get(v).push(t);
+  }
+  for (const [, grp] of byVal){
+    const byCol = new Map();
+    for (const t of grp){
+      const c = tileInfo(t).c;
+      if (!byCol.has(c)) byCol.set(c, []);
+      byCol.get(c).push(t);
+    }
+    const cols = [...byCol.keys()];
+    for (let k=2; k<=Math.min(4, cols.length); k++){
+      for (const csub of combinations(cols, k)){
+        const lists = csub.map(c=>byCol.get(c));
+        const prod = (idx, cur) => {
+          if (idx === lists.length){
+            if (cur.length >= 3 && resolveSet(cur)) addGroup([...cur]);
+            if (cur.length <= 3){
+              for (const j of jokers){
+                const cand = [...cur, j];
+                if (resolveSet(cand)) addGroup(cand);
+              }
+            }
+            return;
+          }
+          for (const t of lists[idx]){ cur.push(t); prod(idx+1, cur); cur.pop(); }
+        };
+        prod(0, []);
+      }
+    }
+  }
+  // 2) Suite
+  const byC = new Map();
+  for (const t of nats){
+    const c = tileInfo(t).c;
+    if (!byC.has(c)) byC.set(c, []);
+    byC.get(c).push(t);
+  }
+  for (const [, grp] of byC){
+    const byNum = new Map();
+    for (const t of grp){
+      const v = tileInfo(t).v;
+      if (!byNum.has(v)) byNum.set(v, []);
+      byNum.get(v).push(t);
+    }
+    for (let s=1; s<=12; s++){
+      for (let e=s+2; e<=Math.min(14, s+12); e++){
+        const len = e - s + 1;
+        if (len > grp.length + jokers.length) continue;
+        const req = [];
+        let miss = 0;
+        for (let n=s; n<=e; n++){
+          const val = (n===14) ? 1 : n;
+          if (byNum.has(val)) req.push(byNum.get(val));
+          else miss++;
+        }
+        if (miss > jokers.length) continue;
+        if (miss === 2 && len < 6) continue;
+        if (len - miss < 2) continue;
+        const jCombs = miss === 0 ? [[]] : combinations(jokers, miss);
+        for (const jUse of jCombs){
+          const prod = (idx, cur) => {
+            if (idx === req.length){
+              const cand = [...cur, ...jUse];
+              if (resolveSequence(cand)) addGroup(cand);
+              return;
+            }
+            for (const t of req[idx]){ cur.push(t); prod(idx+1, cur); cur.pop(); }
+          };
+          prod(0, []);
+        }
+      }
+    }
+  }
+  return out;
+}
+
+const _part14Cache = new Map();
+function findCompletePartition14(tiles){
+  if (!tiles || !tiles.length) return [];
+  const key = [...tiles].sort((a,b)=>a-b).join(",");
+  if (_part14Cache.has(key)) return _part14Cache.get(key);
+  const groups = genValidGroupsFast(tiles);
+  const byTile = new Map();
+  for (const t of tiles) byTile.set(t, []);
+  for (const g of groups){
+    for (const t of g) byTile.get(t).push(g);
+  }
+  const rec = (rem) => {
+    if (rem.size === 0) return [];
+    let bestT = null, bestCands = null;
+    for (const t of rem){
+      const cands = byTile.get(t).filter(g=>g.every(x=>rem.has(x)));
+      if (cands.length === 0) return null;
+      if (!bestCands || cands.length < bestCands.length){
+        bestT = t; bestCands = cands;
+        if (cands.length === 1) break;
+      }
+    }
+    for (const g of bestCands){
+      const next = new Set(rem);
+      for (const x of g) next.delete(x);
+      const res = rec(next);
+      if (res) return [g, ...res];
+    }
+    return null;
+  };
+  const ans = rec(new Set(tiles));
+  if (_part14Cache.size > 400) _part14Cache.clear();
+  _part14Cache.set(key, ans);
+  return ans;
+}
 function groupsPoints(groups){
   let pts = 0, hasSeq = false;
   for (const g of groups){
@@ -1045,6 +1256,7 @@ let ui = {
 };
 let pendingStart = false;
 let gameSel = localStorage.getItem("remi.game") || "remi";
+let remiMode = localStorage.getItem("remi.mode") || "etalat";
 
 function loadSession(){
   try { return JSON.parse(localStorage.getItem(LS.session) || "null"); } catch(e){ return null; }
@@ -1339,79 +1551,201 @@ function backTileHTML(size="md", extra=""){
 }
 
 /* ---------------------------- HOME ---------------------------- */
+function currentModeMeta(){
+  if (gameSel === "table") return {id:"table", game:"table", mode:null, title:"Table (Backgammon)", ico:"🎲", desc:"2 jucători · zaruri · mutări combinate"};
+  if (remiMode === "tabla") return {id:"tabla", game:"remi", mode:"tabla", title:"Remi pe Tablă", ico:"🪵", desc:"106 piese · formezi pe suport · închizi cu 14"};
+  return {id:"etalat", game:"remi", mode:"etalat", title:"Remi Etalat", ico:"🃏", desc:"106 piese · etalare pe masă · minim 45p"};
+}
+
 function renderHome(){
+  const savedName = localStorage.getItem(LS.name) || "Jucător";
+  const av = getAvatar();
+  const isEtalat = (gameSel === "remi" && remiMode !== "tabla");
+  const isTabla = (gameSel === "remi" && remiMode === "tabla");
+  const isTable = (gameSel === "table");
+  return `
+  <div class="hv-screen">
+    <div class="hv-top">
+      <div class="hv-top-l">
+        <button type="button" class="hv-ico" id="btnSettings" title="Setări profil & server">⚙️</button>
+        <button type="button" class="hv-prof" id="btnProfile" title="Schimbă numele sau poza">
+          <span class="hv-av">${avatarHTML(av, 0, savedName)}</span>
+          <span>${esc(savedName)}</span>
+        </button>
+      </div>
+      <div class="hv-logo">REMI<small>ONLINE</small></div>
+      <div class="hv-top-r">
+        <button type="button" class="hv-ico" id="btnJoinTop" title="Intră cu cod">🔑</button>
+        <button type="button" class="hv-ico" id="btnLeaderboardTop" title="Clasament Top 10">🏆</button>
+      </div>
+    </div>
+
+    <div class="hv-main">
+      <button type="button" class="hv-hero ${isEtalat?"sel":""}" id="cardEtalat" data-game="remi" data-mode="etalat">
+        <div class="hv-hero-title">REMI</div>
+        <div class="hv-subpill">${isEtalat?"★ ":""}Remi Etalat · 2–4 jucători</div>
+        <div class="hv-tiles" aria-hidden="true">
+          <div class="hv-tile cb"><span>13</span><span class="dot"></span></div>
+          <div class="hv-tile cr"><span>3</span><span class="dot"></span></div>
+          <div class="hv-tile cy"><span>3</span><span class="dot"></span></div>
+          <div class="hv-tile ck"><span>3</span><span class="dot"></span></div>
+        </div>
+      </button>
+
+      <div class="hv-row2">
+        <button type="button" class="hv-card blue ${isTable?"sel":""}" id="cardTable" data-game="table">
+          <svg viewBox="0 0 120 70" width="110" height="62" aria-hidden="true" style="opacity:.92">
+            <rect x="6" y="4" width="108" height="62" rx="8" fill="#17408b" stroke="#60a5fa" stroke-width="2"/>
+            <line x1="60" y1="4" x2="60" y2="66" stroke="#60a5fa" stroke-width="2"/>
+            <polygon points="14,6 22,6 18,30" fill="#3b82f6" opacity=".65"/>
+            <polygon points="30,6 38,6 34,30" fill="#93c5fd" opacity=".45"/>
+            <polygon points="74,6 82,6 78,30" fill="#3b82f6" opacity=".65"/>
+            <polygon points="94,6 102,6 98,30" fill="#93c5fd" opacity=".45"/>
+            <polygon points="14,64 22,64 18,40" fill="#93c5fd" opacity=".45"/>
+            <polygon points="30,64 38,64 34,40" fill="#3b82f6" opacity=".65"/>
+            <polygon points="74,64 82,64 78,40" fill="#93c5fd" opacity=".45"/>
+            <polygon points="94,64 102,64 98,40" fill="#3b82f6" opacity=".65"/>
+            <g transform="translate(46,16) rotate(-12)">
+              <rect width="20" height="20" rx="4" fill="#fff" stroke="#cbd5e1"/>
+              <circle cx="6" cy="6" r="2" fill="#111"/><circle cx="14" cy="14" r="2" fill="#111"/>
+            </g>
+            <g transform="translate(68,12) rotate(14)">
+              <rect width="20" height="20" rx="4" fill="#fff" stroke="#cbd5e1"/>
+              <circle cx="6" cy="6" r="1.8" fill="#111"/><circle cx="10" cy="10" r="1.8" fill="#111"/><circle cx="14" cy="14" r="1.8" fill="#111"/>
+            </g>
+          </svg>
+          <div class="hv-card-title-blue">Table</div>
+          <span class="hv-subpill" style="font-size:10px">${isTable?"★ ":""}Backgammon · 2j</span>
+        </button>
+
+        <button type="button" class="hv-card red ${isTabla?"sel":""}" id="cardTabla" data-game="remi" data-mode="tabla">
+          <div class="hv-card-title-red">PE TABLĂ</div>
+          <div class="hv-rackmini" aria-hidden="true">
+            <div class="hv-tile cy" style="transform:rotate(-8deg)"><span>7</span><span class="dot"></span></div>
+            <div class="hv-tile cr" style="transform:rotate(-2deg)"><span>8</span><span class="dot"></span></div>
+            <div class="hv-tile cy" style="transform:rotate(4deg)"><span>9</span><span class="dot"></span></div>
+            <div class="hv-tile cr" style="transform:rotate(9deg)"><span>10</span><span class="dot"></span></div>
+          </div>
+          <span class="hv-subpill" style="font-size:10px">${isTabla?"★ ":""}În mână · 14 piese</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hv-nav">
+      <button type="button" class="hv-navbtn" id="btnCreate"><span class="ic">🎯</span><span>Creează</span></button>
+      <button type="button" class="hv-navbtn" id="btnQuick"><span class="ic">⚡</span><span>Joc rapid</span></button>
+      <button type="button" class="hv-navbtn on" id="btnJoin"><span class="ic">🔑</span><span>Intră cod</span></button>
+      <button type="button" class="hv-navbtn" id="btnLeaderboard"><span class="ic">🏆</span><span>Top 10</span></button>
+      <button type="button" class="hv-navbtn" id="btnRules"><span class="ic">📖</span><span>Reguli</span></button>
+    </div>
+  </div>`;
+}
+
+function showPlayModeModal(){
+  const old = document.getElementById("playModeOverlay");
+  if (old) old.remove();
+  const meta = currentModeMeta();
+  const savedName = localStorage.getItem(LS.name) || "";
+  const div = document.createElement("div");
+  div.innerHTML = `<div class="overlay" id="playModeOverlay"><div class="modal-wrap"><div class="modal">
+    <button class="close-x" id="pmClose">×</button>
+    <h2>${meta.ico} ${meta.title}</h2>
+    <p class="tag">${meta.desc}</p>
+    <div class="field" style="margin-bottom:12px">
+      <label>Numele tău la masă</label>
+      <input class="inp" id="pmName" maxlength="18" placeholder="ex: Andrei" value="${esc(savedName)}">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn primary big block" id="pmCreate">🎯 Creează cameră cu prietenii</button>
+      <button class="btn gold-outline block" id="pmQuick">⚡ Joc rapid online</button>
+      <button class="btn block" id="pmJoin">🔑 Intră cu cod</button>
+    </div>
+  </div></div></div>`;
+  document.body.appendChild(div.firstElementChild);
+  const ov = document.getElementById("playModeOverlay");
+  const getPmName = () => {
+    const n = (document.getElementById("pmName").value||"").trim() || "Jucător";
+    localStorage.setItem(LS.name, n);
+    return n;
+  };
+  document.getElementById("pmClose").onclick = ()=>{ ov.remove(); render(); };
+  ov.onclick = (e)=>{ if (e.target === ov) { ov.remove(); render(); } };
+  document.getElementById("pmCreate").onclick = async ()=>{
+    const name = getPmName();
+    try{
+      const body = {name, avatar: getAvatar(), game: gameSel};
+      if (gameSel === "remi") body.opts = {mode: remiMode};
+      const r = await api("/api/create", body);
+      ov.remove();
+      startSession(r);
+    }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
+  };
+  document.getElementById("pmQuick").onclick = async ()=>{
+    const name = getPmName();
+    try{
+      const body = {name, avatar: getAvatar(), game: gameSel};
+      if (gameSel === "remi") body.opts = {mode: remiMode};
+      const r = await api("/api/quick", body);
+      ov.remove();
+      startSession(r);
+    }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
+  };
+  document.getElementById("pmJoin").onclick = ()=>{ getPmName(); ov.remove(); showJoinModal(); };
+}
+
+function showProfileModal(){
+  const old = document.getElementById("profOverlay");
+  if (old) old.remove();
   const savedName = localStorage.getItem(LS.name) || "";
   const av = getAvatar();
   const isCustom = av.startsWith("data:image/");
   const isApp = (location.protocol === "file:" || ANDROID);
   const srv = localStorage.getItem(LS.server) || DEFAULT_SERVER;
-  return `
-  <div class="home-wrap">
-    <div class="home">
-      <div class="brand">Remi<small>ONLINE</small></div>
-      <p class="tag">Remi Etalat & Table • jucători reali</p>
-      <div class="field">
-        <label>Numele tău (poreclă)</label>
-        <input class="inp" id="nameInput" maxlength="18" placeholder="ex: Andrei" value="${esc(savedName)}">
-      </div>
-      <div class="field">
-        <label>Avatar sau poză personală</label>
-        <div class="avpick">
-          ${AVATAR_PRESETS.map(p=>`<button type="button" class="avopt ${av===p?'on':''}" data-av="${p}" title="Avatar ${p}">${avatarHTML(p, 0, savedName||"J")}</button>`).join("")}
-          ${isCustom ? `<button type="button" class="avopt on" data-av="custom" title="Poza ta">${avatarHTML(av, 0, savedName||"J")}</button>` : ""}
-          <button type="button" class="avup" id="btnPickPhoto">📷 Poză</button>
-          <input type="file" id="avatarFile" accept="image/*" style="display:none">
-        </div>
-      </div>
-      <div class="gamepick">
-        <button class="gp ${gameSel==='remi'?'on':''}" data-game="remi">
-          <span class="ico">🃏</span><b>Remi Etalat</b><span>106 piese · 2–4 jucători</span>
-        </button>
-        <button class="gp ${gameSel==='table'?'on':''}" data-game="table">
-          <span class="ico">🎲</span><b>Table</b><span>backgammon · 2 jucători</span>
-        </button>
-      </div>
-      <button class="btn primary big block" id="btnCreate">🎯 Creează o cameră de ${gameSel==='table'?'Table':'Remi'}</button>
-      <button class="btn block" id="btnJoin">🔑 Intră cu cod</button>
-      <button class="btn gold-outline block" id="btnQuick">⚡ Joc rapid ${gameSel==='table'?'la Table':'la Remi'}</button>
-      <div class="home-links">
-        <button class="linkbtn" id="btnRules">📖 Regulile jocului</button>
-        <button class="linkbtn" id="btnLeaderboard">🏆 Clasament Top 10</button>
-      </div>
-      ${isApp ? `
-        <div class="card" style="text-align:left">
-          <h3>Server de joc</h3>
-          <div class="field">
-            <input class="inp" id="serverInput" placeholder="http://192.168.1.10:8080" value="${esc(srv)}">
-          </div>
-          <div class="rowline" style="border:0;padding-top:8px">
-            <span class="k" style="font-size:11px">Adresa serverului unde rulează jocul</span>
-            <button class="btn small" id="btnTestServer">Test</button>
-          </div>
-        </div>` : ""}
-      <div class="foot">106 piese • 2 jokeri • reguli clasice de Remi Etalat</div>
+  const div = document.createElement("div");
+  div.innerHTML = `<div class="overlay" id="profOverlay"><div class="modal-wrap"><div class="modal">
+    <button class="close-x" id="profClose">×</button>
+    <h2>👤 Profil & Setări</h2>
+    <div class="field" style="margin-bottom:10px">
+      <label>Numele tău (poreclă)</label>
+      <input class="inp" id="nameInput" maxlength="18" placeholder="ex: Andrei" value="${esc(savedName)}">
     </div>
-  </div>`;
-}
-function bindHome(){
-  const nameEl = $("#nameInput");
-  const getName = () => {
-    const n = (nameEl.value||"").trim() || "Jucător";
-    localStorage.setItem(LS.name, n);
-    return n;
-  };
-  if (nameEl){
-    nameEl.addEventListener("input", ()=>{ localStorage.setItem(LS.name, nameEl.value.trim()); });
-    nameEl.addEventListener("keydown", e=>{ if (e.key === "Enter") $("#btnCreate").click(); });
-  }
-  $$(".avopt[data-av]").forEach(el=>{
+    <div class="field" style="margin-bottom:10px">
+      <label>Avatar sau poză personală</label>
+      <div class="avpick">
+        ${AVATAR_PRESETS.map(p=>`<button type="button" class="avopt ${av===p?'on':''}" data-av="${p}" title="Avatar ${p}">${avatarHTML(p, 0, savedName||"J")}</button>`).join("")}
+        ${isCustom ? `<button type="button" class="avopt on" data-av="custom" title="Poza ta">${avatarHTML(av, 0, savedName||"J")}</button>` : ""}
+        <button type="button" class="avup" id="btnPickPhoto">📷 Poză</button>
+        <input type="file" id="avatarFile" accept="image/*" style="display:none">
+      </div>
+    </div>
+    <button class="btn block" id="profSound" style="margin-bottom:10px">${ui.sound?"🔊 Sunet: pornit":"🔇 Sunet: oprit"}</button>
+    ${isApp ? `
+      <div class="card" style="text-align:left;margin-bottom:10px">
+        <h3>Server de joc</h3>
+        <div class="field">
+          <input class="inp" id="serverInput" placeholder="https://remi-online-server.onrender.com" value="${esc(srv)}">
+        </div>
+        <div class="rowline" style="border:0;padding-top:8px">
+          <span class="k" style="font-size:11px">Adresa serverului unde rulează jocul</span>
+          <button class="btn small" id="btnTestServer">Test</button>
+        </div>
+      </div>` : ""}
+    <div class="mfoot">
+      <button class="btn primary block" id="profSave">Salvează</button>
+    </div>
+  </div></div></div>`;
+  document.body.appendChild(div.firstElementChild);
+  const ov = document.getElementById("profOverlay");
+  const nameEl = document.getElementById("nameInput");
+  if (nameEl) nameEl.addEventListener("input", ()=>{ localStorage.setItem(LS.name, nameEl.value.trim()); });
+  ov.querySelectorAll(".avopt[data-av]").forEach(el=>{
     el.onclick = ()=>{
       if (el.dataset.av !== "custom") setAvatar(el.dataset.av);
-      render();
+      ov.remove(); showProfileModal(); render();
     };
   });
-  const fileEl = $("#avatarFile");
-  const pickBtn = $("#btnPickPhoto");
+  const fileEl = document.getElementById("avatarFile");
+  const pickBtn = document.getElementById("btnPickPhoto");
   if (pickBtn && fileEl){
     pickBtn.onclick = ()=>fileEl.click();
     fileEl.onchange = async (e)=>{
@@ -1421,31 +1755,16 @@ function bindHome(){
         const dataUrl = await compressImageFile(f);
         setAvatar(dataUrl);
         toast("✅ Poza de profil a fost salvată!");
-        render();
+        ov.remove(); showProfileModal(); render();
       }catch(err){ toast(err.message || "Imagine invalidă", "err"); }
     };
   }
-  $$(".gp").forEach(el=>{
-    el.onclick = ()=>{ gameSel = el.dataset.game; localStorage.setItem("remi.game", gameSel); render(); };
-  });
-  $("#btnCreate").onclick = async ()=>{
-    const name = getName();
-    try{
-      const r = await api("/api/create", {name, avatar: getAvatar(), game: gameSel});
-      startSession(r);
-    }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
+  document.getElementById("profSound").onclick = ()=>{
+    ui.sound = !ui.sound;
+    localStorage.setItem(LS.sound, ui.sound?"1":"0");
+    document.getElementById("profSound").textContent = ui.sound?"🔊 Sunet: pornit":"🔇 Sunet: oprit";
   };
-  $("#btnJoin").onclick = ()=>showJoinModal();
-  $("#btnQuick").onclick = async ()=>{
-    const name = getName();
-    try{
-      const r = await api("/api/quick", {name, avatar: getAvatar(), game: gameSel});
-      startSession(r);
-    }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
-  };
-  $("#btnRules").onclick = ()=>showRules();
-  $("#btnLeaderboard").onclick = ()=>showLeaderboard();
-  const srvInput = $("#serverInput");
+  const srvInput = document.getElementById("serverInput");
   if (srvInput){
     srvInput.addEventListener("change", ()=>{
       let v = srvInput.value.trim().replace(/\/+$/,"");
@@ -1453,7 +1772,7 @@ function bindHome(){
       localStorage.setItem(LS.server, v);
       toast("Server salvat: " + (v||"implicit"));
     });
-    $("#btnTestServer").onclick = async ()=>{
+    document.getElementById("btnTestServer").onclick = async ()=>{
       let v = srvInput.value.trim().replace(/\/+$/,"");
       if (v && !/^https?:\/\//.test(v)) v = "http://" + v;
       try{
@@ -1464,6 +1783,59 @@ function bindHome(){
       }catch(e){ toast("❌ Nu pot contacta serverul. Verifică adresa.", "err"); }
     };
   }
+  const done = ()=>{
+    if (nameEl) localStorage.setItem(LS.name, (nameEl.value||"").trim() || "Jucător");
+    ov.remove();
+    render();
+  };
+  document.getElementById("profClose").onclick = done;
+  document.getElementById("profSave").onclick = done;
+  ov.onclick = (e)=>{ if (e.target === ov) done(); };
+}
+
+function bindHome(){
+  const getName = () => {
+    const n = (localStorage.getItem(LS.name)||"").trim() || "Jucător";
+    localStorage.setItem(LS.name, n);
+    return n;
+  };
+  $$("[data-game]").forEach(el=>{
+    el.onclick = ()=>{
+      gameSel = el.dataset.game;
+      localStorage.setItem("remi.game", gameSel);
+      if (el.dataset.mode){
+        remiMode = el.dataset.mode;
+        localStorage.setItem("remi.mode", remiMode);
+      }
+      render();
+      showPlayModeModal();
+    };
+  });
+  $("#btnProfile").onclick = ()=>showProfileModal();
+  $("#btnSettings").onclick = ()=>showProfileModal();
+  $("#btnCreate").onclick = async ()=>{
+    const name = getName();
+    try{
+      const body = {name, avatar: getAvatar(), game: gameSel};
+      if (gameSel === "remi") body.opts = {mode: remiMode};
+      const r = await api("/api/create", body);
+      startSession(r);
+    }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
+  };
+  $("#btnJoin").onclick = ()=>showJoinModal();
+  $("#btnJoinTop").onclick = ()=>showJoinModal();
+  $("#btnQuick").onclick = async ()=>{
+    const name = getName();
+    try{
+      const body = {name, avatar: getAvatar(), game: gameSel};
+      if (gameSel === "remi") body.opts = {mode: remiMode};
+      const r = await api("/api/quick", body);
+      startSession(r);
+    }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
+  };
+  $("#btnRules").onclick = ()=>showRules();
+  $("#btnLeaderboard").onclick = ()=>showLeaderboard();
+  $("#btnLeaderboardTop").onclick = ()=>showLeaderboard();
 }
 function showJoinModal(){
   const existing = document.getElementById("joinOverlay");
@@ -1661,27 +2033,53 @@ function renderGame(){
     rightPlayers = [others[2], meP].filter(Boolean);
   }
 
+  const isTabla = (S.opts && S.opts.mode === "tabla");
   // Calcule pentru butoanele stânga / dreapta ale suportului de lemn
   const selArr = [...sel];
-  let canMeldBtn = false, meldLabel = "Etalează", canTargetBtn = false, canDiscardBtn = false, isCloseBtn = false;
-  if (S.phase === "playing" && myTurn && me.drew && sel.size > 0){
-    const groups = partitionGroups(selArr);
-    const info = groups ? groupsPoints(groups) : null;
-    const valid = !!(groups && info && info.ok);
-    if (me.canMeld && valid && (me.firstMeld || (info.pts >= 45 && info.hasSeq))){
-      canMeldBtn = true;
-      meldLabel = `Etalează ${info.pts}p`;
-    } else if (sel.size === 1 && me.canMeld && me.firstMeld){
-      const canAdd = (S.groups||[]).some(g=>canAddToGroup(g.tiles.map(x=>x.t), selArr[0], g.type));
-      const canSwap = (S.groups||[]).some(g=>canSwapJoker(g.tiles.map(x=>x.t), selArr[0]));
-      if (canAdd || canSwap){
-        canTargetBtn = true;
-        meldLabel = "Lipește";
+  let canMeldBtn = false, meldLabel = isTabla ? "Închide" : "Etalează", canTargetBtn = false, canDiscardBtn = false, isCloseBtn = false, canCloseTablaBtn = false;
+  if (S.phase === "playing" && myTurn && me.drew){
+    if (isTabla){
+      if (sel.size === 1){
+        const chosen = selArr[0];
+        const cantThrowSame = (me.drawnFrom === "discard" && me.takenDiscardTile === chosen);
+        if (!cantThrowSame){
+          canDiscardBtn = true;
+          const rem14 = (me.hand || []).filter(t => t !== chosen);
+          if (rem14.length === 14 && findCompletePartition14(rem14)){
+            canCloseTablaBtn = true;
+            meldLabel = "Închide!";
+          }
+        }
+      } else if (sel.size === 0 && (me.hand || []).length === 15){
+        // Daca exista cel putin o piesa de aruncat cu care celelalte 14 inchid, luminam butonul
+        const anyCloser = (me.hand || []).find(t => {
+          if (me.drawnFrom === "discard" && me.takenDiscardTile === t) return false;
+          return !!findCompletePartition14((me.hand || []).filter(x => x !== t));
+        });
+        if (anyCloser !== undefined){
+          canCloseTablaBtn = true;
+          meldLabel = "Închide!";
+        }
       }
-    }
-    if (sel.size === 1){
-      canDiscardBtn = true;
-      isCloseBtn = !!me.canClose;
+    } else if (sel.size > 0){
+      const groups = partitionGroups(selArr);
+      const info = groups ? groupsPoints(groups) : null;
+      const valid = !!(groups && info && info.ok);
+      if (me.canMeld && valid && (me.firstMeld || (info.pts >= 45 && info.hasSeq))){
+        canMeldBtn = true;
+        meldLabel = `Etalează ${info.pts}p`;
+      } else if (sel.size === 1 && me.canMeld && me.firstMeld){
+        const canAdd = (S.groups||[]).some(g=>canAddToGroup(g.tiles.map(x=>x.t), selArr[0], g.type));
+        const canSwap = (S.groups||[]).some(g=>canSwapJoker(g.tiles.map(x=>x.t), selArr[0]));
+        if (canAdd || canSwap){
+          canTargetBtn = true;
+          meldLabel = "Lipește";
+        }
+      }
+      if (sel.size === 1){
+        canDiscardBtn = true;
+        isCloseBtn = !!me.canClose;
+      }
     }
   }
 
@@ -1698,7 +2096,7 @@ function renderGame(){
 
   return `<div class="screen rgame">
     <div class="rg-head">
-      <span class="rg-title">RUNDA ${S.round} · 🎯 ${S.opts.target ? S.opts.target + "p" : "1 rundă"} · MASA ${esc(S.code)}</span>
+      <span class="rg-title">${isTabla?"REMI PE TABLĂ":"REMI ETALAT"} · RUNDA ${S.round} · 🎯 ${S.opts.target ? S.opts.target + "p" : "1 rundă"} · MASA ${esc(S.code)}</span>
       ${S.phase==="playing" ? (myTurn
         ? `<span class="turnbanner">Rândul tău · <span id="turnCounter">${S.turnLeft}</span>s</span>`
         : `<span class="turnbanner wait">Rândul: ${esc((playerById(S.turnPid)||{}).name||"")} · ${S.turnLeft}s</span>`) : ""}
@@ -1713,12 +2111,14 @@ function renderGame(){
         <div class="rg-groups" id="groupsArea">
           ${S.groups.length ? S.groups.map(g=>{
             const owner = playerById(g.owner)||{name:"?"};
-            const targetable = (ui.targetMode && sel.size === 1) ? canAddToGroup(g.tiles.map(x=>x.t), [...sel][0], g.type) : false;
+            const targetable = (!isTabla && ui.targetMode && sel.size === 1) ? canAddToGroup(g.tiles.map(x=>x.t), [...sel][0], g.type) : false;
             return `<div class="rg-grp ${g.mine?"mine":""} ${targetable?"target":""}" ${targetable?`data-target-group="${g.id}"`:""}>
               <div class="gtiles">${g.tiles.map(x=>tileHTML(x.t,{size:"sm", eff:x.eff})).join("")}</div>
               <div class="meta"><span>${esc(owner.name)}</span><span class="pts">${g.points}p</span></div>
             </div>`;
-          }).join("") : `<div class="empty-table" style="color:rgba(233,213,255,.45)">Masa este goală — primul care se etalează cu 45 de puncte deschide jocul.</div>`}
+          }).join("") : `<div class="empty-table" style="color:rgba(233,213,255,.5)">${isTabla
+            ? "Remi pe tablă — formează suite și terțe pe suportul tău; când toate cele 14 piese rămase sunt legate, selectează piesa de aruncat și apasă Închide."
+            : "Masa este goală — primul care se etalează cu 45 de puncte deschide jocul."}</div>`}
         </div>
         <div class="logline" style="color:rgba(233,213,255,.55)">${esc((S.log[S.log.length-1]||{}).x || "")}</div>
       </div>
@@ -1732,10 +2132,15 @@ function renderGame(){
       <div class="actionbar" id="actionBar">${actionButtons(me)}</div>
     ` : `
       <div class="rg-rackwrap">
-        <button class="rg-sidebtn meld ${(canMeldBtn||canTargetBtn)?"hot":""}" id="${canTargetBtn?"btnTarget":"btnMeld"}" ${(canMeldBtn||canTargetBtn)?"":"disabled"} title="Etalează sau lipește">
-          <div>★+</div>
-          <span>${meldLabel}</span>
-        </button>
+        ${isTabla
+          ? `<button class="rg-sidebtn meld ${canCloseTablaBtn?"hot":""}" id="btnCloseTabla" ${canCloseTablaBtn?"":"disabled"} title="Închide runda când celelalte 14 piese sunt în formații valide">
+               <div>🏁</div>
+               <span>${meldLabel}</span>
+             </button>`
+          : `<button class="rg-sidebtn meld ${(canMeldBtn||canTargetBtn)?"hot":""}" id="${canTargetBtn?"btnTarget":"btnMeld"}" ${(canMeldBtn||canTargetBtn)?"":"disabled"} title="Etalează sau lipește">
+               <div>★+</div>
+               <span>${meldLabel}</span>
+             </button>`}
 
         <div class="rg-rack">
           <div class="rg-racktop">
@@ -1802,13 +2207,42 @@ function renderGame(){
 function handHint(me){
   if (S.phase !== "playing") return "";
   if (!S.me) return "";
+  const isTabla = (S.opts && S.opts.mode === "tabla");
   const n = (me.hand||[]).length;
   if (!me.isTurn){
-    return `<span>${n} piese în mână</span>`;
+    return `<span>${n} piese pe suport</span>`;
   }
-  if (!me.drew && me.canDraw) return `<span>👉 Apasă oriunde pe masă pentru a trage o piesă</span>`;
+  if (!me.drew && me.canDraw){
+    return isTabla
+      ? `<span>👉 Trage o piesă din grămadă (+) sau ia ultima piesă aruncată (←)</span>`
+      : `<span>👉 Apasă pe + sau pe piesa de jos pentru a trage o piesă</span>`;
+  }
+  if (isTabla){
+    if (sel.size === 1){
+      const chosen = [...sel][0];
+      if (me.drawnFrom === "discard" && me.takenDiscardTile === chosen){
+        return `<span>⚠️ Nu poți arunca imediat aceeași piesă luată de jos</span>`;
+      }
+      const rem14 = (me.hand||[]).filter(t=>t!==chosen);
+      if (rem14.length === 14 && findCompletePartition14(rem14)){
+        return `<span class="pts">✨ Celelalte 14 piese formează doar suite și terțe! Apasă 🏁 Închide!</span>`;
+      }
+      return `<span>Apasă „Aruncă” pentru a pune piesa jos (sau mută pe suport)</span>`;
+    }
+    if (sel.size === 0 && (me.hand||[]).length === 15){
+      const closers = (me.hand||[]).filter(t=>{
+        if (me.drawnFrom === "discard" && me.takenDiscardTile === t) return false;
+        return !!findCompletePartition14((me.hand||[]).filter(x=>x!==t));
+      });
+      if (closers.length){
+        return `<span class="pts">✨ Poți închide acum! Selectează piesa de aruncat (${closers.map(tileLabel).slice(0,3).join(", ")}) și apasă 🏁 Închide</span>`;
+      }
+      return `<span>Aranjează cele 14 piese pe suport · selectează 1 piesă ca să o arunci</span>`;
+    }
+    return `<span>${sel.size} piese selectate · selectează 1 singură piesă pentru a arunca sau închide</span>`;
+  }
   const canMeldNow = !!(me.canMeld);
-  if (sel.size === 0) return `<span>${canMeldNow ? "Selectează piese pentru a etala / lipi" : "Apasă de două ori pe o piesă ca să o arunci"}</span>`;
+  if (sel.size === 0) return `<span>${canMeldNow ? "Selectează piese pentru a etala / lipi" : "Selectează o piesă și apasă Aruncă"}</span>`;
   const groups = partitionGroups([...sel]);
   if (!groups){
     return `<span>${sel.size} piese selectate · formație incompletă</span>`;
@@ -1957,6 +2391,23 @@ function bindGame(){
     const isClose = S.me && S.me.canClose;
     if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
     act({type:"discard", tile:t}, "discard");
+  });
+  b("#btnCloseTabla", ()=>{
+    if (!S.me) return;
+    const hand = S.me.hand || [];
+    let chosen = sel.size === 1 ? [...sel][0] : undefined;
+    if (chosen === undefined){
+      chosen = hand.find(t=>{
+        if (S.me.drawnFrom === "discard" && S.me.takenDiscardTile === t) return false;
+        return !!findCompletePartition14(hand.filter(x=>x!==t));
+      });
+    }
+    if (chosen === undefined){
+      toast("Selectează piesa pe care o arunci (celelalte 14 trebuie să fie în formații valide).", "err");
+      return;
+    }
+    if (!confirm(`Închizi runda aruncând ${tileLabel(chosen)}?`)) return;
+    act({type:"close_tabla", tile:chosen}, "meld");
   });
   b("#btnTarget", ()=>{
     ui.targetMode = true;
@@ -2626,7 +3077,7 @@ function renderLobby(){
           </div>
         </div>
         <div class="card">
-          <h3>${isTable?"🎲 Table":"🃏 Remi Etalat"} · jucători (${S.players.length}/${maxPl})</h3>
+          <h3>${isTable?"🎲 Table":(S.opts.mode==="tabla"?"🪵 Remi pe Tablă":"🃏 Remi Etalat")} · jucători (${S.players.length}/${maxPl})</h3>
           <div class="plist" id="plist">
             ${S.players.map((p,idx)=>`<div class="pitem">
               <div class="av">${avatarHTML(p.avatar, p.seat??idx, p.name)}</div>
@@ -2641,6 +3092,11 @@ function renderLobby(){
         </div>
         ${isHost ? `<div class="card">
           <h3>Setări masă</h3>
+          ${isTable ? `` : `<div class="settings-row"><label>Mod Remi</label>
+            <select class="inp" id="optMode">
+              <option value="etalat" ${S.opts.mode!=="tabla"?"selected":""}>🃏 Remi Etalat (pe masă · 45p)</option>
+              <option value="tabla" ${S.opts.mode==="tabla"?"selected":""}>🪵 Remi pe Tablă (pe suport · 14 piese)</option>
+            </select></div>`}
           ${isTable ? `` : `<div class="settings-row"><label>Număr maxim de jucători</label>
             <select class="inp" id="optPlayers">
               ${[2,3,4].map(n=>`<option value="${n}" ${S.opts.max_players===n?"selected":""}>${n} jucători</option>`).join("")}
@@ -2705,13 +3161,14 @@ function renderMenu(){
 function scoreRows(){
   const rs = S.roundScores;
   if (!rs) return "";
+  const isTabla = (rs.mode === "tabla") || (S.opts && S.opts.mode === "tabla");
   const rows = rs.results.map(r=>{
     const p = playerById(r.pid) || {name:r.name, score:0};
     const total = p.score;
     return `<tr class="${r.pid===rs.closer?"winner":""}">
       <td>${esc(r.name)} ${r.pid===rs.closer?"🏁":""}</td>
       <td>${r.meld_ed? r.melded : "—"}</td>
-      <td>${r.meld_ed? "−"+r.rack : "—"}</td>
+      <td>${r.meld_ed? (r.rack ? "−"+r.rack : "0") : (isTabla ? "−100" : "—")}</td>
       <td>${r.atu? "+"+r.atu : "—"}</td>
       <td>${r.close? "+"+r.close : "—"}</td>
       <td class="${r.total>=0?"pos":"neg"}">${r.total>=0?"+":""}${r.total}</td>
@@ -2719,7 +3176,7 @@ function scoreRows(){
     </tr>`;
   }).join("");
   return `<table class="result-table">
-    <thead><tr><th>Jucător</th><th>Etalat</th><th>Tabla</th><th>Atu</th><th>Închidere</th><th>Runda</th><th>Total</th></tr></thead>
+    <thead><tr><th>Jucător</th><th>${isTabla?"Formații":"Etalat"}</th><th>${isTabla?"Nelegate":"Tabla"}</th><th>Atu</th><th>Închidere</th><th>Runda</th><th>Total</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
 }
@@ -2757,7 +3214,8 @@ function tileLabel(id){
 }
 
 function showRules(tab){
-  const active = tab || (S && S.game === "table" ? "table" : "remi");
+  const defRemi = (S && S.game === "remi" && S.opts && S.opts.mode === "tabla") ? "tabla" : "remi";
+  const active = tab || (S && S.game === "table" ? "table" : defRemi);
   const TABLE_RULES_HTML = `
     <h2>📖 Regulile jocului — Table (backgammon)</h2>
     <p class="tag">15 piese · 2 jucători · zaruri · meci în puncte</p>
@@ -2793,17 +3251,28 @@ function showRules(tab){
       <li>Pentru a scoate o piesă, atinge piesa și apoi zona <b>„scoase”</b> a ta, evidențiată cu verde.</li>
     </ul>`;
 
-  const html = `<div class="overlay" id="rulesOverlay"><div class="modal-wrap"><div class="modal">
-    <button class="close-x" onclick="document.getElementById('rulesOverlay').remove()">×</button>
-    <div class="gamepick" style="margin-bottom:10px">
-      <button class="gp ${active==='remi'?'on':''}" onclick="document.getElementById('rulesOverlay').remove(); showRules('remi')">
-        <span class="ico">🃏</span><b>Remi Etalat</b>
-      </button>
-      <button class="gp ${active==='table'?'on':''}" onclick="document.getElementById('rulesOverlay').remove(); showRules('table')">
-        <span class="ico">🎲</span><b>Table</b>
-      </button>
-    </div>
-    ${active === 'table' ? TABLE_RULES_HTML : `<h2>📖 Regulile jocului — Remi Etalat</h2>`}
+  const REMI_TABLA_HTML = `
+    <h2>📖 Regulile jocului — Remi pe Tablă</h2>
+    <p class="tag">106 piese · 2 jokeri · formații pe suport · 2–4 jucători</p>
+    <h3>Diferența față de Remi Etalat</h3>
+    <ul>
+      <li>În <b>Remi pe Tablă</b> nu se pun formații pe masă în timpul jocului — îți aranjezi piesele <b>în secret pe suportul tău</b> (folosind cele două rânduri și butoanele <b>777</b> / <b>123</b>).</li>
+      <li>La rândul tău poți trage o piesă din grămadă (<b>+</b>) sau poți lua <b>ultima piesă aruncată</b> (<b>←</b>) oricând, dar nu o poți arunca înapoi imediat în aceeași tură.</li>
+    </ul>
+    <h3>Cum închizi runda</h3>
+    <ul>
+      <li>Când ai <b>15 piese</b> pe suport (după ce ai tras) și <b>14 dintre ele</b> sunt grupate complet în suite și terțe valide, selectezi ultima piesă de aruncat și apeși <b>🏁 Închide</b>.</li>
+      <li>Toate formațiile câștigătorului se afișează pe masă la finalul rundei.</li>
+    </ul>
+    <h3>Punctaj</h3>
+    <ul>
+      <li>Cine închide runda primește <b>+250 puncte</b> (sau <b>+500 puncte</b> dacă închide cu un Joker!).</li>
+      <li>Cine are <b>Atu</b> anunțat în prima tură primește <b>+50 puncte</b>.</li>
+      <li>Ceilalți jucători pierd valoarea pieselor nelegate în formații (sau <b>−100 puncte</b> dacă nu au nicio formație validă).</li>
+    </ul>`;
+
+  const REMI_ETALAT_HTML = `
+    <h2>📖 Regulile jocului — Remi Etalat</h2>
     <p class="tag">Rummy 45 · 106 piese · 2 jokeri · 2–4 jucători</p>
     <h3>Piesele și valorile</h3>
     <ul>
@@ -2832,14 +3301,24 @@ function showRules(tab){
       <li>Cine închide primește <b>+50</b> (sau <b>+100</b> dacă închide aruncând un joker).</li>
       <li>Cine a anunțat <b>atu</b> (are perechea piesei întoarse) primește <b>+50</b>.</li>
       <li>Cine nu s-a etalat până la finalul rundei: <b>−100</b> puncte.</li>
-      <li>Jocul se termină la scorul țintă al mesei (implicit 500) sau după runda aleasă.</li>
-    </ul>
-    <h3>Sfaturi</h3>
-    <ul>
-      <li>Nu te grăbi să te etalezi: pierzi flexibilitatea.</li>
-      <li>Păstrează jokerii pentru momentele importante — valorează 50 de puncte fiecare.</li>
-      <li>Dacă ai piesa identică cu atuul, anunță-o: +50 puncte la final.</li>
-    </ul>
+    </ul>`;
+
+  const bodyHtml = active === "table" ? TABLE_RULES_HTML : (active === "tabla" ? REMI_TABLA_HTML : REMI_ETALAT_HTML);
+
+  const html = `<div class="overlay" id="rulesOverlay"><div class="modal-wrap"><div class="modal">
+    <button class="close-x" onclick="document.getElementById('rulesOverlay').remove()">×</button>
+    <div class="gamepick tri" style="margin-bottom:10px">
+      <button class="gp ${active==='remi'?'on':''}" onclick="document.getElementById('rulesOverlay').remove(); showRules('remi')">
+        <span class="ico">🃏</span><b>Remi Etalat</b>
+      </button>
+      <button class="gp ${active==='tabla'?'on':''}" onclick="document.getElementById('rulesOverlay').remove(); showRules('tabla')">
+        <span class="ico">🪵</span><b>Remi pe Tablă</b>
+      </button>
+      <button class="gp ${active==='table'?'on':''}" onclick="document.getElementById('rulesOverlay').remove(); showRules('table')">
+        <span class="ico">🎲</span><b>Table</b>
+      </button>
+    </div>
+    ${bodyHtml}
     <div class="mfoot"><button class="btn primary" onclick="document.getElementById('rulesOverlay').remove()">Am înțeles</button></div>
   </div></div></div>`;
 
@@ -2973,6 +3452,7 @@ render = function(){
         api("/api/action", {...sessBody(), action:{type:"update_opts", opts:{[key]: cast(el.value)}}}).catch(()=>{});
       };
     };
+    upd("#optMode", "mode", String);
     upd("#optPlayers", "max_players");
     upd("#optTime", "turn_seconds");
     upd("#optTarget", "target");
