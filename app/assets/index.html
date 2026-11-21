@@ -312,52 +312,69 @@
   .gp.on b{color:var(--gold);}
 
   /* ---------- TABLE (backgammon) ---------- */
-  /* ---------- TABLE (backgammon luxury wood — compact proportion + left VS sidebar) ---------- */
-  .tgame{flex:1;display:flex;flex-direction:row;align-items:stretch;min-height:0;gap:10px;padding:8px 10px;
-    background:radial-gradient(110% 90% at 55% 50%, #2a160c 0%, #140905 70%, #070403 100%);
-    color:#f7efe1;}
+  /* ---------- TABLE (backgammon luxury wood — top HUD + wide board + quick dialog) ---------- */
+  .tgame{flex:1;display:flex;flex-direction:column;align-items:stretch;min-height:0;gap:6px;padding:6px 12px 8px;
+    background:radial-gradient(110% 90% at 50% 45%, #1d3257 0%, #0d192c 65%, #070e1a 100%);
+    color:#f7efe1;position:relative;}
 
-  /* Left Player + VS Sidebar (inspired by user's Model interfata Table) */
-  .tsidebar{width:158px;flex:none;display:flex;flex-direction:column;justify-content:space-between;
-    align-items:center;padding:10px 8px;border-radius:14px;
-    background:linear-gradient(180deg, rgba(10,7,9,.92), rgba(22,12,10,.94), rgba(10,7,9,.92));
-    border:1.5px solid rgba(212,175,55,.28);box-shadow:0 8px 26px rgba(0,0,0,.6);}
-  .tpbox{width:100%;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 6px;border-radius:12px;
-    border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);transition:.2s;}
-  .tpbox.turn{border-color:#fde047;background:rgba(250,204,21,.10);
-    box-shadow:0 0 18px rgba(250,204,21,.28), inset 0 0 12px rgba(250,204,21,.08);}
-  .tpbox-name{font-size:14px;font-weight:900;color:#fff7e8;text-align:center;max-width:100%;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .tpbox.turn .tpbox-name{color:#fde68a;}
-  .tpav-lg{width:76px;height:76px;border-radius:50%;padding:3px;position:relative;flex:none;
-    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.65);}
-  .tpav-lg.w{background:linear-gradient(135deg,#93c5fd,#2563eb);}
-  .tpav-lg.b{background:linear-gradient(135deg,#fca5a5,#dc2626);}
-  .tpbox.turn .tpav-lg{box-shadow:0 0 22px rgba(250,204,21,.75);}
+  /* Top Player HUD Bar (inspired by Interfata.jpg) */
+  .ttopbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;
+    padding:4px 8px;border-radius:14px;
+    background:linear-gradient(180deg, rgba(8,15,28,.88), rgba(14,25,45,.82));
+    border:1px solid rgba(147,197,253,.18);box-shadow:0 6px 18px rgba(0,0,0,.45);position:relative;z-index:20;}
+  .thud{display:flex;align-items:center;gap:9px;min-width:0;flex:1;position:relative;
+    padding:3px 6px;border-radius:12px;border:1.5px solid transparent;transition:.2s;}
+  .thud.right{justify-content:flex-end;text-align:right;}
+  .thud.turn{border-color:rgba(250,204,21,.65);background:rgba(250,204,21,.08);
+    box-shadow:0 0 16px rgba(250,204,21,.22);}
+  .tpav-lg{width:48px;height:48px;border-radius:50%;padding:2.5px;position:relative;flex:none;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.6);}
+  .tpav-lg.w{background:linear-gradient(135deg,#60a5fa,#1d4ed8);}
+  .tpav-lg.b{background:linear-gradient(135deg,#f87171,#b91c1c);}
+  .thud.turn .tpav-lg{box-shadow:0 0 18px rgba(250,204,21,.75);}
   .tpav-inner{width:100%;height:100%;border-radius:50%;overflow:hidden;
     background:radial-gradient(circle at 35% 28%,#2b2936,#0c0b10);display:flex;align-items:center;justify-content:center;}
   .tpav-inner svg,.tpav-inner img{width:100%;height:100%;object-fit:cover;display:block;}
-  .tpav-lg .pdot{position:absolute;bottom:1px;right:1px;width:18px;height:18px;border-radius:50%;
-    border:2px solid #120906;}
+  .tpav-lg .pdot{position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-radius:50%;
+    border:2px solid #0d192c;}
   .tpav-lg .pdot.w{background:radial-gradient(circle at 35% 30%,#fffdf5,#d8ccb0);}
   .tpav-lg .pdot.b{background:radial-gradient(circle at 35% 30%,#525560,#111216);}
-  .tpstats{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;}
-  .tppill{font-size:11px;font-weight:900;color:#fde68a;background:rgba(0,0,0,.5);
-    border:1px solid rgba(240,199,94,.28);border-radius:99px;padding:2px 8px;}
+  .thud-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .tpbox-name{font-size:14px;font-weight:900;color:#f8fafc;max-width:170px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .thud.turn .tpbox-name{color:#fde68a;}
+  .tpstats{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;}
+  .thud.right .tpstats{justify-content:flex-end;}
+  .tppill{font-size:11px;font-weight:900;color:#fde68a;background:rgba(0,0,0,.48);
+    border:1px solid rgba(240,199,94,.3);border-radius:99px;padding:1px 7px;white-space:nowrap;}
+  .tpip-num{font-size:12px;font-weight:900;color:#93c5fd;white-space:nowrap;}
+  .thud.right .tpip-num{color:#fca5a5;}
+  .tpipbar{width:68px;height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;flex:none;}
+  .tpipbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#3b82f6,#60a5fa);transition:width .3s;}
+  .thud.right .tpipbar i{background:linear-gradient(90deg,#ef4444,#f87171);}
 
-  .tvs-center{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:4px 0;}
-  .tvs-v,.tvs-s{font-size:34px;font-weight:900;line-height:.92;letter-spacing:-1px;
-    filter:drop-shadow(0 3px 10px rgba(0,0,0,.7));}
-  .tvs-v{background:linear-gradient(180deg,#fca5a5,#dc2626 65%,#7f1d1d);-webkit-background-clip:text;color:transparent;}
-  .tvs-s{background:linear-gradient(180deg,#fef3c7,#eab308 65%,#92400e);-webkit-background-clip:text;color:transparent;}
-  .tscorepill{font-size:11px;font-weight:900;color:#fde68a;background:linear-gradient(180deg,#442212,#291208);
-    border:1px solid rgba(240,199,94,.4);border-radius:99px;padding:3px 9px;margin-top:4px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 0 2px 6px rgba(0,0,0,.5);}
-  .tturnsub{font-size:11px;font-weight:800;color:#e7d7bf;line-height:1.25;max-width:140px;}
+  .tcenterpill{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 14px;border-radius:99px;
+    background:linear-gradient(180deg,#1b2b49,#0f1a2e);border:1px solid rgba(250,204,21,.35);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 4px 12px rgba(0,0,0,.45);flex:none;}
+  .tscorepill{font-size:12px;font-weight:900;color:#fde68a;white-space:nowrap;}
+  .tturnsub{font-size:10.5px;font-weight:800;color:#cbd5e1;white-space:nowrap;}
   .tturnsub b{color:#fde68a;}
 
-  .twrap{flex:1;min-width:0;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:10px;}
-  .tboard-outer{flex:1;max-width:min(1320px, 148vh);min-width:0;min-height:0;display:flex;align-items:stretch;
+  /* Live speech bubbles on player avatars */
+  .tbubble{position:absolute;top:calc(100% + 6px);z-index:45;max-width:210px;padding:7px 12px;
+    border-radius:14px;background:linear-gradient(180deg,#ffffff,#e2e8f0);color:#0f172a;
+    font-size:13px;font-weight:900;box-shadow:0 8px 22px rgba(0,0,0,.55);border:2px solid #facc15;
+    animation:tbPop .2s ease-out;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tbubble.left{left:12px;}
+  .tbubble.right{right:12px;}
+  .tbubble:before{content:"";position:absolute;top:-8px;width:12px;height:12px;background:#fff;
+    border-left:2px solid #facc15;border-top:2px solid #facc15;transform:rotate(45deg);}
+  .tbubble.left:before{left:16px;}
+  .tbubble.right:before{right:16px;}
+  @keyframes tbPop{0%{transform:translateY(-4px) scale(.85);opacity:0;}100%{transform:translateY(0) scale(1);opacity:1;}}
+
+  .twrap{flex:1;min-width:0;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:10px;position:relative;}
+  .tboard-outer{flex:1;max-width:min(1440px, 165vh);min-width:0;min-height:0;display:flex;align-items:stretch;
     border-radius:14px;padding:8px;position:relative;
     background:
       repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 3px, rgba(0,0,0,.04) 3px 7px),
@@ -489,17 +506,41 @@
   .off-edge.b{background:linear-gradient(90deg,#15161b,#4b4e5a 45%,#101116);border:1px solid #050507;
     box-shadow:0 1px 2px rgba(0,0,0,.7);}
 
-  /* Right vertical dock (landscape) / bottom bar (portrait) */
-  .tdock{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;width:54px;flex:none;}
-  .tdockbtn{width:48px;height:48px;border-radius:14px;border:1.5px solid rgba(240,199,94,.32);
-    background:linear-gradient(180deg,#442111,#251007);color:#f7efe1;font-size:18px;
+  /* Right vertical dock (round dark buttons like Interfata.jpg) */
+  .tdock{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 0;width:54px;flex:none;}
+  .tdock-grp{display:flex;flex-direction:column;align-items:center;gap:9px;}
+  .tdockbtn{width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(147,197,253,.28);
+    background:linear-gradient(180deg,#1e293b,#0f172a);color:#f8fafc;font-size:19px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,220,160,.16);transition:.15s;}
-  .tdockbtn span{font-size:8.5px;font-weight:800;margin-top:1px;color:#e7d7bf;}
+    box-shadow:0 4px 12px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.15);transition:.15s;}
+  .tdockbtn span{display:none;}
+  .tdockbtn:hover{transform:scale(1.06);border-color:#93c5fd;}
   .tdockbtn.cta{border-color:#fde68a;background:linear-gradient(180deg,#d97706,#92400e);
-    box-shadow:0 0 16px rgba(245,158,11,.55);}
-  .tdockbtn.danger{border-color:rgba(248,113,113,.45);background:linear-gradient(180deg,#7f1d1d,#450a0a);}
-  .tdockbtn:disabled{opacity:.38;cursor:default;}
+    box-shadow:0 0 16px rgba(245,158,11,.6);}
+  .tdockbtn.danger{border-color:rgba(248,113,113,.65);background:linear-gradient(180deg,#dc2626,#7f1d1d);}
+  .tdockbtn:disabled{opacity:.38;cursor:default;transform:none;}
+
+  /* Floating Quick Dialog & Emoji Popup (inspired by Dialog intre jucatori.jpg) */
+  .qdialog{position:absolute;right:64px;top:6px;z-index:70;
+    width:190px;padding:10px 8px;border-radius:26px;
+    background:linear-gradient(180deg, rgba(36,41,51,.98), rgba(18,21,28,.99));
+    border:1.5px solid rgba(255,255,255,.22);
+    box-shadow:0 18px 46px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.2);
+    display:flex;flex-direction:column;gap:4px;animation:qdIn .12s ease-out;}
+  @keyframes qdIn{from{transform:scale(.94);}to{transform:scale(1);}}
+  .qd-phrase{padding:7px 8px;border-radius:10px;font-size:14px;font-weight:900;color:#fff;text-align:center;
+    border-bottom:1px solid rgba(56,189,248,.22);transition:.12s;}
+  .qd-phrase:hover,.qd-phrase:active{background:rgba(59,130,246,.22);color:#fde68a;}
+  .qd-emojis{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px 4px 4px;}
+  .qd-emo{height:40px;border-radius:12px;font-size:24px;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:.12s;}
+  .qd-emo:hover,.qd-emo:active{transform:scale(1.1);background:rgba(250,204,21,.16);border-color:rgba(250,204,21,.45);}
+  .qd-foot{display:flex;align-items:center;justify-content:center;gap:8px;padding-top:6px;margin-top:2px;
+    border-top:1px solid rgba(255,255,255,.1);}
+  .qd-footbtn{height:34px;padding:0 12px;border-radius:99px;font-size:12px;font-weight:800;
+    background:rgba(255,255,255,.09);color:#e2e8f0;border:1px solid rgba(255,255,255,.16);
+    display:inline-flex;align-items:center;gap:4px;}
+  .qd-footbtn.muted{background:rgba(239,68,68,.2);border-color:rgba(248,113,113,.55);color:#fca5a5;}
 
   /* VS Intro overlay */
   .vs-overlay{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;align-items:center;
@@ -533,16 +574,15 @@
   /* Portrait phone layout */
   @media (max-width:719px){
     .tgame{flex-direction:column;padding:5px 6px;gap:5px;}
-    .tsidebar{width:auto;flex-direction:row;padding:5px 6px;gap:6px;}
-    .tpbox{flex:1;min-width:0;flex-direction:row;padding:4px 6px;gap:6px;}
-    .tpav-lg{width:34px;height:34px;padding:2px;}
+    .ttopbar{padding:4px 5px;gap:4px;}
+    .thud{gap:5px;padding:2px 3px;}
+    .tpav-lg{width:32px;height:32px;padding:2px;}
     .tpav-lg .pdot{width:10px;height:10px;}
-    .tpbox-name{font-size:11px;text-align:left;}
-    .tpstats{justify-content:flex-start;}
+    .tpbox-name{font-size:11px;max-width:85px;}
     .tppill{font-size:9px;padding:1px 5px;}
-    .tvs-center{padding:0 2px;min-width:68px;}
-    .tvs-v,.tvs-s{display:none;}
-    .tscorepill{font-size:9.5px;padding:2px 6px;margin-top:0;}
+    .tpipbar{display:none;}
+    .tcenterpill{padding:3px 7px;}
+    .tscorepill{font-size:9.5px;}
     .tturnsub{font-size:9px;}
     .twrap{flex-direction:column;gap:5px;}
     .tboard-outer{padding:5px;}
@@ -556,8 +596,10 @@
     .point .stack.dense .chk + .chk{margin-top:-28%;}
     .point.bottom .stack.dense .chk + .chk{margin-top:0;margin-bottom:-28%;}
     .die{width:32px;height:32px;padding:4px;border-radius:8px;}
-    .tdock{flex-direction:row;width:auto;height:auto;justify-content:center;gap:8px;padding-bottom:2px;}
-    .tdockbtn{flex:1;height:40px;max-width:74px;}
+    .tdock{flex-direction:row;width:auto;height:auto;justify-content:center;gap:10px;padding:2px 0;}
+    .tdock-grp{flex-direction:row;gap:10px;}
+    .tdockbtn{width:42px;height:42px;}
+    .qdialog{right:10px;bottom:58px;top:auto;transform:none;}
   }
 
   @media (min-width:700px){
@@ -869,7 +911,7 @@ let ui = {
   targetMode: false,
   chatOpen: false,
   menuOpen: false,
-  lastChatCount: 0,
+  lastChatCount: -1,
   connected: false,
   lastV: -1,
   pollAbort: null,
@@ -1064,8 +1106,25 @@ function onNewState(){
   // raspunde la start
   if (pendingStart){ pendingStart = false; }
   // chat nou
-  if (S.chat.length > ui.lastChatCount && ui.lastChatCount > 0 && !ui.chatOpen){
-    toast("💬 " + S.chat[S.chat.length-1].name + ": " + S.chat[S.chat.length-1].text);
+  if (ui.lastChatCount >= 0 && S.chat.length > ui.lastChatCount && !ui.chatOpen){
+    const lastM = S.chat[S.chat.length - 1];
+    if (S.game === "table"){
+      if (!tDialogMuted){
+        const sender = (S.players||[]).find(p=>p.id===lastM.pid);
+        if (sender){
+          tBubbles[sender.seat] = {text: lastM.text, until: Date.now() + 4200};
+          sfx.draw();
+          setTimeout(()=>{
+            if (tBubbles[sender.seat] && Date.now() >= tBubbles[sender.seat].until){
+              delete tBubbles[sender.seat];
+              render();
+            }
+          }, 4300);
+        }
+      }
+    } else {
+      toast("💬 " + lastM.name + ": " + lastM.text);
+    }
   }
   ui.lastChatCount = S.chat.length;
   if (S.phase === "playing" && ui.screen !== "game") ui.screen = "game";
@@ -1349,6 +1408,7 @@ function startSession(r){
   session = {code: r.code, token: r.token, pid: r.pid};
   saveSession(session);
   ui.lastV = -1;
+  ui.lastChatCount = -1;
   ui.screen = "lobby";
   S = null; YOU = r.pid;
   render();
@@ -1701,6 +1761,11 @@ let tLastV = -1;
 let tVsShownKey = "";
 let tVsActive = false;
 let tVsTimer = null;
+let tQuickOpen = false;
+let tDialogMuted = false;
+const tBubbles = {};
+const QUICK_PHRASES = ["Baftă","Bine jucat!","Zar norocos!","Mulțumesc!","Trebuie să plec","Nuuu!"];
+const QUICK_EMOJIS = ["😄👍","🤩","🤫","🙏🎲","😡","😤","😭","😴"];
 
 function avatarSVG(seat, name, preset=""){
   const themes = {
@@ -1988,32 +2053,45 @@ function renderTableGame(){
   const canPickBar = myTurn && barMe > 0 && canMoveFrom("bar");
   const off0 = (S.off||[0,0])[0] || 0;
   const off1 = (S.off||[0,0])[1] || 0;
+  const nowTs = Date.now();
+  const b0 = (tBubbles[0] && tBubbles[0].until > nowTs) ? tBubbles[0].text : "";
+  const b1 = (tBubbles[1] && tBubbles[1].until > nowTs) ? tBubbles[1].text : "";
+  const pct0 = Math.max(4, Math.min(100, Math.round((1 - Math.min(pip0, 180)/180) * 100)));
+  const pct1 = Math.max(4, Math.min(100, Math.round((1 - Math.min(pip1, 180)/180) * 100)));
 
   return `<div class="screen tgame">
-    <aside class="tsidebar">
-      <div class="tpbox ${S.phase==="playing" && S.turnSeat===0 ? "turn":""}">
+    <header class="ttopbar">
+      <div class="thud ${S.phase==="playing" && S.turnSeat===0 ? "turn":""}">
         <div class="tpav-lg w"><div class="tpav-inner">${avatarHTML(p0.avatar, 0, p0.name)}</div><span class="pdot w"></span></div>
-        <div style="min-width:0;width:100%">
+        <div class="thud-info">
           <div class="tpbox-name">${esc(p0.name)}${S.mySeat===0?" (tu)":""}</div>
-          <div class="tpstats"><span class="tppill">${p0.score||0}p</span><span class="tppill">${pip0} pip</span></div>
+          <div class="tpstats">
+            <span class="tppill">${p0.score||0}p</span>
+            <span class="tpip-num">${pip0} pip</span>
+            <span class="tpipbar"><i style="width:${pct0}%"></i></span>
+          </div>
         </div>
+        ${b0 ? `<div class="tbubble left">${esc(b0)}</div>` : ""}
       </div>
 
-      <div class="tvs-center">
-        <div class="tvs-v">V</div>
-        <div class="tvs-s">S</div>
-        <div class="tscorepill">Leg ${S.leg} · ${S.opts.target}p</div>
+      <div class="tcenterpill">
+        <div class="tscorepill">Leg ${S.leg} · 🎯 ${S.opts.target}p</div>
         <div class="tturnsub">${msg}</div>
       </div>
 
-      <div class="tpbox ${S.phase==="playing" && S.turnSeat===1 ? "turn":""}">
-        <div class="tpav-lg b"><div class="tpav-inner">${avatarHTML(p1.avatar, 1, p1.name)}</div><span class="pdot b"></span></div>
-        <div style="min-width:0;width:100%">
+      <div class="thud right ${S.phase==="playing" && S.turnSeat===1 ? "turn":""}">
+        <div class="thud-info">
           <div class="tpbox-name">${esc(p1.name)}${S.mySeat===1?" (tu)":""}</div>
-          <div class="tpstats"><span class="tppill">${p1.score||0}p</span><span class="tppill">${pip1} pip</span></div>
+          <div class="tpstats">
+            <span class="tpipbar"><i style="width:${pct1}%"></i></span>
+            <span class="tpip-num">${pip1} pip</span>
+            <span class="tppill">${p1.score||0}p</span>
+          </div>
         </div>
+        <div class="tpav-lg b"><div class="tpav-inner">${avatarHTML(p1.avatar, 1, p1.name)}</div><span class="pdot b"></span></div>
+        ${b1 ? `<div class="tbubble right">${esc(b1)}</div>` : ""}
       </div>
-    </aside>
+    </header>
 
     <div class="twrap">
       <div class="tboard-outer">
@@ -2065,11 +2143,27 @@ function renderTableGame(){
       </div>
 
       <div class="tdock">
-        <button class="tdockbtn ${showRollOnBoard?"cta":""}" id="btnRollDock" ${showRollOnBoard?"":"disabled"} title="Aruncă zarurile">🎲<span>Zar</span></button>
-        <button class="tdockbtn" id="btnClearSel" ${tSel!==null?"":"disabled"} title="Deselectează">✕<span>Anulează</span></button>
-        <button class="tdockbtn" id="btnChatQuickT" title="Chat">💬<span>Chat</span></button>
-        <button class="tdockbtn" id="btnMenu" title="Meniu">☰<span>Meniu</span></button>
+        <div class="tdock-grp">
+          <button class="tdockbtn" id="btnQuickDialog" title="Dialog rapid & Emoji">💬</button>
+        </div>
+        <div class="tdock-grp">
+          <button class="tdockbtn ${showRollOnBoard?"cta":""}" id="btnRollDock" ${showRollOnBoard?"":"disabled"} title="Aruncă zarurile">🎲</button>
+          <button class="tdockbtn" id="btnClearSel" ${tSel!==null?"":"disabled"} title="Deselectează">✕</button>
+          <button class="tdockbtn" id="btnMenu" title="Setări & Reguli">⚙️</button>
+          <button class="tdockbtn danger" id="btnLeaveDock" title="Ieși din joc">🚪</button>
+        </div>
       </div>
+
+      ${tQuickOpen ? `<div class="qdialog" id="qDialogPanel">
+        ${QUICK_PHRASES.map(ph=>`<button type="button" class="qd-phrase" data-qd="${esc(ph)}">${esc(ph)}</button>`).join("")}
+        <div class="qd-emojis">
+          ${QUICK_EMOJIS.map(em=>`<button type="button" class="qd-emo" data-qd="${em}">${em}</button>`).join("")}
+        </div>
+        <div class="qd-foot">
+          <button type="button" class="qd-footbtn" id="btnOpenFullChat">✏️ Scrie</button>
+          <button type="button" class="qd-footbtn ${tDialogMuted?"muted":""}" id="btnMuteDialog" title="Oprește/pornește bulele de dialog">${tDialogMuted?"🔇":"💬"}</button>
+        </div>
+      </div>` : ""}
     </div>
 
     ${tVsActive ? renderTableVS(p0, p1) : ""}
@@ -2119,8 +2213,11 @@ function bindTableGame(){
   b("#btnRoll", ()=>{ sfx.rollDice(); act({type:"roll"}, null); });
   b("#btnRollDock", ()=>{ if (S.myTurn && S.canRoll){ sfx.rollDice(); act({type:"roll"}, null); } });
   b("#btnClearSel", ()=>{ tSel = null; render(); });
-  b("#btnChatQuickT", ()=>{ ui.chatOpen = true; render(); });
-  b("#btnMenu", ()=>{ ui.menuOpen = true; render(); });
+  b("#btnQuickDialog", ()=>{ tQuickOpen = !tQuickOpen; render(); });
+  b("#btnOpenFullChat", ()=>{ tQuickOpen = false; ui.chatOpen = true; render(); });
+  b("#btnMuteDialog", ()=>{ tDialogMuted = !tDialogMuted; toast(tDialogMuted?"Dialog oprit":"Dialog pornit"); render(); });
+  b("#btnLeaveDock", ()=>{ if (confirm("Ieși din joc?")) leaveGame(); });
+  b("#btnMenu", ()=>{ tQuickOpen = false; ui.menuOpen = true; render(); });
   b("#btnCloseModal", ()=>{ ui.chatOpen=false; ui.menuOpen=false; render(); });
   b("#btnChat", ()=>{ ui.chatOpen = true; ui.menuOpen=false; render(); });
   b("#btnRules2", ()=>showRules());
@@ -2129,6 +2226,15 @@ function bindTableGame(){
   b("#btnNextLeg", ()=>act({type:"next_leg"}, null));
   b("#btnNewMatch", ()=>act({type:"new_match"}, null));
   b("#btnHideLeg", ()=>{ ui.hideLeg = S.leg; render(); });
+  $$("[data-qd]").forEach(el=>{
+    el.onclick = ()=>{
+      const txt = el.dataset.qd;
+      tQuickOpen = false;
+      tBubbles[mySeat()] = {text: txt, until: Date.now() + 4200};
+      render();
+      sendChat(txt);
+    };
+  });
   const vsOv = $("#vsOverlay");
   if (vsOv){
     vsOv.onclick = ()=>{ tVsActive = false; vsOv.remove(); };
