@@ -398,10 +398,13 @@
   .rg-row{display:grid;grid-template-columns:repeat(15, minmax(0, 1fr));gap:3px;min-height:60px;padding:4px 5px;
     border-radius:9px;background:linear-gradient(180deg,rgba(32,14,4,.62),rgba(55,27,10,.45));
     border-bottom:2px solid rgba(255,205,150,.18);box-shadow:inset 0 3px 8px rgba(0,0,0,.55);}
-  .rg-slot{min-width:0;min-height:54px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+  .rg-slot{min-width:0;min-height:54px;border-radius:6px;display:flex;align-items:center;justify-content:center;position:relative;}
   .rg-slot.empty{cursor:pointer;}
-  .rg-slot.empty:hover{background:rgba(250,204,21,.12);}
-  .rg-slot .tile{width:100%;max-width:46px;height:56px;font-size:23px;}
+  .rg-slot.empty:hover,.rg-slot.drop-hover{background:rgba(250,204,21,.26);outline:2px dashed #fde047;}
+  .rg-slot .tile{width:100%;max-width:46px;height:56px;font-size:23px;touch-action:none;user-select:none;-webkit-user-select:none;}
+  .rg-slot .tile.dragging{opacity:.25;transform:scale(.92);}
+  .drag-ghost{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;will-change:transform;
+    filter:drop-shadow(0 12px 18px rgba(0,0,0,.65));}
 
   /* Corner floating buttons (bottom-left •••, bottom-right 💬/😊) */
   .rg-corner-l{position:fixed;left:12px;bottom:12px;z-index:45;}
@@ -1041,36 +1044,58 @@ function partitionGroups(tiles){
   return result;
 }
 function _partitionGroupsInner(all){
-  let tiles = all;
+  const groups = genValidGroupsFast(all);
+  if (!groups.length) return null;
+  const gInfo = groups.map(g => {
+    const r = _resolveCached(g);
+    return r ? {g, set: new Set(g), len: g.length, pts: r.pts} : null;
+  }).filter(Boolean).sort((a,b) => (b.len - a.len) || (b.pts - a.pts));
+  if (!gInfo.length) return null;
   let best = {covered: 0, groups: [], pts: 0};
   let nodes = 0;
-  const LIMIT = all.length > 9 ? 6000 : 14000;
-  const rec = (remaining, acc, covered, pts) => {
+  const LIMIT = 4000;
+  const totalMax = all.length;
+  const rec = (idx, rem, acc, covered, pts) => {
     if (++nodes > LIMIT) return;
     if (covered > best.covered ||
         (covered === best.covered && pts > best.pts) ||
         (covered === best.covered && pts === best.pts && acc.length > best.groups.length)){
       best = {covered, groups: acc.slice(), pts};
     }
-    if (!remaining.length) return;
-    const first = remaining[0];
-    // varianta 1: prima piesa intra intr-o formatie noua
-    const others = remaining.filter(t=>t!==first);
-    for (let size=2; size<=Math.min(others.length, 12); size++){
-      for (const combo of combinations(others, size)){
-        const g = [first, ...combo];
-        const r = _resolveCached(g);
-        if (!r) continue;
-        const rest = remaining.filter(t=>!g.includes(t));
-        rec(rest, acc.concat([g]), covered + g.length, pts + r.pts);
-      }
+    if (covered === totalMax || covered + rem.size <= best.covered) return;
+    for (let i = idx; i < gInfo.length; i++){
+      const item = gInfo[i];
+      if (item.len > rem.size) continue;
+      let ok = true;
+      for (const t of item.g){ if (!rem.has(t)){ ok = false; break; } }
+      if (!ok) continue;
+      const next = new Set(rem);
+      for (const t of item.g) next.delete(t);
+      acc.push(item.g);
+      rec(i + 1, next, acc, covered + item.len, pts + item.pts);
+      acc.pop();
+      if (best.covered === totalMax) return;
     }
-    // varianta 2: prima piesa ramane pe masa (nu face parte din selectie)
-    rec(others, acc, covered, pts);
   };
-  rec(all, [], 0, 0);
+  rec(0, new Set(all), [], 0, 0);
   if (!best.groups.length) return null;
   return best.groups;
+}
+
+const _tablaClosersCache = new Map();
+function findTablaClosersCached(hand, skipTile){
+  if (!hand || hand.length !== 15) return [];
+  const key = [...hand].sort((a,b)=>a-b).join(",") + "|" + (skipTile ?? "");
+  if (_tablaClosersCache.has(key)) return _tablaClosersCache.get(key);
+  const res = [];
+  for (const t of hand){
+    if (t === skipTile) continue;
+    const rem14 = hand.filter(x => x !== t);
+    if (findCompletePartition14(rem14)) res.push(t);
+  }
+  if (_tablaClosersCache.size > 120) _tablaClosersCache.clear();
+  _tablaClosersCache.set(key, res);
+  return res;
 }
 function combinations(arr, k){
   const out = [];
@@ -1508,7 +1533,6 @@ function render(){
   if (!session || !session.token){
     app.innerHTML = renderHome();
     bindHome();
-    requestAnimationFrame(fitCheck);
     return;
   }
   if (!S){
@@ -1519,12 +1543,11 @@ function render(){
   if (S.game === "table"){
     app.innerHTML = renderTableGame();
     bindTableGame();
-    requestAnimationFrame(fitCheck);
     return;
   }
   app.innerHTML = renderGame();
   bindGame();
-  requestAnimationFrame(fitCheck);
+  if (S.phase === "lobby") requestAnimationFrame(fitCheck);
 }
 
 function initials(name){
@@ -2051,12 +2074,8 @@ function renderGame(){
           }
         }
       } else if (sel.size === 0 && (me.hand || []).length === 15){
-        // Daca exista cel putin o piesa de aruncat cu care celelalte 14 inchid, luminam butonul
-        const anyCloser = (me.hand || []).find(t => {
-          if (me.drawnFrom === "discard" && me.takenDiscardTile === t) return false;
-          return !!findCompletePartition14((me.hand || []).filter(x => x !== t));
-        });
-        if (anyCloser !== undefined){
+        const skip = (me.drawnFrom === "discard") ? me.takenDiscardTile : null;
+        if (findTablaClosersCached(me.hand, skip).length > 0){
           canCloseTablaBtn = true;
           meldLabel = "Închide!";
         }
@@ -2163,12 +2182,12 @@ function renderGame(){
           <div class="rg-rows" id="myHand">
             <div class="rg-row">
               ${rRackSlots.slice(0, 15).map((t, idx)=>t !== null
-                ? `<div class="rg-slot" data-slot="${idx}">${tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}" draggable="true"`})}</div>`
+                ? `<div class="rg-slot" data-slot="${idx}">${tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}"`})}</div>`
                 : `<div class="rg-slot empty" data-slot="${idx}"></div>`).join("")}
             </div>
             <div class="rg-row">
               ${rRackSlots.slice(15, 30).map((t, idx)=>t !== null
-                ? `<div class="rg-slot" data-slot="${idx+15}">${tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}" draggable="true"`})}</div>`
+                ? `<div class="rg-slot" data-slot="${idx+15}">${tileHTML(t,{size:"xl", sel: sel.has(t), data:`data-tile="${t}"`})}</div>`
                 : `<div class="rg-slot empty" data-slot="${idx+15}"></div>`).join("")}
             </div>
           </div>
@@ -2230,14 +2249,12 @@ function handHint(me){
       return `<span>Apasă „Aruncă” pentru a pune piesa jos (sau mută pe suport)</span>`;
     }
     if (sel.size === 0 && (me.hand||[]).length === 15){
-      const closers = (me.hand||[]).filter(t=>{
-        if (me.drawnFrom === "discard" && me.takenDiscardTile === t) return false;
-        return !!findCompletePartition14((me.hand||[]).filter(x=>x!==t));
-      });
+      const skip = (me.drawnFrom === "discard") ? me.takenDiscardTile : null;
+      const closers = findTablaClosersCached(me.hand, skip);
       if (closers.length){
         return `<span class="pts">✨ Poți închide acum! Selectează piesa de aruncat (${closers.map(tileLabel).slice(0,3).join(", ")}) și apasă 🏁 Închide</span>`;
       }
-      return `<span>Aranjează cele 14 piese pe suport · selectează 1 piesă ca să o arunci</span>`;
+      return `<span>Trage cu degetul/mouse-ul piese pe suport · selectează 1 piesă ca să o arunci</span>`;
     }
     return `<span>${sel.size} piese selectate · selectează 1 singură piesă pentru a arunca sau închide</span>`;
   }
@@ -2325,27 +2342,88 @@ function bindGame(){
     }
     render();
   };
+  let dragSt = null;
+  const clearDrag = () => {
+    if (!dragSt) return;
+    if (dragSt.ghost) dragSt.ghost.remove();
+    if (dragSt.srcEl) dragSt.srcEl.classList.remove("dragging");
+    if (dragSt.hoverEl) dragSt.hoverEl.classList.remove("drop-hover");
+    dragSt = null;
+  };
   $$("#myHand .tile").forEach(el=>{
-    el.addEventListener("click", ()=>onTile(el));
-    el.addEventListener("dragstart", (e)=>{
+    el.addEventListener("pointerdown", (e)=>{
+      if (e.button && e.button !== 0) return;
       const slot = el.closest(".rg-slot");
-      if (slot) e.dataTransfer.setData("text/plain", slot.dataset.slot);
+      if (!slot) return;
+      clearDrag();
+      const rect = el.getBoundingClientRect();
+      dragSt = {
+        pid: e.pointerId,
+        el,
+        srcEl: el,
+        fromIdx: Number(slot.dataset.slot),
+        sx: e.clientX,
+        sy: e.clientY,
+        ox: e.clientX - rect.left,
+        oy: e.clientY - rect.top,
+        w: rect.width,
+        h: rect.height,
+        moved: false,
+        ghost: null,
+        hoverEl: null,
+      };
+      try{ el.setPointerCapture(e.pointerId); }catch(_){}
     });
-  });
-  $$("#myHand .rg-slot").forEach(slotEl=>{
-    slotEl.addEventListener("dragover", (e)=>e.preventDefault());
-    slotEl.addEventListener("drop", (e)=>{
-      e.preventDefault();
-      const fromIdx = Number(e.dataTransfer.getData("text/plain"));
-      const toIdx = Number(slotEl.dataset.slot);
-      if (Number.isInteger(fromIdx) && Number.isInteger(toIdx) && fromIdx !== toIdx){
-        const tmp = rRackSlots[toIdx];
-        rRackSlots[toIdx] = rRackSlots[fromIdx];
-        rRackSlots[fromIdx] = tmp;
-        sfx.tileTap();
-        render();
+    el.addEventListener("pointermove", (e)=>{
+      if (!dragSt || e.pointerId !== dragSt.pid) return;
+      const dx = e.clientX - dragSt.sx, dy = e.clientY - dragSt.sy;
+      if (!dragSt.moved){
+        if (dx*dx + dy*dy < 49) return;
+        dragSt.moved = true;
+        dragSt.srcEl.classList.add("dragging");
+        const g = dragSt.srcEl.cloneNode(true);
+        g.classList.remove("dragging", "sel");
+        g.classList.add("drag-ghost");
+        g.style.width = dragSt.w + "px";
+        g.style.height = dragSt.h + "px";
+        document.body.appendChild(g);
+        dragSt.ghost = g;
       }
+      if (dragSt.ghost){
+        dragSt.ghost.style.transform = `translate3d(${(e.clientX - dragSt.ox).toFixed(1)}px, ${(e.clientY - dragSt.oy).toFixed(1)}px, 0) scale(1.08)`;
+      }
+      const under = document.elementFromPoint(e.clientX, e.clientY);
+      const slotEl = under ? under.closest(".rg-slot") : null;
+      if (dragSt.hoverEl && dragSt.hoverEl !== slotEl){
+        dragSt.hoverEl.classList.remove("drop-hover");
+      }
+      dragSt.hoverEl = slotEl;
+      if (slotEl) slotEl.classList.add("drop-hover");
     });
+    const finishPointer = (e, cancelled) => {
+      if (!dragSt || e.pointerId !== dragSt.pid) return;
+      const st = dragSt;
+      const under = !cancelled && st.moved ? document.elementFromPoint(e.clientX, e.clientY) : null;
+      const targetSlot = under ? under.closest(".rg-slot") : null;
+      clearDrag();
+      if (cancelled) return;
+      if (st.moved){
+        if (targetSlot){
+          const toIdx = Number(targetSlot.dataset.slot);
+          if (Number.isInteger(toIdx) && toIdx !== st.fromIdx){
+            const tmp = rRackSlots[toIdx];
+            rRackSlots[toIdx] = rRackSlots[st.fromIdx];
+            rRackSlots[st.fromIdx] = tmp;
+            sfx.tileTap();
+            render();
+          }
+        }
+        return;
+      }
+      onTile(st.el);
+    };
+    el.addEventListener("pointerup", (e)=>finishPointer(e, false));
+    el.addEventListener("pointercancel", (e)=>finishPointer(e, true));
   });
   $$("#myHand .rg-slot.empty").forEach(slotEl=>{
     slotEl.addEventListener("click", ()=>{
@@ -2397,10 +2475,9 @@ function bindGame(){
     const hand = S.me.hand || [];
     let chosen = sel.size === 1 ? [...sel][0] : undefined;
     if (chosen === undefined){
-      chosen = hand.find(t=>{
-        if (S.me.drawnFrom === "discard" && S.me.takenDiscardTile === t) return false;
-        return !!findCompletePartition14(hand.filter(x=>x!==t));
-      });
+      const skip = (S.me.drawnFrom === "discard") ? S.me.takenDiscardTile : null;
+      const closers = findTablaClosersCached(hand, skip);
+      if (closers.length) chosen = closers[0];
     }
     if (chosen === undefined){
       toast("Selectează piesa pe care o arunci (celelalte 14 trebuie să fie în formații valide).", "err");
