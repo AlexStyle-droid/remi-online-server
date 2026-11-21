@@ -1799,9 +1799,22 @@ function renderTableGame(){
   const botRight = [];
   for (let pt=6; pt>=1; pt--) botRight.push(tPointHTML(pt, "bottom"));
 
-  const activeDice = (S.dice||[]).length
-    ? `<div class="dicerow">${(S.dice||[]).map(d=>dicePips(d)).join("")}</div>`
-    : (S.diceRoll && S.diceRoll.length ? `<div class="dicerow" style="opacity:.45">${S.diceRoll.map(d=>dicePips(d)).join("")}</div>` : "");
+  const rollPair = (S.diceRoll && S.diceRoll.length) ? S.diceRoll.slice(0, 2) : (S.dice||[]).slice(0, 2);
+  let activeDice = "";
+  if (rollPair.length){
+    const rem = [...(S.dice||[])];
+    const isDbl = rollPair.length === 2 && rollPair[0] === rollPair[1];
+    const dieEls = rollPair.map((d)=>{
+      const idx = rem.indexOf(d);
+      const used = idx === -1;
+      if (!used) rem.splice(idx, 1);
+      return `<div style="opacity:${used?0.36:1}">${dicePips(d)}</div>`;
+    }).join("");
+    const badge = (isDbl && (S.dice||[]).length > 0)
+      ? `<span style="background:linear-gradient(180deg,#fde68a,#eab308);color:#1b0d05;font-size:12px;font-weight:900;padding:2px 7px;border-radius:99px;border:1.5px solid #92400e;box-shadow:0 3px 8px rgba(0,0,0,.55)">×${(S.dice||[]).length}</span>`
+      : "";
+    activeDice = `<div class="dicerow">${dieEls}${badge}</div>`;
+  }
 
   const showRollOnBoard = myTurn && S.canRoll;
   const diceOnRight = (S.turnSeat === 0) || showRollOnBoard;
@@ -2399,5 +2412,5 @@ render = function(){
 window.addEventListener("load", boot);
 window.logout = function(){ clearSession(); session=null; S=null; YOU=null; ui.lastV=-1; render(); };
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5e0a0639c3fe3f8',t:'MTc5NTI3Mzg4Mg=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5e0a0639c3fe3f8',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5e0af9d3919e452',t:'MTc5NTI3NDUwNQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5e0af9d3919e452',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
