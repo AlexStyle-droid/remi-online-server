@@ -171,7 +171,7 @@ def resolve_sequence(tiles):
     variants = []
     if 1 in nums:
         variants.append(sorted(nums))                                  # 1 folosit ca 1
-        if 12 in nums and 13 in nums:
+        if (12 in nums and 13 in nums) or (jokers >= 1 and any(v >= 11 for v in nums if v != 1)):
             variants.append(sorted([v for v in nums if v != 1]) + [14])  # 1 folosit ca 14
     else:
         variants.append(sorted(nums))
@@ -593,9 +593,11 @@ class Room:
         # piesa de atu (vizibila, ramane in gramada)
         self.atu_tile = deck.pop()
         # anuntarea atuului: cine are perechea piesei de atu
-        for p in self.players:
-            if self.atu_tile in p["hand"] and not is_joker(self.atu_tile):
-                p["atu"] = True
+        if not is_joker(self.atu_tile):
+            pair_id = self.atu_tile ^ 1
+            for p in self.players:
+                if pair_id in p["hand"]:
+                    p["atu"] = True
         self.stock = deck
         self.discard = []
         self.groups = {}
@@ -762,8 +764,8 @@ class Room:
             raise GameError("Jocul nu este în desfășurare.")
         if not self.drew:
             raise GameError("Trage întâi o piesă.")
-        if self.turns_completed < len(self.players):
-            raise GameError("Nu se poate etala în prima tură a jocului.")
+        if self.turns_completed < 1:
+            raise GameError("Primul jucător începe jocul aruncând o piesă; etalarea începe imediat după.")
 
     def action_meld(self, pid, groups):
         self._can_meld_now(pid)
@@ -989,16 +991,26 @@ class Room:
     def _end_round(self, closer=None, closing_tile=None, reason="close"):
         self.phase = "round_end"
         is_tabla = (self.opts.get("mode") == "tabla")
+        is_double_tile = (
+            closing_tile is not None
+            and (is_joker(closing_tile) or tile_number(closing_tile) == 1)
+        )
+        is_double_atu = (
+            self.atu_tile is not None
+            and (is_joker(self.atu_tile) or tile_number(self.atu_tile) == 1)
+        )
         results = []
         for p in self.players:
             atu_bonus = 50 if p["atu_declared"] else 0
             if is_tabla:
                 close_bonus = 0
                 if p["id"] == closer and reason == "close":
-                    close_bonus = 500 if (closing_tile is not None and is_joker(closing_tile)) else 250
+                    close_bonus = 500 if is_double_tile else 250
                     melded = sum(tile_value(x["t"]) for g in self.groups.values() for x in g["tiles"])
                     rack = 0
                     total = close_bonus + atu_bonus
+                    if is_double_atu:
+                        total *= 2
                     meld_ed = True
                 else:
                     covered_groups = best_partial_partition(p["hand"])
@@ -1008,11 +1020,14 @@ class Room:
                     rack = sum(tile_value(t) for t in deadwood)
                     meld_ed = bool(covered_groups)
                     total = (-rack + atu_bonus) if meld_ed else (-100 + atu_bonus)
+                    if is_double_atu:
+                        total *= 2
                 p["round_score"] = total
                 p["score"] += total
                 results.append({
                     "pid": p["id"], "name": p["name"], "melded": melded, "rack": rack,
                     "atu": atu_bonus, "close": close_bonus,
+                    "double": bool((p["id"] == closer and is_double_tile) or is_double_atu),
                     "meld_ed": meld_ed, "total": total,
                     "hand": list(p["hand"]),
                 })
@@ -1024,10 +1039,8 @@ class Room:
                         melded += tile_value(x["t"])
             rack = self._rack_points(p)
             close_bonus = 0
-            if p["id"] == closer:
+            if p["id"] == closer and reason != "stock":
                 close_bonus = 50
-                if closing_tile is not None and is_joker(closing_tile):
-                    close_bonus = 100
             if not p["first_meld"]:
                 total = -100 + atu_bonus
                 melded = 0
@@ -1036,11 +1049,16 @@ class Room:
                 total = melded - rack + atu_bonus + close_bonus
             if reason == "stock":
                 total = (melded - rack + atu_bonus) if p["first_meld"] else (-100 + atu_bonus)
+            if p["id"] == closer and reason != "stock" and is_double_tile:
+                total *= 2
+            if is_double_atu:
+                total *= 2
             p["round_score"] = total
             p["score"] += total
             results.append({
                 "pid": p["id"], "name": p["name"], "melded": melded, "rack": rack,
                 "atu": atu_bonus, "close": close_bonus,
+                "double": bool((p["id"] == closer and reason != "stock" and is_double_tile) or is_double_atu),
                 "meld_ed": bool(p["first_meld"]), "total": total,
                 "hand": list(p["hand"]),
             })
@@ -1049,6 +1067,8 @@ class Room:
             "mode": self.opts.get("mode", "etalat"),
             "closer": closer,
             "closing_tile": closing_tile,
+            "double_close": bool(is_double_tile),
+            "double_atu": bool(is_double_atu),
             "reason": reason,
             "results": results,
         }
@@ -1156,7 +1176,7 @@ class Room:
             })
         groups.sort(key=lambda g: g["id"])
         is_tabla = (self.opts.get("mode") == "tabla")
-        can_meld_round = (not is_tabla) and self.turns_completed >= len(self.players) and self.phase == "playing"
+        can_meld_round = (not is_tabla) and self.turns_completed >= 1 and self.phase == "playing"
         me_state = None
         if me:
             can_take_disc = (me["id"] == self.turn_pid and not self.drew and bool(self.discard)
