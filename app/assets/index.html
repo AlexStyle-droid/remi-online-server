@@ -292,73 +292,255 @@
   .gp.on b{color:var(--gold);}
 
   /* ---------- TABLE (backgammon) ---------- */
-  .tgame{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .tboard{flex:1;min-height:0;position:relative;margin:5px;border-radius:16px;padding:5px;
+  /* ---------- TABLE (backgammon luxury wood — compact proportion + left VS sidebar) ---------- */
+  .tgame{flex:1;display:flex;flex-direction:row;align-items:stretch;min-height:0;gap:10px;padding:8px 10px;
+    background:radial-gradient(110% 90% at 55% 50%, #2a160c 0%, #140905 70%, #070403 100%);
+    color:#f7efe1;}
+
+  /* Left Player + VS Sidebar (inspired by user's Model interfata Table) */
+  .tsidebar{width:158px;flex:none;display:flex;flex-direction:column;justify-content:space-between;
+    align-items:center;padding:10px 8px;border-radius:14px;
+    background:linear-gradient(180deg, rgba(10,7,9,.92), rgba(22,12,10,.94), rgba(10,7,9,.92));
+    border:1.5px solid rgba(212,175,55,.28);box-shadow:0 8px 26px rgba(0,0,0,.6);}
+  .tpbox{width:100%;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 6px;border-radius:12px;
+    border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);transition:.2s;}
+  .tpbox.turn{border-color:#fde047;background:rgba(250,204,21,.10);
+    box-shadow:0 0 18px rgba(250,204,21,.28), inset 0 0 12px rgba(250,204,21,.08);}
+  .tpbox-name{font-size:14px;font-weight:900;color:#fff7e8;text-align:center;max-width:100%;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tpbox.turn .tpbox-name{color:#fde68a;}
+  .tpav-lg{width:76px;height:76px;border-radius:50%;padding:3px;position:relative;flex:none;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.65);}
+  .tpav-lg.w{background:linear-gradient(135deg,#93c5fd,#2563eb);}
+  .tpav-lg.b{background:linear-gradient(135deg,#fca5a5,#dc2626);}
+  .tpbox.turn .tpav-lg{box-shadow:0 0 22px rgba(250,204,21,.75);}
+  .tpav-inner{width:100%;height:100%;border-radius:50%;overflow:hidden;
+    background:radial-gradient(circle at 35% 28%,#2b2936,#0c0b10);display:flex;align-items:center;justify-content:center;}
+  .tpav-inner svg{width:100%;height:100%;display:block;}
+  .tpav-lg .pdot{position:absolute;bottom:1px;right:1px;width:18px;height:18px;border-radius:50%;
+    border:2px solid #120906;}
+  .tpav-lg .pdot.w{background:radial-gradient(circle at 35% 30%,#fffdf5,#d8ccb0);}
+  .tpav-lg .pdot.b{background:radial-gradient(circle at 35% 30%,#525560,#111216);}
+  .tpstats{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;}
+  .tppill{font-size:11px;font-weight:900;color:#fde68a;background:rgba(0,0,0,.5);
+    border:1px solid rgba(240,199,94,.28);border-radius:99px;padding:2px 8px;}
+
+  .tvs-center{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:4px 0;}
+  .tvs-v,.tvs-s{font-size:34px;font-weight:900;line-height:.92;letter-spacing:-1px;
+    filter:drop-shadow(0 3px 10px rgba(0,0,0,.7));}
+  .tvs-v{background:linear-gradient(180deg,#fca5a5,#dc2626 65%,#7f1d1d);-webkit-background-clip:text;color:transparent;}
+  .tvs-s{background:linear-gradient(180deg,#fef3c7,#eab308 65%,#92400e);-webkit-background-clip:text;color:transparent;}
+  .tscorepill{font-size:11px;font-weight:900;color:#fde68a;background:linear-gradient(180deg,#442212,#291208);
+    border:1px solid rgba(240,199,94,.4);border-radius:99px;padding:3px 9px;margin-top:4px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 0 2px 6px rgba(0,0,0,.5);}
+  .tturnsub{font-size:11px;font-weight:800;color:#e7d7bf;line-height:1.25;max-width:140px;}
+  .tturnsub b{color:#fde68a;}
+
+  .twrap{flex:1;min-width:0;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:10px;}
+  .tboard-outer{flex:1;max-width:960px;min-width:0;min-height:0;display:flex;align-items:stretch;
+    border-radius:14px;padding:8px;position:relative;
     background:
-      linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.22)),
-      radial-gradient(120% 90% at 50% 50%, #14513e 0%, #0c3b2e 55%, #082a21 100%);
-    border:1px solid rgba(232,198,106,.22);
-    box-shadow:inset 0 0 40px rgba(0,0,0,.35);
-    display:flex;flex-direction:column;}
-  .trow{display:grid;grid-template-columns:repeat(12,1fr);flex:1;min-height:0;gap:1px;}
-  .trow.bottom{align-items:stretch;}
+      repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 3px, rgba(0,0,0,.04) 3px 7px),
+      linear-gradient(160deg, #6b351b 0%, #48210f 45%, #2e1307 100%);
+    border:2px solid #8a4b28;
+    box-shadow:0 12px 32px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,220,160,.25), inset 0 0 14px rgba(0,0,0,.6);}
+  .tboard-inner{flex:1;min-width:0;min-height:0;display:grid;
+    grid-template-columns:28px 1fr 34px 1fr 46px;gap:6px;align-items:stretch;}
+
+  .trail-left{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6px 2px;
+    border-radius:8px;background:linear-gradient(180deg,#251007,#36190c,#251007);
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.75), 0 1px 0 rgba(255,220,170,.12);}
+  .tcube{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:900;color:#2b1408;
+    background:linear-gradient(145deg,#fff8e8,#d8c298);
+    border:1px solid #9f8151;box-shadow:0 2px 5px rgba(0,0,0,.6), inset 0 1px 0 #fff;}
+  .trail-pip{font-size:8.5px;font-weight:900;color:#e7c98b;text-align:center;line-height:1.15;}
+
+  .thalf{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;border-radius:8px;overflow:hidden;
+    background:
+      repeating-linear-gradient(90deg, rgba(130,85,40,.045) 0 4px, transparent 4px 11px),
+      linear-gradient(180deg, #eedbb8 0%, #e1c699 50%, #eedbb8 100%);
+    border:2px solid #3c1b0b;
+    box-shadow:inset 0 0 22px rgba(90,45,15,.32), inset 0 3px 8px rgba(0,0,0,.25);}
+  .thalf-row{display:grid;grid-template-columns:repeat(6,1fr);flex:1;min-height:0;}
+
+  .tmidbar{position:relative;display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+    padding:8px 2px;border-radius:6px;
+    background:linear-gradient(90deg,#3d1b0c,#5d2d17 48%,#35170a);
+    border:1px solid #753c20;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.6), 0 0 8px rgba(0,0,0,.5);}
+  .thinge{width:18px;height:28px;border-radius:3px;position:relative;flex:none;
+    background:linear-gradient(90deg,#8c6622,#f0d27a 45%,#b58833 80%,#6e4d14);
+    border:1px solid #4a330a;box-shadow:0 2px 4px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.5);}
+  .thinge:before,.thinge:after{content:"";position:absolute;left:50%;transform:translateX(-50%);
+    width:4px;height:4px;border-radius:50%;background:#4a330a;box-shadow:0 1px 0 rgba(255,255,255,.35);}
+  .thinge:before{top:4px;} .thinge:after{bottom:4px;}
+  .tbarslot{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:42px;padding:3px;border-radius:8px;
+    transition:.15s;position:relative;z-index:2;}
+  .tbarslot[data-pick-bar="1"]{cursor:pointer;background:rgba(52,211,153,.22);
+    box-shadow:0 0 12px rgba(52,211,153,.65);border:1.5px solid #6ee7b7;}
+  .tbarslot.selpt{background:rgba(250,204,21,.28);border:1.5px solid #fde047;box-shadow:0 0 14px rgba(250,204,21,.75);}
+
   .point{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;cursor:pointer;}
-  .point .tri{position:absolute;left:0;right:0;top:0;bottom:0;height:100%;}
-  .point.top .tri{clip-path:polygon(0 0,100% 0,50% 100%);}
-  .point.bottom .tri{clip-path:polygon(0 100%,100% 100%,50% 0);}
-  .point .tri.c1{background:linear-gradient(180deg,rgba(232,198,106,.26),rgba(232,198,106,.10));}
-  .point .tri.c2{background:linear-gradient(180deg,rgba(6,32,25,.65),rgba(6,32,25,.25));}
-  .point.bottom .tri.c1{background:linear-gradient(0deg,rgba(232,198,106,.26),rgba(232,198,106,.10));}
-  .point.bottom .tri.c2{background:linear-gradient(0deg,rgba(6,32,25,.65),rgba(6,32,25,.25));}
-  .point .stack{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:1px;z-index:2;}
-  .point.top .stack{top:3px;}
-  .point.bottom .stack{bottom:3px;flex-direction:column-reverse;}
-  .chk{width:min(5.2vw,21px);height:min(5.2vw,21px);border-radius:50%;flex:none;
-    box-shadow:0 1px 2px rgba(0,0,0,.6), inset 0 -2px 3px rgba(0,0,0,.25), inset 0 2px 2px rgba(255,255,255,.35);
-    border:1px solid rgba(0,0,0,.4);}
-  .chk.w{background:radial-gradient(circle at 35% 30%, #fffdf3, #e9dfc4 60%, #c9bd9a);}
-  .chk.b{background:radial-gradient(circle at 35% 30%, #4a4a58, #23232c 60%, #131318);}
-  .point .pcnt{position:absolute;z-index:3;font-size:9px;font-weight:900;color:#08180f;
-    background:var(--gold);border-radius:20px;padding:0 4px;line-height:13px;}
-  .point.top .pcnt{top:calc(5 * (min(5.2vw,21px) + 1px) + 4px);}
-  .point.bottom .pcnt{bottom:calc(5 * (min(5.2vw,21px) + 1px) + 4px);}
-  .point .plabel{position:absolute;font-size:7.5px;font-weight:800;color:rgba(255,255,255,.28);z-index:1;}
-  .point.top .plabel{bottom:3px;} .point.bottom .plabel{top:3px;}
-  .point.selpt{filter:drop-shadow(0 0 6px rgba(232,198,106,.9));}
-  .point.selpt .tri{background:rgba(232,198,106,.42);}
-  .point.target:after{content:"";position:absolute;inset:0;border:2px solid rgba(110,231,183,.85);border-radius:8px;
-    box-shadow:0 0 14px rgba(52,211,153,.5);pointer-events:none;z-index:4;}
-  .tbar{display:flex;align-items:center;gap:6px;padding:3px 5px;min-height:52px;
-    background:rgba(0,0,0,.28);border-radius:12px;margin:2px 0;box-shadow:inset 0 0 12px rgba(0,0,0,.35);}
-  .tbarside{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:30px;}
-  .tbarside .lbl{font-size:8px;font-weight:900;letter-spacing:1px;color:rgba(255,255,255,.45)}
-  .tbarside .chkbar{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;max-width:56px;}
-  .tcenter{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
-  .dicerow{display:flex;gap:6px;align-items:center;justify-content:center;}
-  .die{width:28px;height:28px;border-radius:7px;background:linear-gradient(180deg,#fffdf6,#e6ddc6);
-    box-shadow:0 2px 4px rgba(0,0,0,.5), inset 0 1px 0 #fff;display:grid;grid-template-columns:repeat(3,1fr);
-    grid-template-rows:repeat(3,1fr);padding:3px;gap:1px;}
+  .point .tri{position:absolute;left:2%;right:2%;top:0;bottom:0;height:86%;transition:filter .15s;}
+  .point.top .tri{top:0;bottom:auto;clip-path:polygon(0 0,100% 0,50% 100%);}
+  .point.bottom .tri{bottom:0;top:auto;clip-path:polygon(0 100%,100% 100%,50% 0);}
+  .point .tri.c1{background:linear-gradient(180deg,#8d2917,#5e160a);}
+  .point .tri.c2{background:linear-gradient(180deg,#f9eed9,#e2d0ad);}
+  .point.bottom .tri.c1{background:linear-gradient(0deg,#8d2917,#5e160a);}
+  .point.bottom .tri.c2{background:linear-gradient(0deg,#f9eed9,#e2d0ad);}
+  .point.target .tri{filter:brightness(1.16) drop-shadow(0 0 10px rgba(16,185,129,.75));}
+  .point .stack{position:absolute;left:0;right:0;width:100%;display:flex;flex-direction:column;align-items:center;z-index:2;gap:1px;}
+  .point.top .stack{top:4px;}
+  .point.bottom .stack{bottom:4px;flex-direction:column-reverse;}
+  .chk{width:min(82%, 7.6vh, 50px);height:auto;aspect-ratio:1;
+    border-radius:50%;flex:none;position:relative;transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s;
+    box-shadow:0 3px 6px rgba(0,0,0,.55), 0 1px 1px rgba(0,0,0,.4);}
+  .point .stack.dense .chk + .chk{margin-top:-28%;}
+  .point.bottom .stack.dense .chk + .chk{margin-top:0;margin-bottom:-28%;}
+  .chk.w{
+    background:radial-gradient(circle at 32% 28%, #ffffff 0%, #f5edd9 48%, #d4c4a1 85%, #a89570 100%);
+    border:1.5px solid #8c7a56;
+    box-shadow:0 3px 6px rgba(0,0,0,.5), inset 0 0 0 4px rgba(205,187,148,.46), inset 0 2px 3px rgba(255,255,255,.92);}
+  .chk.b{
+    background:radial-gradient(circle at 32% 28%, #5e626e 0%, #2a2d36 45%, #121318 88%, #070709 100%);
+    border:1.5px solid #050507;
+    box-shadow:0 3px 6px rgba(0,0,0,.65), inset 0 0 0 4px rgba(255,255,255,.10), inset 0 2px 3px rgba(255,255,255,.24);}
+  .chk.sm{width:22px;height:22px;}
+  .point.canpick .stack .chk:last-child{box-shadow:0 0 0 2px rgba(253,224,71,.55), 0 4px 8px rgba(0,0,0,.55), inset 0 0 0 4px rgba(255,255,255,.18);}
+  .point.canpick:hover .stack .chk:last-child{transform:translateY(-2px) scale(1.05);}
+  .point.selpt .stack .chk:last-child{transform:translateY(-4px) scale(1.10);
+    box-shadow:0 0 0 3.5px #fde047, 0 0 20px rgba(250,204,21,.98), 0 8px 14px rgba(0,0,0,.65);}
+  .point.selpt .tri{filter:brightness(1.22) drop-shadow(0 0 8px rgba(250,204,21,.8));}
+
+  /* Ghost destination preview checker with die number */
+  .ghost-chk{width:min(82%, 7.6vh, 50px);height:auto;aspect-ratio:1;
+    border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);
+    background:radial-gradient(circle at 35% 30%, rgba(110,231,183,.72), rgba(16,185,129,.52));
+    border:2.5px dashed #ecfdf5;
+    box-shadow:0 0 18px rgba(16,185,129,.95), inset 0 0 8px rgba(255,255,255,.45);
+    animation:tPulse 1s infinite alternate;}
+  @keyframes tPulse{from{box-shadow:0 0 10px rgba(16,185,129,.75);}to{box-shadow:0 0 22px rgba(110,231,183,1);}}
+  .point .pcnt{position:absolute;z-index:4;font-size:10px;font-weight:900;color:#1b0d05;
+    background:linear-gradient(180deg,#fde68a,#eab308);border:1px solid #92400e;border-radius:99px;
+    padding:0 5px;line-height:15px;box-shadow:0 2px 4px rgba(0,0,0,.45);}
+  .point.top .pcnt{top:2px;right:2px;}
+  .point.bottom .pcnt{bottom:2px;right:2px;}
+  .point .plabel{position:absolute;font-size:8.5px;font-weight:800;color:rgba(70,35,14,.42);z-index:1;pointer-events:none;}
+  .point.top .plabel{bottom:2px;} .point.bottom .plabel{top:2px;}
+
+  /* Dice floating right on the board (bigger, crisp 3D ruby red) */
+  .tdice-overlay{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;
+    justify-content:center;z-index:6;}
+  .tdice-overlay > *{pointer-events:auto;}
+  .dicerow{display:flex;gap:14px;align-items:center;justify-content:center;padding:4px;}
+  .die{width:50px;height:50px;border-radius:12px;
+    background:linear-gradient(145deg,#ef4444 0%,#dc2626 52%,#991b1b 100%);
+    border:2px solid #fca5a5;
+    box-shadow:0 8px 18px rgba(0,0,0,.65), inset 0 2px 4px rgba(255,255,255,.4), inset 0 -3px 5px rgba(69,10,10,.65);
+    display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:7px;gap:3px;
+    animation:diePop .22s ease-out;}
+  @keyframes diePop{0%{transform:scale(.82) rotate(-10deg);opacity:.94;}100%{transform:scale(1) rotate(0);opacity:1;}}
   .die i{width:100%;height:100%;border-radius:50%;background:transparent;}
-  .die i.on{background:#1b1b22;box-shadow:inset 0 1px 1px rgba(0,0,0,.6);}
-  .die.small{width:18px;height:18px;padding:2px;border-radius:4px;opacity:.95}
-  .tmsg{font-size:10.5px;font-weight:800;color:rgba(255,255,255,.65);text-align:center;}
-  .tmsg b{color:var(--gold)}
-  .toffs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:2px 4px 0;}
-  .tray{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:10px;
-    background:rgba(0,0,0,.26);border:1px dashed rgba(255,255,255,.16);font-size:10.5px;font-weight:800;color:var(--muted);}
-  .tray .dot{width:11px;height:11px;border-radius:50%;flex:none}
-  .tray.w .dot{background:radial-gradient(circle at 35% 30%,#fffdf3,#d9cfae)}
-  .tray.b .dot{background:radial-gradient(circle at 35% 30%,#4a4a58,#131318)}
-  .tray.hot{border-color:rgba(110,231,183,.8);color:#6ee7b7;box-shadow:0 0 12px rgba(52,211,153,.25);cursor:pointer}
-  .tray b{color:var(--text)}
-  .tplayers{display:flex;gap:6px;padding:4px 6px 0;}
-  .tplayer{flex:1;display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:10px;
-    background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07);font-size:11px;font-weight:800;color:var(--muted);}
-  .tplayer.turn{border-color:var(--gold);color:var(--gold);box-shadow:0 0 14px rgba(232,198,106,.22)}
-  .tplayer .dot{width:12px;height:12px;border-radius:50%;flex:none}
-  .tplayer .dot.w{background:radial-gradient(circle at 35% 30%,#fffdf3,#d9cfae)}
-  .tplayer .dot.b{background:radial-gradient(circle at 35% 30%,#4a4a58,#131318)}
-  .tplayer .sc{margin-left:auto;color:var(--gold);font-weight:900}
+  .die i.on{background:radial-gradient(circle at 35% 35%,#ffffff,#e5e7eb);box-shadow:inset 0 1px 2px rgba(0,0,0,.35);}
+  .die.small{width:24px;height:24px;padding:3px;border-radius:6px;}
+  .roll-cta{padding:12px 22px;font-size:15px;font-weight:900;border-radius:14px;border:2px solid #fde68a;
+    background:linear-gradient(180deg,#f59e0b,#b45309);color:#fff;cursor:pointer;
+    box-shadow:0 8px 22px rgba(0,0,0,.6), 0 0 18px rgba(245,158,11,.55);letter-spacing:.3px;
+    animation:tPulseBtn 1.2s infinite alternate;}
+  @keyframes tPulseBtn{from{box-shadow:0 8px 22px rgba(0,0,0,.6), 0 0 14px rgba(245,158,11,.45);}to{box-shadow:0 8px 22px rgba(0,0,0,.6), 0 0 28px rgba(253,230,138,.95);}}
+
+  /* Right wooden bear-off tray (top = Black 19..24, bottom = White 6..1) */
+  .ttray-col{display:flex;flex-direction:column;gap:6px;}
+  .toffbox{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+    padding:5px 4px;border-radius:8px;
+    background:linear-gradient(180deg,#241007,#35180c,#241007);
+    border:1.5px solid #5d2d16;box-shadow:inset 0 3px 10px rgba(0,0,0,.78);transition:.2s;}
+  .toffbox.hot{border-color:#6ee7b7;box-shadow:inset 0 0 16px rgba(16,185,129,.55), 0 0 18px rgba(16,185,129,.8);
+    cursor:pointer;}
+  .toff-lbl{font-size:10px;font-weight:900;color:#e7d7bf;letter-spacing:.2px;}
+  .toffbox.hot .toff-lbl{color:#6ee7b7;}
+  .toff-stack{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:3px 0;}
+  .toffbox.top .toff-stack{justify-content:flex-start;}
+  .off-edge{width:84%;height:6px;border-radius:3px;flex:none;}
+  .off-edge.w{background:linear-gradient(90deg,#bba984,#fffdf5 45%,#c7b690);border:1px solid #8a7852;
+    box-shadow:0 1px 2px rgba(0,0,0,.6);}
+  .off-edge.b{background:linear-gradient(90deg,#15161b,#4b4e5a 45%,#101116);border:1px solid #050507;
+    box-shadow:0 1px 2px rgba(0,0,0,.7);}
+
+  /* Right vertical dock (landscape) / bottom bar (portrait) */
+  .tdock{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;width:54px;flex:none;}
+  .tdockbtn{width:48px;height:48px;border-radius:14px;border:1.5px solid rgba(240,199,94,.32);
+    background:linear-gradient(180deg,#442111,#251007);color:#f7efe1;font-size:18px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,220,160,.16);transition:.15s;}
+  .tdockbtn span{font-size:8.5px;font-weight:800;margin-top:1px;color:#e7d7bf;}
+  .tdockbtn.cta{border-color:#fde68a;background:linear-gradient(180deg,#d97706,#92400e);
+    box-shadow:0 0 16px rgba(245,158,11,.55);}
+  .tdockbtn.danger{border-color:rgba(248,113,113,.45);background:linear-gradient(180deg,#7f1d1d,#450a0a);}
+  .tdockbtn:disabled{opacity:.38;cursor:default;}
+
+  /* VS Intro overlay */
+  .vs-overlay{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;padding:20px;cursor:pointer;
+    background:radial-gradient(ellipse at center, #2d1846 0%, #140c24 55%, #07050e 100%);
+    animation:vsFadeIn .25s ease-out;}
+  @keyframes vsFadeIn{from{opacity:0;}to{opacity:1;}}
+  .vs-stage{display:flex;align-items:center;justify-content:center;gap:clamp(16px,5vw,56px);width:100%;max-width:720px;}
+  .vs-card{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;max-width:200px;}
+  .vs-ring{width:clamp(76px,14vw,116px);height:clamp(76px,14vw,116px);border-radius:50%;padding:5px;
+    display:flex;align-items:center;justify-content:center;position:relative;}
+  .vs-ring.w{background:linear-gradient(135deg,#60a5fa,#1d4ed8);box-shadow:0 0 28px rgba(59,130,246,.65);}
+  .vs-ring.b{background:linear-gradient(135deg,#f87171,#b91c1c);box-shadow:0 0 28px rgba(239,68,68,.65);}
+  .vs-av{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#27272a,#09090b);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .vs-av svg{width:100%;height:100%;display:block;}
+  .vs-name{font-size:clamp(15px,2.5vw,21px);font-weight:900;color:#fff;text-align:center;}
+  .vs-sub{font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.1);color:#fde68a;}
+  .vs-mid{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .vs-letters{font-size:clamp(38px,7vw,62px);font-weight:900;font-style:italic;letter-spacing:-2px;
+    background:linear-gradient(180deg,#fff7d6,#f59e0b 55%,#92400e);-webkit-background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 14px rgba(245,158,11,.6));}
+  .vs-target{font-size:12px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:#fde68a;
+    padding:4px 12px;border-radius:99px;border:1px solid rgba(253,230,138,.45);background:rgba(0,0,0,.35);}
+  .vs-prog{width:min(76vw,340px);height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;
+    margin-top:24px;border:1px solid rgba(255,255,255,.18);}
+  .vs-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#f59e0b,#ef4444);
+    animation:vsBar 2.1s linear forwards;}
+  @keyframes vsBar{from{width:0%;}to{width:100%;}}
+
+  /* Portrait phone layout */
+  @media (max-width:719px){
+    .tgame{flex-direction:column;padding:5px 6px;gap:5px;}
+    .tsidebar{width:auto;flex-direction:row;padding:5px 6px;gap:6px;}
+    .tpbox{flex:1;min-width:0;flex-direction:row;padding:4px 6px;gap:6px;}
+    .tpav-lg{width:34px;height:34px;padding:2px;}
+    .tpav-lg .pdot{width:10px;height:10px;}
+    .tpbox-name{font-size:11px;text-align:left;}
+    .tpstats{justify-content:flex-start;}
+    .tppill{font-size:9px;padding:1px 5px;}
+    .tvs-center{padding:0 2px;min-width:68px;}
+    .tvs-v,.tvs-s{display:none;}
+    .tscorepill{font-size:9.5px;padding:2px 6px;margin-top:0;}
+    .tturnsub{font-size:9px;}
+    .twrap{flex-direction:column;gap:5px;}
+    .tboard-outer{padding:5px;}
+    .tboard-inner{grid-template-columns:16px 1fr 22px 1fr 30px;gap:3px;}
+    .trail-left{padding:4px 1px;}
+    .tcube{width:14px;height:14px;font-size:8px;border-radius:3px;}
+    .trail-pip{font-size:7px;}
+    .thinge{width:12px;height:20px;}
+    .chk,.ghost-chk{width:min(84%, 4.2vh, 28px);height:auto;aspect-ratio:1;}
+    .ghost-chk{font-size:10px;}
+    .point .stack.dense .chk + .chk{margin-top:-28%;}
+    .point.bottom .stack.dense .chk + .chk{margin-top:0;margin-bottom:-28%;}
+    .die{width:32px;height:32px;padding:4px;border-radius:8px;}
+    .tdock{flex-direction:row;width:auto;height:auto;justify-content:center;gap:8px;padding-bottom:2px;}
+    .tdockbtn{flex:1;height:40px;max-width:74px;}
+  }
+    .tscorepill{font-size:10px;padding:2px 7px;}
+  }
 
   @media (min-width:700px){
     .actionbar{max-width:640px;margin:0 auto;}
@@ -659,9 +841,11 @@ function loadSession(){
 function saveSession(s){ localStorage.setItem(LS.session, JSON.stringify(s)); }
 function clearSession(){ localStorage.removeItem(LS.session); }
 
+const DEFAULT_SERVER = "https://remi-online-server.onrender.com";
+
 function apiBase(){
   if (location.protocol === "http:" || location.protocol === "https:") return "";
-  return (localStorage.getItem(LS.server) || "").replace(/\/+$/,"");
+  return (localStorage.getItem(LS.server) || DEFAULT_SERVER).replace(/\/+$/,"");
 }
 function serverUrl(){ return apiBase() || location.origin; }
 
@@ -672,7 +856,7 @@ async function api(path, body){
   }
   const url = base ? base + path : path;
   const ctrl = new AbortController();
-  const timer = setTimeout(()=>ctrl.abort(), 40000);
+  const timer = setTimeout(()=>ctrl.abort(), 65000);
   try{
     const res = await fetch(url, {
       method: "POST",
@@ -688,25 +872,74 @@ async function api(path, body){
 
 /* ---------------------------- sunete ---------------------------- */
 let audioCtx = null;
-function beep(freq=440, dur=0.05, type="sine", vol=0.04){
-  if (!ui.sound) return;
+function ensureAudio(){
   try{
     audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(vol, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + dur);
+    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(()=>{});
+    return audioCtx;
+  }catch(e){ return null; }
+}
+["pointerdown","touchstart","click"].forEach(ev=>{
+  document.addEventListener(ev, ()=>{ if (ui.sound) ensureAudio(); }, {passive:true});
+});
+function beep(freq=440, dur=0.07, type="sine", vol=0.24, delay=0){
+  if (!ui.sound) return;
+  try{
+    const ctx = ensureAudio(); if (!ctx) return;
+    const t = ctx.currentTime + delay;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(Math.max(0.01, vol), t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t + dur + 0.01);
   }catch(e){}
 }
+function playWoodTap(delay=0, pitch=190, vol=0.42){
+  if (!ui.sound) return;
+  try{
+    const ctx = ensureAudio(); if (!ctx) return;
+    const t = ctx.currentTime + delay;
+    // corp lemn (impact cald)
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "triangle";
+    o.frequency.setValueAtTime(pitch, t);
+    o.frequency.exponentialRampToValueAtTime(68, t + 0.055);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.065);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t + 0.075);
+    // clic lemn scurt
+    const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+    o2.type = "sine";
+    o2.frequency.setValueAtTime(pitch * 4.2, t);
+    o2.frequency.exponentialRampToValueAtTime(pitch * 1.4, t + 0.02);
+    g2.gain.setValueAtTime(vol * 0.45, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+    o2.connect(g2); g2.connect(ctx.destination);
+    o2.start(t); o2.stop(t + 0.03);
+  }catch(e){}
+}
+function playDiceRoll(){
+  if (!ui.sound) return;
+  const hits = [
+    [0.00, 320, 0.34],
+    [0.05, 440, 0.30],
+    [0.10, 290, 0.36],
+    [0.16, 390, 0.28],
+    [0.23, 250, 0.38],
+  ];
+  for (const [d, p, v] of hits) playWoodTap(d, p, v);
+}
 const sfx = {
-  draw: ()=>beep(320,.05,"triangle",.05),
-  discard: ()=>beep(220,.06,"triangle",.05),
-  meld: ()=>{beep(520,.07,"sine",.06); setTimeout(()=>beep(720,.09,"sine",.05),70);},
-  yourturn: ()=>{beep(660,.08,"sine",.06); setTimeout(()=>beep(880,.1,"sine",.05),90);},
-  win: ()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.12,"sine",.06), i*110));},
-  err: ()=>beep(140,.12,"sawtooth",.05),
+  draw: ()=>playWoodTap(0, 280, 0.22),
+  discard: ()=>playWoodTap(0, 200, 0.30),
+  wood: ()=>playWoodTap(0, 195, 0.44),
+  rollDice: ()=>playDiceRoll(),
+  meld: ()=>{playWoodTap(0, 230, 0.36); beep(560,.08,"sine",.22,.02); beep(760,.11,"sine",.20,.09);},
+  yourturn: ()=>{beep(660,.09,"sine",.22,0); beep(880,.12,"sine",.22,.09);},
+  win: ()=>{[523,659,784,1047].forEach((f,i)=>beep(f,.14,"sine",.24, i*0.11));},
+  err: ()=>beep(145,.15,"sawtooth",.20),
 };
 
 /* ---------------------------- toast ---------------------------- */
@@ -869,7 +1102,7 @@ function backTileHTML(size="md", extra=""){
 function renderHome(){
   const savedName = localStorage.getItem(LS.name) || "";
   const isApp = (location.protocol === "file:" || ANDROID);
-  const srv = localStorage.getItem(LS.server) || "";
+  const srv = localStorage.getItem(LS.server) || DEFAULT_SERVER;
   return `
   <div class="home-wrap">
     <div class="home">
@@ -1337,22 +1570,65 @@ async function leaveGame(){
 
 
 /* =====================================================================
-   TABLE (backgammon)
+   TABLE (backgammon luxury wood + left VS sidebar + fluid moves)
    ===================================================================== */
 let tSel = null;          // punct selectat (1..24) sau "bar"
 let tLastV = -1;
+let tVsShownKey = "";
+let tVsActive = false;
+let tVsTimer = null;
 
-function dicePips(v){
+function avatarSVG(seat, name){
+  const bg = seat === 0 ? "#1e3a8a" : "#7f1d1d";
+  const accent = seat === 0 ? "#93c5fd" : "#fca5a5";
+  const hair = seat === 0 ? "#2c1a12" : "#1c1917";
+  const shirt = seat === 0 ? "#1d4ed8" : "#991b1b";
+  const ini = esc(initials(name));
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="avbg${seat}" cx="40%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="${accent}" stop-opacity=".42"/>
+        <stop offset="100%" stop-color="${bg}"/>
+      </radialGradient>
+    </defs>
+    <rect width="100" height="100" fill="url(#avbg${seat})"/>
+    <path d="M18 100 C20 74, 34 68, 50 68 C66 68, 80 74, 82 100 Z" fill="${shirt}"/>
+    <rect x="42" y="55" width="16" height="16" rx="7" fill="#e5b899"/>
+    <circle cx="50" cy="40" r="19" fill="#f1c7a7"/>
+    ${seat===0
+      ? `<path d="M29 42 C29 22, 71 22, 71 42 C67 30, 56 26, 50 28 C44 26, 33 30, 29 42 Z" fill="${hair}"/>
+         <path d="M28 40 C26 56, 31 66, 35 67 L35 46 Z M72 40 C74 56, 69 66, 65 67 L65 46 Z" fill="${hair}"/>`
+      : `<path d="M30 38 C30 20, 70 20, 70 38 C64 29, 36 29, 30 38 Z" fill="${hair}"/>`}
+    <circle cx="43" cy="41" r="2.2" fill="#1f1612"/>
+    <circle cx="57" cy="41" r="2.2" fill="#1f1612"/>
+    <path d="M44 50 Q50 54 56 50" stroke="#9f5b44" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="80" cy="20" r="12" fill="rgba(0,0,0,.55)" stroke="${accent}" stroke-width="1.5"/>
+    <text x="80" y="24" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-family="sans-serif">${ini}</text>
+  </svg>`;
+}
+
+function dicePips(v, small=false){
   const map = {
     1:[4], 2:[0,8], 3:[0,4,8], 4:[0,2,6,8], 5:[0,2,4,6,8], 6:[0,2,3,5,6,8]
   };
   const on = new Set(map[v] || []);
   let html = "";
   for (let i=0;i<9;i++) html += `<i class="${on.has(i)?"on":""}"></i>`;
-  return `<div class="die">${html}</div>`;
+  return `<div class="die${small?" small":""}">${html}</div>`;
 }
 function mySeat(){ return S.mySeat; }
 function myColorHex(){ return S.mySeat === 0 ? "alb" : "negru"; }
+
+function calcPips(seat){
+  let total = ((S.bar||[0,0])[seat] || 0) * 25;
+  for (const c of (S.board||[])){
+    if (c.owner === seat && c.count > 0){
+      const dist = seat === 0 ? c.i : (25 - c.i);
+      total += dist * c.count;
+    }
+  }
+  return total;
+}
 
 function pointHasMyChecker(pt){
   const cell = (S.board||[]).find(c=>c.i===pt);
@@ -1367,30 +1643,82 @@ function legalTargetsFrom(from){
   }
   return set;
 }
+function legalDieMapFrom(from){
+  const map = new Map();
+  for (const mv of (S.legalMoves||[])){
+    if (String(mv.from) === String(from)){
+      const k = String(mv.to);
+      if (!map.has(k)) map.set(k, mv.die);
+    }
+  }
+  return map;
+}
 function canMoveFrom(from){
   return (S.legalMoves||[]).some(mv=>String(mv.from) === String(from));
+}
+
+function optimisticTableMove(from, to){
+  if (!S) return;
+  const me = mySeat();
+  if (from === "bar"){
+    S.bar[me] = Math.max(0, (S.bar[me]||0) - 1);
+  } else {
+    const fPt = Number(from);
+    const fc = (S.board||[]).find(c=>c.i===fPt);
+    if (fc){ fc.count = Math.max(0, fc.count - 1); }
+    S.board = (S.board||[]).filter(c=>c.count > 0);
+  }
+  if (to === "off"){
+    S.off[me] = (S.off[me]||0) + 1;
+  } else {
+    const tPt = Number(to);
+    let tc = (S.board||[]).find(c=>c.i===tPt);
+    if (!tc){
+      S.board.push({i: tPt, owner: me, count: 1});
+    } else if (tc.owner === me){
+      tc.count += 1;
+    } else if (tc.count === 1){
+      const opp = tc.owner;
+      tc.owner = me; tc.count = 1;
+      S.bar[opp] = (S.bar[opp]||0) + 1;
+    }
+  }
+  // scoate zarul folosit din previzualizare
+  const usedDie = legalDieMapFrom(from).get(String(to));
+  if (usedDie && Array.isArray(S.dice)){
+    const idx = S.dice.indexOf(usedDie);
+    if (idx >= 0) S.dice.splice(idx, 1);
+  }
+  S.legalMoves = [];
 }
 
 function tPointHTML(pt, side){
   const cell = (S.board||[]).find(c=>c.i===pt);
   const owner = cell ? cell.owner : null;
   const count = cell ? cell.count : 0;
-  const targets = tSel !== null ? legalTargetsFrom(tSel) : new Set();
-  const isTarget = targets.has(String(pt));
+  const dieMap = tSel !== null ? legalDieMapFrom(tSel) : new Map();
+  const isTarget = dieMap.has(String(pt));
+  const targetDie = dieMap.get(String(pt));
   const sel = String(tSel) === String(pt);
+  const canPick = !!S.myTurn && !S.canRoll && owner === S.mySeat && canMoveFrom(pt);
   const cls = [
     "point", side,
     sel ? "selpt" : "",
     isTarget ? "target" : "",
-  ].join(" ");
+    canPick ? "canpick" : "",
+  ].filter(Boolean).join(" ");
   const shown = Math.min(count, 5);
+  const dense = count > 4;
   const chips = [];
   for (let k=0;k<shown;k++){
     chips.push(`<div class="chk ${owner===0?"w":"b"}"></div>`);
   }
+  if (isTarget){
+    chips.push(`<div class="ghost-chk" title="Mută aici (${targetDie})">${targetDie||"●"}</div>`);
+  }
   return `<div class="${cls}" data-pt="${pt}">
     <div class="tri ${pt%2 ? "c1" : "c2"}"></div>
-    <div class="stack">${chips.join("")}</div>
+    <div class="stack ${dense?"dense":""}">${chips.join("")}</div>
     ${count>5?`<span class="pcnt">${count}</span>`:""}
     <span class="plabel">${pt}</span>
   </div>`;
@@ -1399,104 +1727,189 @@ function tPointHTML(pt, side){
 function barChips(seat, cls){
   const n = (S.bar||[0,0])[seat] || 0;
   const out = [];
-  for (let i=0;i<Math.min(n,6);i++) out.push(`<div class="chk ${cls}"></div>`);
+  for (let i=0;i<Math.min(n,4);i++) out.push(`<div class="chk sm ${cls}"></div>`);
   return out.join("");
+}
+
+function offEdgesHTML(count, cls){
+  const n = Math.min(15, Math.max(0, count || 0));
+  let out = "";
+  for (let i=0;i<n;i++) out += `<div class="off-edge ${cls}"></div>`;
+  return out;
+}
+
+function renderTableVS(p0, p1){
+  return `<div class="vs-overlay" id="vsOverlay">
+    <div class="vs-stage">
+      <div class="vs-card">
+        <div class="vs-ring w"><div class="vs-av">${avatarSVG(0, p0.name)}</div></div>
+        <div class="vs-name">${esc(p0.name)}${S.mySeat===0?" (tu)":""}</div>
+        <div class="vs-sub">⚪ Piese Albe · ${p0.score||0}p</div>
+      </div>
+      <div class="vs-mid">
+        <div class="vs-letters">VS</div>
+        <div class="vs-target">Meci până la ${S.opts.target} puncte</div>
+        <div class="dicerow" style="background:transparent">${dicePips(6)}${dicePips(5)}</div>
+      </div>
+      <div class="vs-card">
+        <div class="vs-ring b"><div class="vs-av">${avatarSVG(1, p1.name)}</div></div>
+        <div class="vs-name">${esc(p1.name)}${S.mySeat===1?" (tu)":""}</div>
+        <div class="vs-sub">⚫ Piese Negre · ${p1.score||0}p</div>
+      </div>
+    </div>
+    <div class="vs-prog"><i></i></div>
+    <div class="tag" style="margin-top:10px;color:#cbb8d9">Apasă oriunde pentru a continua</div>
+  </div>`;
 }
 
 function renderTableGame(){
   const inLobby = S.phase === "lobby";
   if (inLobby) return renderLobby();
 
-  const p0 = S.players.find(p=>p.seat===0) || {name:"?"};
-  const p1 = S.players.find(p=>p.seat===1) || {name:"?"};
+  const p0 = S.players.find(p=>p.seat===0) || {name:"Jucător 1"};
+  const p1 = S.players.find(p=>p.seat===1) || {name:"Jucător 2"};
   const myTurn = !!S.myTurn;
-  const offMe = (S.off||[0,0])[mySeat()] || 0;
-  const offOpp = (S.off||[0,0])[1-mySeat()] || 0;
   const barMe = (S.bar||[0,0])[mySeat()] || 0;
-  const barOpp = (S.bar||[0,0])[1-mySeat()] || 0;
   const targets = tSel !== null ? legalTargetsFrom(tSel) : new Set();
   const canBearOff = targets.has("off");
 
-  const topRow = [];
-  for (let pt=13; pt<=24; pt++) topRow.push(tPointHTML(pt, "top"));
-  const bottomRow = [];
-  for (let pt=12; pt>=1; pt--) bottomRow.push(tPointHTML(pt, "bottom"));
+  const vsKey = `${S.code}:${S.leg}`;
+  if (S.phase === "playing" && tVsShownKey !== vsKey){
+    tVsShownKey = vsKey;
+    if (S.leg === 1 && S.canRoll && (S.off||[0,0])[0]===0 && (S.off||[0,0])[1]===0){
+      tVsActive = true;
+      if (tVsTimer) clearTimeout(tVsTimer);
+      tVsTimer = setTimeout(()=>{
+        tVsActive = false;
+        const ov = $("#vsOverlay");
+        if (ov) ov.remove();
+      }, 2200);
+    }
+  }
 
-  const diceHTML = (S.dice||[]).length
+  const pip0 = calcPips(0);
+  const pip1 = calcPips(1);
+
+  const topLeft = [];
+  for (let pt=13; pt<=18; pt++) topLeft.push(tPointHTML(pt, "top"));
+  const topRight = [];
+  for (let pt=19; pt<=24; pt++) topRight.push(tPointHTML(pt, "top"));
+  const botLeft = [];
+  for (let pt=12; pt>=7; pt--) botLeft.push(tPointHTML(pt, "bottom"));
+  const botRight = [];
+  for (let pt=6; pt>=1; pt--) botRight.push(tPointHTML(pt, "bottom"));
+
+  const activeDice = (S.dice||[]).length
     ? `<div class="dicerow">${(S.dice||[]).map(d=>dicePips(d)).join("")}</div>`
     : (S.diceRoll && S.diceRoll.length ? `<div class="dicerow" style="opacity:.45">${S.diceRoll.map(d=>dicePips(d)).join("")}</div>` : "");
+
+  const showRollOnBoard = myTurn && S.canRoll;
+  const diceOnRight = (S.turnSeat === 0) || showRollOnBoard;
 
   let msg = "";
   if (S.phase === "playing"){
     if (myTurn){
-      if (S.canRoll) msg = "Apasă <b>Aruncă zarurile</b>";
-      else if (tSel === null) msg = "Atinge o piesă a ta, apoi destinația";
-      else msg = "Atinge un punct evidențiat";
+      if (S.canRoll) msg = "<b>Rândul tău</b> — dă cu zarul";
+      else if (tSel === null) msg = "Atinge o <b>piesă</b> de mutat";
+      else msg = "Alege <b>cercul verde</b>";
     } else {
-      msg = `Așteaptă — joacă <b>${esc((S.players.find(p=>p.isTurn)||{}).name||"")}</b> · ${S.turnLeft}s`;
+      msg = `Joacă <b>${esc((S.players.find(p=>p.isTurn)||{}).name||"")}</b> · ${S.turnLeft}s`;
     }
   }
 
   const barSelMe = String(tSel) === "bar";
   const canPickBar = myTurn && barMe > 0 && canMoveFrom("bar");
+  const off0 = (S.off||[0,0])[0] || 0;
+  const off1 = (S.off||[0,0])[1] || 0;
 
   return `<div class="screen tgame">
-    <div class="topbar">
-      <button class="btn icon-btn" id="btnMenu">☰</button>
-      <span class="chip">Table <b>${esc(S.code)}</b></span>
-      <span class="chip">Leg <b>${S.leg}</b></span>
-      <span class="chip">🎯 <b>${S.opts.target}p</b></span>
-      <div class="spacer"></div>
-      <span class="conn ${ui.connected?"ok":""}">${ui.connected?"●":"○"}</span>
-    </div>
-
-    <div class="tplayers">
-      <div class="tplayer ${S.phase==="playing" && S.turnSeat===0 ? "turn":""}">
-        <span class="dot w"></span>${esc(p0.name)}${S.mySeat===0?" (tu)":""}<span class="sc">${p0.score||0}p</span>
-      </div>
-      <div class="tplayer ${S.phase==="playing" && S.turnSeat===1 ? "turn":""}">
-        <span class="dot b"></span>${esc(p1.name)}${S.mySeat===1?" (tu)":""}<span class="sc">${p1.score||0}p</span>
-      </div>
-    </div>
-
-    <div class="tboard">
-      <div class="trow top">${topRow.join("")}</div>
-      <div class="tbar">
-        <div class="tbarside" id="tbarBlack">
-          <span class="lbl">BARĂ</span>
-          <div class="chkbar">${barChips(1, "b")}${(S.bar||[0,0])[1]>6?`<span class="pcnt">${(S.bar||[0,0])[1]}</span>`:""}</div>
-        </div>
-        <div class="tcenter">
-          ${diceHTML}
-          ${myTurn && S.canRoll ? `<button class="btn primary small" id="btnRoll" style="padding:8px 14px">🎲 Aruncă zarurile</button>` : ""}
-          <div class="tmsg">${msg}</div>
-        </div>
-        <div class="tbarside ${barSelMe?"selpt":""}" id="tbarWhite" ${canPickBar?`data-pick-bar="1"`:""}>
-          <span class="lbl">BARĂ</span>
-          <div class="chkbar">${barChips(0, "w")}${(S.bar||[0,0])[0]>6?`<span class="pcnt">${(S.bar||[0,0])[0]}</span>`:""}</div>
+    <aside class="tsidebar">
+      <div class="tpbox ${S.phase==="playing" && S.turnSeat===0 ? "turn":""}">
+        <div class="tpav-lg w"><div class="tpav-inner">${avatarSVG(0, p0.name)}</div><span class="pdot w"></span></div>
+        <div style="min-width:0;width:100%">
+          <div class="tpbox-name">${esc(p0.name)}${S.mySeat===0?" (tu)":""}</div>
+          <div class="tpstats"><span class="tppill">${p0.score||0}p</span><span class="tppill">${pip0} pip</span></div>
         </div>
       </div>
-      <div class="trow bottom">${bottomRow.join("")}</div>
-    </div>
 
-    <div class="toffs">
-      <div class="tray b ${canBearOff?"hot":""}" id="trayBlack">
-        <span class="dot"></span> scoase <b id="offBlack">${(S.off||[0,0])[1]}</b>/15
+      <div class="tvs-center">
+        <div class="tvs-v">V</div>
+        <div class="tvs-s">S</div>
+        <div class="tscorepill">Leg ${S.leg} · ${S.opts.target}p</div>
+        <div class="tturnsub">${msg}</div>
       </div>
-      <div class="tray w ${canBearOff?"hot":""}" id="trayWhite">
-        <span class="dot"></span> scoase <b id="offWhite">${(S.off||[0,0])[0]}</b>/15
+
+      <div class="tpbox ${S.phase==="playing" && S.turnSeat===1 ? "turn":""}">
+        <div class="tpav-lg b"><div class="tpav-inner">${avatarSVG(1, p1.name)}</div><span class="pdot b"></span></div>
+        <div style="min-width:0;width:100%">
+          <div class="tpbox-name">${esc(p1.name)}${S.mySeat===1?" (tu)":""}</div>
+          <div class="tpstats"><span class="tppill">${p1.score||0}p</span><span class="tppill">${pip1} pip</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="twrap">
+      <div class="tboard-outer">
+        <div class="tboard-inner">
+          <div class="trail-left">
+            <span class="trail-pip">🎯<br>${S.opts.target}p</span>
+            <div class="tcube" title="Meci până la ${S.opts.target} puncte">${S.opts.target}</div>
+            <span class="trail-pip">${esc(S.code)}</span>
+          </div>
+
+          <div class="thalf">
+            <div class="thalf-row">${topLeft.join("")}</div>
+            <div class="thalf-row">${botLeft.join("")}</div>
+            ${!diceOnRight && activeDice ? `<div class="tdice-overlay">${activeDice}</div>` : ""}
+          </div>
+
+          <div class="tmidbar">
+            <div class="tbarslot ${S.mySeat===1 && barSelMe?"selpt":""}" id="tbarBlack" ${S.mySeat===1 && canPickBar?`data-pick-bar="1"`:""}>
+              ${barChips(1, "b")}${(S.bar||[0,0])[1]>4?`<span class="pcnt">${(S.bar||[0,0])[1]}</span>`:""}
+            </div>
+            <div class="thinge"></div>
+            <div class="thinge"></div>
+            <div class="tbarslot ${S.mySeat===0 && barSelMe?"selpt":""}" id="tbarWhite" ${S.mySeat===0 && canPickBar?`data-pick-bar="1"`:""}>
+              ${barChips(0, "w")}${(S.bar||[0,0])[0]>4?`<span class="pcnt">${(S.bar||[0,0])[0]}</span>`:""}
+            </div>
+          </div>
+
+          <div class="thalf">
+            <div class="thalf-row">${topRight.join("")}</div>
+            <div class="thalf-row">${botRight.join("")}</div>
+            <div class="tdice-overlay">
+              ${showRollOnBoard
+                ? `<button class="roll-cta" id="btnRoll">🎲 Aruncă zarurile</button>`
+                : (diceOnRight && activeDice ? activeDice : "")}
+            </div>
+          </div>
+
+          <div class="ttray-col">
+            <div class="toffbox top tray b ${S.mySeat===1 && canBearOff?"hot":""}" id="trayBlack">
+              <span class="toff-lbl" id="offBlack">${off1}/15</span>
+              <div class="toff-stack">${offEdgesHTML(off1, "b")}</div>
+            </div>
+            <div class="toffbox bottom tray w ${S.mySeat===0 && canBearOff?"hot":""}" id="trayWhite">
+              <div class="toff-stack">${offEdgesHTML(off0, "w")}</div>
+              <span class="toff-lbl" id="offWhite">${off0}/15</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tdock">
+        <button class="tdockbtn ${showRollOnBoard?"cta":""}" id="btnRollDock" ${showRollOnBoard?"":"disabled"} title="Aruncă zarurile">🎲<span>Zar</span></button>
+        <button class="tdockbtn" id="btnClearSel" ${tSel!==null?"":"disabled"} title="Deselectează">✕<span>Anulează</span></button>
+        <button class="tdockbtn" id="btnChatQuickT" title="Chat">💬<span>Chat</span></button>
+        <button class="tdockbtn" id="btnMenu" title="Meniu">☰<span>Meniu</span></button>
       </div>
     </div>
 
-    <div class="actionbar">
-      <button class="btn ghost" id="btnClearSel">✕ Deselectează</button>
-      <button class="btn ghost small" id="btnChatQuickT" style="flex:0 0 auto">💬</button>
-    </div>
-
+    ${tVsActive ? renderTableVS(p0, p1) : ""}
     ${ui.chatOpen ? `<div class="overlay" id="overlay">${renderChat()}</div>` : ""}
     ${ui.menuOpen ? `<div class="overlay" id="overlay">${renderMenu()}</div>` : ""}
-    ${S.phase === "leg_end" && S.lastLeg ? `<div class="overlay" id="overlay">${renderLegEnd()}</div>` : ""}
-    ${S.phase === "match_end" ? `<div class="overlay" id="overlay">${renderMatchEnd()}</div>` : ""}
+    ${S.phase === "leg_end" && S.lastLeg && ui.hideLeg !== S.leg ? `<div class="overlay" id="overlay">${renderLegEnd()}</div>` : ""}
+    ${S.phase === "match_end" && ui.hideLeg !== S.leg ? `<div class="overlay" id="overlay">${renderMatchEnd()}</div>` : ""}
   </div>`;
 }
 
@@ -1536,7 +1949,8 @@ function renderMatchEnd(){
 
 function bindTableGame(){
   const b = (id, fn)=>{ const el = $(id); if (el) el.onclick = fn; };
-  b("#btnRoll", ()=>act({type:"roll"}, "draw"));
+  b("#btnRoll", ()=>{ sfx.rollDice(); act({type:"roll"}, null); });
+  b("#btnRollDock", ()=>{ if (S.myTurn && S.canRoll){ sfx.rollDice(); act({type:"roll"}, null); } });
   b("#btnClearSel", ()=>{ tSel = null; render(); });
   b("#btnChatQuickT", ()=>{ ui.chatOpen = true; render(); });
   b("#btnMenu", ()=>{ ui.menuOpen = true; render(); });
@@ -1548,6 +1962,10 @@ function bindTableGame(){
   b("#btnNextLeg", ()=>act({type:"next_leg"}, null));
   b("#btnNewMatch", ()=>act({type:"new_match"}, null));
   b("#btnHideLeg", ()=>{ ui.hideLeg = S.leg; render(); });
+  const vsOv = $("#vsOverlay");
+  if (vsOv){
+    vsOv.onclick = ()=>{ tVsActive = false; vsOv.remove(); };
+  }
   const chatForm = $("#chatForm");
   if (chatForm){
     chatForm.onsubmit = (e)=>{ e.preventDefault(); const inp=$("#chatInput"); const t=(inp.value||"").trim();
@@ -1558,7 +1976,7 @@ function bindTableGame(){
   const onPoint = async (pt)=>{
     if (!S.myTurn) return;
     if (tSel === null){
-      if (pointHasMyChecker(pt) && canMoveFrom(pt)){ tSel = pt; render(); }
+      if (pointHasMyChecker(pt) && canMoveFrom(pt)){ tSel = pt; sfx.draw(); render(); }
       return;
     }
     if (String(tSel) === String(pt)){ tSel = null; render(); return; }
@@ -1566,26 +1984,31 @@ function bindTableGame(){
     if (isLegal){
       const from = tSel;
       tSel = null;
-      await act({type:"move", from: from === "bar" ? "bar" : Number(from), to: Number(pt)}, "discard");
+      sfx.wood();
+      optimisticTableMove(from, pt);
+      render();
+      await act({type:"move", from: from === "bar" ? "bar" : Number(from), to: Number(pt)}, null);
       return;
     }
-    if (pointHasMyChecker(pt) && canMoveFrom(pt)){ tSel = pt; render(); return; }
+    if (pointHasMyChecker(pt) && canMoveFrom(pt)){ tSel = pt; sfx.draw(); render(); return; }
     tSel = null; render();
   };
   $$("#app .point").forEach(el=>{
     el.onclick = ()=>onPoint(Number(el.dataset.pt));
   });
-  const bw = $("#tbarWhite");
-  if (bw && bw.dataset.pickBar){
-    bw.onclick = ()=>{ tSel = "bar"; render(); };
-  }
+  $$("[data-pick-bar]").forEach(el=>{
+    el.onclick = ()=>{ tSel = "bar"; sfx.draw(); render(); };
+  });
   const offTray = $(".tray." + (mySeat()===0 ? "w" : "b"));
   if (offTray){
     offTray.onclick = async ()=>{
       if (!S.myTurn || tSel === null) return;
       if (!legalTargetsFrom(tSel).has("off")) return;
       const from = tSel; tSel = null;
-      await act({type:"move", from: from==="bar"?"bar":Number(from), to:"off"}, "meld");
+      sfx.meld();
+      optimisticTableMove(from, "off");
+      render();
+      await act({type:"move", from: from==="bar"?"bar":Number(from), to:"off"}, null);
     };
   }
 }
@@ -1681,7 +2104,7 @@ function renderMenu(){
   return `<div class="modal-wrap"><div class="modal">
     <button class="close-x" id="btnCloseModal">×</button>
     <h2>Meniu</h2>
-    <div class="tag">Camera ${esc(S.code)} · runda ${S.round}</div>
+    <div class="tag">Camera ${esc(S.code)} · ${S.game==="table" ? "legul " + (S.leg||1) : "runda " + (S.round||1)}</div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
       <button class="btn block" id="btnChat">💬 Chat</button>
       <button class="btn block" id="btnRules2">📖 Regulile jocului</button>
@@ -1898,8 +2321,13 @@ function boot(){
       if (name) joinRoom(code, name);
     }
   }
-  if (ANDROID && !localStorage.getItem(LS.server)){
+  if (!DEFAULT_SERVER && ANDROID && !localStorage.getItem(LS.server)){
     setTimeout(showServerSetup, 400);
+  }
+  // trezeste usor serverul la pornire
+  const b0 = apiBase();
+  if (b0 || location.protocol.startsWith("http")){
+    fetch((b0||"") + "/health").catch(()=>{});
   }
   pollLoop();
   // redesenare la intoarcerea in app
@@ -1971,5 +2399,5 @@ render = function(){
 window.addEventListener("load", boot);
 window.logout = function(){ clearSession(); session=null; S=null; YOU=null; ui.lastV=-1; render(); };
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5e0a0639c3fe3f8',t:'MTc5NTI3Mzg4Mg=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5e0a0639c3fe3f8',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
