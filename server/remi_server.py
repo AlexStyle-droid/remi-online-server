@@ -281,6 +281,128 @@ def group_final_points(tile_ids):
     return sum(tile_value(t) for t in tile_ids)
 
 
+def gen_valid_groups(tiles):
+    """Generează toate formațiile valide (suite și terțe) posibile din `tiles`."""
+    from itertools import combinations, product
+    tiles = sorted(tiles)
+    jokers = [t for t in tiles if is_joker(t)]
+    nats = [t for t in tiles if not is_joker(t)]
+    out = []
+    # 1) Terțe
+    by_val = {}
+    for t in nats:
+        by_val.setdefault(tile_number(t), []).append(t)
+    for v, grp in by_val.items():
+        by_col = {}
+        for t in grp:
+            by_col.setdefault(tile_color(t), []).append(t)
+        cols = list(by_col.keys())
+        for k in range(2, min(4, len(cols)) + 1):
+            for csub in combinations(cols, k):
+                for prod in product(*(by_col[c] for c in csub)):
+                    g = list(prod)
+                    if len(g) >= 3 and resolve_set(g):
+                        out.append(g)
+                    if len(g) <= 3:
+                        for j in jokers:
+                            cand = g + [j]
+                            if resolve_set(cand):
+                                out.append(cand)
+    # 2) Suite
+    by_c = {}
+    for t in nats:
+        by_c.setdefault(tile_color(t), []).append(t)
+    for c, grp in by_c.items():
+        by_num = {}
+        for t in grp:
+            by_num.setdefault(tile_number(t), []).append(t)
+        for s in range(1, 13):
+            for e in range(s + 2, min(15, s + 13)):
+                length = e - s + 1
+                if length > len(grp) + len(jokers):
+                    continue
+                req = []
+                miss = 0
+                for n in range(s, e + 1):
+                    val = 1 if n == 14 else n
+                    if val in by_num:
+                        req.append(by_num[val])
+                    else:
+                        miss += 1
+                if miss > len(jokers):
+                    continue
+                if miss == 2 and length < 6:
+                    continue
+                if length - miss < 2:
+                    continue
+                for j_use in combinations(jokers, miss):
+                    for prod in product(*req):
+                        cand = list(prod) + list(j_use)
+                        if resolve_sequence(cand):
+                            out.append(cand)
+    seen = set()
+    uniq = []
+    for g in out:
+        fs = frozenset(g)
+        if fs not in seen:
+            seen.add(fs)
+            uniq.append(g)
+    return uniq
+
+
+def find_complete_partition(tiles):
+    """Returnează o partiție completă în formații valide sau None."""
+    if not tiles:
+        return []
+    groups = gen_valid_groups(tiles)
+    by_tile = {t: [] for t in tiles}
+    for g in groups:
+        for t in g:
+            by_tile[t].append(g)
+
+    def rec(rem):
+        if not rem:
+            return []
+        t0 = min(rem, key=lambda t: sum(1 for g in by_tile[t] if all(x in rem for x in g)))
+        cands = [g for g in by_tile[t0] if all(x in rem for x in g)]
+        for g in cands:
+            res = rec(rem - frozenset(g))
+            if res is not None:
+                return [g] + res
+        return None
+
+    return rec(frozenset(tiles))
+
+
+def best_partial_partition(tiles):
+    """Găsește grupurile valide care acoperă cele mai multe puncte (pentru scor Remi pe tablă)."""
+    groups = gen_valid_groups(tiles)
+    if not groups:
+        return []
+    g_info = [(frozenset(g), sum(tile_value(t) for t in g), g) for g in groups]
+    g_info.sort(key=lambda x: -x[1])
+    best = {"pts": 0, "groups": []}
+
+    def rec(idx, rem, acc, pts):
+        if pts > best["pts"]:
+            best["pts"] = pts
+            best["groups"] = list(acc)
+        if idx >= len(g_info):
+            return
+        max_rem_pts = sum(tile_value(t) for t in rem)
+        if pts + max_rem_pts <= best["pts"]:
+            return
+        for i in range(idx, len(g_info)):
+            fs, pval, raw = g_info[i]
+            if fs.issubset(rem):
+                acc.append(raw)
+                rec(i + 1, rem - fs, acc, pts + pval)
+                acc.pop()
+
+    rec(0, frozenset(tiles), [], 0)
+    return best["groups"]
+
+
 # ----------------------------------------------------------------------------
 #  CAMERA / STARE DE JOC
 # ----------------------------------------------------------------------------
@@ -306,14 +428,17 @@ class Room:
             "max_players": MAX_PLAYERS_DEFAULT,
             "turn_seconds": TURN_SECONDS_DEFAULT,
             "target": TARGET_SCORE_DEFAULT,
+            "mode": "etalat",
         }
         if opts:
-            for k in list(self.opts.keys()):
+            for k in ("max_players", "turn_seconds", "target"):
                 if k in opts:
                     try:
                         self.opts[k] = int(opts[k])
                     except (TypeError, ValueError):
                         pass
+            if str(opts.get("mode", "")).lower() == "tabla":
+                self.opts["mode"] = "tabla"
         self.opts["max_players"] = max(2, min(4, self.opts["max_players"]))
         self.opts["turn_seconds"] = max(10, min(120, self.opts["turn_seconds"]))
         self.phase = "lobby"          # lobby | playing | round_end | game_over
@@ -617,7 +742,7 @@ class Room:
             raise GameError("Ai tras deja o piesă în această tură.")
         if not self.discard:
             raise GameError("Nu există piese aruncate.")
-        if not self.can_use_discard(pid):
+        if self.opts.get("mode") != "tabla" and not self.can_use_discard(pid):
             raise GameError("Poți lua piesa de jos doar dacă o folosești imediat într-o formație.")
         t = self.discard.pop()
         p["hand"].append(t)
@@ -629,6 +754,8 @@ class Room:
 
     # ------------------------------------------------------------ etalare
     def _can_meld_now(self, pid):
+        if self.opts.get("mode") == "tabla":
+            raise GameError("În Remi pe tablă nu se etalează pe masă — formează pe suport și apasă Închide.")
         if self.turn_pid != pid:
             raise GameError("Nu este rândul tău.")
         if self.phase != "playing":
@@ -779,6 +906,17 @@ class Room:
 
     def _discard(self, pid, tile, auto=False):
         p = self.player(pid)
+        if self.opts.get("mode") == "tabla":
+            if self.drawn_from == "discard" and self.taken_discard_tile == tile and not auto:
+                raise GameError("Nu poți arunca imediat aceeași piesă pe care ai luat-o de jos.")
+            p["hand"].remove(tile)
+            self.discard.append(tile)
+            p["first_turn_done"] = True
+            self.turns_completed += 1
+            if not auto:
+                self.add_log(f"{p['name']} a aruncat {tile_label(tile)}.")
+            self._next_turn()
+            return
         if self.drawn_from == "discard" and self.taken_discard_tile is not None:
             if self.taken_discard_tile not in self.placed_this_turn:
                 raise GameError("Ai luat piesa de jos — trebuie să o folosești într-o formație în această tură.")
@@ -793,6 +931,41 @@ class Room:
         if not auto:
             self.add_log(f"{p['name']} a aruncat {tile_label(tile)}.")
         self._next_turn()
+
+    def action_close_tabla(self, pid, closing_tile):
+        if self.opts.get("mode") != "tabla":
+            raise GameError("Această acțiune este doar pentru Remi pe tablă.")
+        if self.turn_pid != pid:
+            raise GameError("Nu este rândul tău.")
+        if self.phase != "playing":
+            raise GameError("Jocul nu este în desfășurare.")
+        p = self.player(pid)
+        if not self.drew:
+            raise GameError("Trage întâi o piesă.")
+        if closing_tile not in p["hand"] or len(p["hand"]) != 15:
+            raise GameError("Trebuie să ai 15 piese și să alegi ultima piesă pentru închidere.")
+        if self.drawn_from == "discard" and self.taken_discard_tile == closing_tile:
+            raise GameError("Nu poți închide aruncând exact piesa luată de jos.")
+        rem = [t for t in p["hand"] if t != closing_tile]
+        part = find_complete_partition(rem)
+        if not part:
+            raise GameError("Celelalte 14 piese nu sunt încă toate în suite sau terțe valide!")
+        # Afișează formațiile câștigătorului pe masă
+        self.groups.clear()
+        for g in part:
+            r = resolve_group(g)
+            gid = self.next_gid
+            self.next_gid += 1
+            self.groups[gid] = {
+                "id": gid,
+                "type": r["type"],
+                "owner": pid,
+                "tiles": [{"t": t, "eff": r["eff"][i], "by": pid} for i, t in enumerate(g)],
+            }
+        p["hand"] = []
+        p["first_meld"] = True
+        self._end_round(closer=pid, closing_tile=closing_tile, reason="close")
+        self.bump()
 
     # ---------------------------------------------------------------- atu
     def action_announce_atu(self, pid):
@@ -815,15 +988,41 @@ class Room:
 
     def _end_round(self, closer=None, closing_tile=None, reason="close"):
         self.phase = "round_end"
+        is_tabla = (self.opts.get("mode") == "tabla")
         results = []
         for p in self.players:
+            atu_bonus = 50 if p["atu_declared"] else 0
+            if is_tabla:
+                close_bonus = 0
+                if p["id"] == closer and reason == "close":
+                    close_bonus = 500 if (closing_tile is not None and is_joker(closing_tile)) else 250
+                    melded = sum(tile_value(x["t"]) for g in self.groups.values() for x in g["tiles"])
+                    rack = 0
+                    total = close_bonus + atu_bonus
+                    meld_ed = True
+                else:
+                    covered_groups = best_partial_partition(p["hand"])
+                    covered_ids = {t for g in covered_groups for t in g}
+                    deadwood = [t for t in p["hand"] if t not in covered_ids]
+                    melded = sum(tile_value(t) for t in covered_ids)
+                    rack = sum(tile_value(t) for t in deadwood)
+                    meld_ed = bool(covered_groups)
+                    total = (-rack + atu_bonus) if meld_ed else (-100 + atu_bonus)
+                p["round_score"] = total
+                p["score"] += total
+                results.append({
+                    "pid": p["id"], "name": p["name"], "melded": melded, "rack": rack,
+                    "atu": atu_bonus, "close": close_bonus,
+                    "meld_ed": meld_ed, "total": total,
+                    "hand": list(p["hand"]),
+                })
+                continue
             melded = 0
             for g in self.groups.values():
                 for x in g["tiles"]:
                     if x["by"] == p["id"]:
                         melded += tile_value(x["t"])
             rack = self._rack_points(p)
-            atu_bonus = 50 if p["atu_declared"] else 0
             close_bonus = 0
             if p["id"] == closer:
                 close_bonus = 50
@@ -847,6 +1046,7 @@ class Room:
             })
         self.round_scores = {
             "round": self.round_no,
+            "mode": self.opts.get("mode", "etalat"),
             "closer": closer,
             "closing_tile": closing_tile,
             "reason": reason,
@@ -955,9 +1155,13 @@ class Room:
                 "points": group_final_points([x["t"] for x in g["tiles"]]),
             })
         groups.sort(key=lambda g: g["id"])
-        can_meld_round = self.turns_completed >= len(self.players) and self.phase == "playing"
+        is_tabla = (self.opts.get("mode") == "tabla")
+        can_meld_round = (not is_tabla) and self.turns_completed >= len(self.players) and self.phase == "playing"
         me_state = None
         if me:
+            can_take_disc = (me["id"] == self.turn_pid and not self.drew and bool(self.discard)
+                             and self.phase == "playing"
+                             and (True if is_tabla else self.can_use_discard(me["id"])))
             me_state = {
                 "id": me["id"],
                 "name": me["name"],
@@ -968,15 +1172,17 @@ class Room:
                 "isTurn": me["id"] == self.turn_pid,
                 "drew": self.drew,
                 "drawnFrom": self.drawn_from,
+                "takenDiscardTile": self.taken_discard_tile if (me["id"] == self.turn_pid and self.drawn_from == "discard") else None,
                 "canDraw": (me["id"] == self.turn_pid and not self.drew and self.phase == "playing"),
-                "canTakeDiscard": (me["id"] == self.turn_pid and not self.drew and bool(self.discard)
-                                   and self.can_use_discard(me["id"]) and self.phase == "playing"),
+                "canTakeDiscard": can_take_disc,
                 "canMeld": bool(me["id"] == self.turn_pid and self.drew and can_meld_round),
                 "canDiscard": bool(me["id"] == self.turn_pid and self.drew and self.phase == "playing"),
                 "canAnnounceAtu": bool(me["atu"] and not me["atu_declared"] and self.phase == "playing"
                                        and not me["first_turn_done"]),
-                "canClose": bool(me["id"] == self.turn_pid and self.drew and me["first_meld"]
+                "canClose": bool((not is_tabla) and me["id"] == self.turn_pid and self.drew and me["first_meld"]
                                  and len(me["hand"]) == 1 and self.phase == "playing"),
+                "canCloseTabla": bool(is_tabla and me["id"] == self.turn_pid and self.drew
+                                      and len(me["hand"]) == 15 and self.phase == "playing"),
                 "ready": me["ready"],
             }
         return {
@@ -1347,11 +1553,14 @@ class Handler(BaseHTTPRequestHandler):
         game = (body.get("game") or "remi").lower()
         if game not in ("remi", "table"):
             game = "remi"
+        opts = body.get("opts") or {}
+        want_mode = "tabla" if (game == "remi" and str(opts.get("mode", "")).lower() == "tabla") else "etalat"
         with ROOMS_LOCK:
             candidates = [r for r in ROOMS.values()
                           if r.phase == "lobby" and len(r.players) < r.opts["max_players"]
                           and len(r.players) >= 1 and not r.opts.get("private")
-                          and getattr(r, "kind", "remi") == game]
+                          and getattr(r, "kind", "remi") == game
+                          and (game != "remi" or r.opts.get("mode", "etalat") == want_mode)]
         room = None
         if candidates:
             random.shuffle(candidates)
@@ -1360,7 +1569,7 @@ class Handler(BaseHTTPRequestHandler):
             if len(best.players) < best.opts["max_players"]:
                 room = best
         if room is None:
-            room = create_room({}, private=False, game=game)
+            room = create_room({"mode": want_mode} if game == "remi" else {}, private=False, game=game)
         with room.lock:
             try:
                 p = room.add_player(body.get("name"), body.get("avatar", ""))
@@ -1419,6 +1628,8 @@ class Handler(BaseHTTPRequestHandler):
                     room.action_swap_joker(pid, action.get("gid"), action.get("tile"))
                 elif typ == "discard":
                     room.action_discard(pid, action.get("tile"))
+                elif typ == "close_tabla":
+                    room.action_close_tabla(pid, action.get("tile"))
                 elif typ == "announce_atu":
                     room.action_announce_atu(pid)
                 elif typ == "next_round":
@@ -1440,6 +1651,8 @@ class Handler(BaseHTTPRequestHandler):
                         room.opts["turn_seconds"] = max(10, min(120, int(o["turn_seconds"])))
                     if "target" in o:
                         room.opts["target"] = max(0, int(o["target"]))
+                    if "mode" in o and str(o["mode"]).lower() in ("etalat", "tabla"):
+                        room.opts["mode"] = str(o["mode"]).lower()
                     room.add_log("Setările mesei au fost actualizate.")
                     room.bump()
                 else:
