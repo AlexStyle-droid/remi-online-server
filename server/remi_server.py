@@ -992,6 +992,7 @@ class Room:
             "turnSeconds": self.opts["turn_seconds"],
             "stockCount": len(self.stock),
             "discardTop": self.discard[-1] if self.discard else None,
+            "discardTrail": list(reversed(self.discard[-10:])),
             "discardCount": len(self.discard),
             "atuTile": self.atu_tile,
             "groups": groups,
