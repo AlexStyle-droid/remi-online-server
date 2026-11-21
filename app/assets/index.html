@@ -106,7 +106,7 @@
   .hv-tile:nth-child(3){transform:rotate(4deg) translateY(1px);z-index:3;}
   .hv-tile:nth-child(4){transform:rotate(10deg) translateY(5px);z-index:4;}
   .hv-tile .dot{width:14px;height:14px;border-radius:50%;background:currentColor;box-shadow:inset 0 2px 2px rgba(0,0,0,.2);}
-  .hv-tile.cb{color:#1d64d8;} .hv-tile.cr{color:#d92626;} .hv-tile.cy{color:#d97706;} .hv-tile.ck{color:#1f2937;}
+  .hv-tile.cb{color:#1d64d8;} .hv-tile.cr{color:#dc2626;} .hv-tile.cy{color:#eab308;text-shadow:0 0 1px rgba(113,63,18,.55);} .hv-tile.ck{color:#111827;}
 
   .hv-row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;flex:1;min-height:150px;}
   .hv-card{position:relative;border-radius:20px;padding:12px 10px 14px;display:flex;flex-direction:column;
@@ -289,9 +289,10 @@
   .tile:after{content:"";position:absolute;inset:0;border-radius:inherit;
     background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 42%);pointer-events:none;}
   .tile.cR{color:#dc2626;}
-  .tile.cY{color:#ea580c;}
-  .tile.cB{color:#2563eb;}
-  .tile.cK{color:#18181b;}
+  .tile.cY{color:#eab308;text-shadow:0 1px 0 rgba(113,63,18,.45), 0 0 1px rgba(113,63,18,.45);}
+  .tile.cY .pip{background:#eab308;box-shadow:0 0 0 1px rgba(113,63,18,.38);}
+  .tile.cB{color:#1d64d8;}
+  .tile.cK{color:#111827;}
   .tile.cJ{color:#7c3aed;border-color:#c4b5fd;}
   .tile .num{position:relative;z-index:1;line-height:.95;}
   .tile .pip{width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:2px;opacity:.92;position:relative;z-index:1;}
@@ -308,18 +309,18 @@
   .tile.back .num{font-size:.7em;}
 
   /* ---------- REMI LUXURY STAGE (Screenshot 2026-11-21 182926.jpg style) ---------- */
-  .rgame{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;padding:6px 10px 8px;gap:6px;
+  .rgame{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;padding:4px 8px 6px;gap:4px;
     background:radial-gradient(ellipse at 50% 35%, #2b0f47 0%, #150626 60%, #090212 100%);color:#f8fafc;}
-  .rg-head{display:flex;align-items:center;justify-content:center;gap:10px;flex:none;padding:2px 60px;flex-wrap:wrap;}
-  .rg-title{font-size:13px;font-weight:900;letter-spacing:.6px;color:#fff;text-transform:uppercase;
+  .rg-head{display:flex;align-items:center;justify-content:center;gap:8px;flex:none;padding:1px 56px;flex-wrap:wrap;}
+  .rg-title{font-size:12px;font-weight:900;letter-spacing:.6px;color:#fff;text-transform:uppercase;
     text-shadow:0 2px 6px rgba(0,0,0,.6);}
-  .rg-stage{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:10px;}
-  .rg-col{width:118px;flex:none;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:4px 0;}
-  .rg-pcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 6px;
-    border-radius:14px;background:linear-gradient(180deg,rgba(35,14,58,.9),rgba(17,6,30,.95));
+  .rg-stage{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:8px;}
+  .rg-col{width:106px;flex:none;display:flex;flex-direction:column;justify-content:space-between;gap:6px;padding:2px 0;}
+  .rg-pcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 5px;
+    border-radius:14px;background:linear-gradient(180deg,rgba(35,14,58,.92),rgba(17,6,30,.96));
     border:2px solid rgba(168,85,247,.32);box-shadow:0 6px 18px rgba(0,0,0,.55);transition:.2s;}
   .rg-pcard.turn{border-color:#4ade80;box-shadow:0 0 20px rgba(74,222,128,.55), inset 0 0 10px rgba(74,222,128,.14);}
-  .rg-pav{width:56px;height:56px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.22);
+  .rg-pav{width:54px;height:54px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.22);
     background:#1e0b36;flex:none;position:relative;}
   .rg-pav img,.rg-pav svg{width:100%;height:100%;object-fit:cover;display:block;}
   .rg-cnt{position:absolute;top:-7px;right:-7px;min-width:24px;height:24px;padding:0 5px;border-radius:99px;
@@ -341,27 +342,31 @@
   .rg-col.left .rg-bubble{left:calc(100% + 8px);}
   .rg-col.right .rg-bubble{right:calc(100% + 8px);}
 
-  .rg-board{flex:1;min-width:0;min-height:0;max-width:1120px;border-radius:20px;padding:10px 12px;
+  .rg-board{flex:1;min-width:0;min-height:0;max-width:1120px;border-radius:18px;padding:8px 10px;
     display:flex;flex-direction:column;position:relative;overflow:hidden;
-    background:
-      radial-gradient(ellipse at center, rgba(147,51,234,.28) 0%, rgba(59,7,100,.65) 100%),
-      linear-gradient(180deg,#581c87,#3b0764);
-    border:2.5px solid #9333ea;
-    box-shadow:inset 0 0 40px rgba(0,0,0,.55), 0 0 24px rgba(147,51,234,.3);}
-  .rg-groups{flex:1;min-height:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:4px;}
-  .rg-grp{display:flex;flex-direction:column;gap:3px;padding:5px 6px;border-radius:10px;
-    background:rgba(20,5,38,.45);border:1.5px solid rgba(192,132,252,.28);transition:.15s;}
-  .rg-grp.mine{border-color:rgba(250,204,21,.55);}
+    background-color:#4c157b;
+    background-image:
+      linear-gradient(to right, rgba(216,180,254,.14) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(216,180,254,.14) 1px, transparent 1px),
+      radial-gradient(ellipse at center, rgba(168,85,247,.26) 0%, rgba(46,10,79,.7) 100%);
+    background-size:calc(100% / 14) 100%, 100% 25%, 100% 100%;
+    border:2.5px solid #a855f7;
+    box-shadow:inset 0 0 38px rgba(0,0,0,.55), 0 0 24px rgba(147,51,234,.32);}
+  .rg-groups{flex:1;min-height:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px;padding:3px;}
+  .rg-grp{display:flex;flex-direction:column;gap:3px;padding:4px 5px;border-radius:10px;
+    background:rgba(20,5,38,.52);border:1.5px solid rgba(216,180,254,.35);transition:.15s;}
+  .rg-grp.mine{border-color:rgba(250,204,21,.6);}
   .rg-grp.target{border-color:#4ade80;box-shadow:0 0 18px rgba(74,222,128,.75);cursor:pointer;}
   .rg-grp .gtiles{display:flex;gap:3px;}
   .rg-grp .meta{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;font-weight:800;color:#d8b4fe;}
   .rg-grp .meta .pts{color:#fde68a;}
 
   /* Bottom 2-Row Wooden Rack Area */
-  .rg-rackwrap{flex:none;display:flex;align-items:stretch;justify-content:center;gap:8px;max-width:1220px;width:100%;margin:0 auto;padding:0 54px;}
-  .rg-sidebtn{width:64px;flex:none;border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;
+  .rg-rackwrap{flex:none;display:flex;align-items:stretch;justify-content:center;gap:8px;max-width:1240px;width:100%;margin:0 auto;padding:0 54px;}
+  .rg-sidebtn{width:62px;flex:none;border-radius:16px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;
     justify-content:center;gap:4px;font-size:20px;font-weight:900;color:#fff;cursor:pointer;transition:.15s;
     border:2px solid rgba(250,204,21,.35);box-shadow:0 6px 16px rgba(0,0,0,.55);}
+  .rg-sidebtn.drop-hover,.rg-discard.drop-hover{border-color:#4ade80 !important;box-shadow:0 0 24px rgba(74,222,128,.95) !important;transform:scale(1.03);}
   .rg-sidebtn span{font-size:10px;font-weight:900;text-align:center;line-height:1.15;}
   .rg-sidebtn.meld{background:linear-gradient(180deg,#5b4b1e,#2e2409);color:#fde68a;}
   .rg-sidebtn.meld.hot{background:linear-gradient(180deg,#eab308,#a16207);color:#1c1202;border-color:#fef08a;
@@ -2394,17 +2399,21 @@ function bindGame(){
       }
       const under = document.elementFromPoint(e.clientX, e.clientY);
       const slotEl = under ? under.closest(".rg-slot") : null;
-      if (dragSt.hoverEl && dragSt.hoverEl !== slotEl){
+      const discEl = (!slotEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
+      const nextHover = slotEl || discEl;
+      if (dragSt.hoverEl && dragSt.hoverEl !== nextHover){
         dragSt.hoverEl.classList.remove("drop-hover");
       }
-      dragSt.hoverEl = slotEl;
-      if (slotEl) slotEl.classList.add("drop-hover");
+      dragSt.hoverEl = nextHover;
+      if (nextHover) nextHover.classList.add("drop-hover");
     });
     const finishPointer = (e, cancelled) => {
       if (!dragSt || e.pointerId !== dragSt.pid) return;
       const st = dragSt;
       const under = !cancelled && st.moved ? document.elementFromPoint(e.clientX, e.clientY) : null;
       const targetSlot = under ? under.closest(".rg-slot") : null;
+      const targetDiscard = (!targetSlot && !cancelled && st.moved && S.me && S.me.canDiscard && under)
+        ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
       clearDrag();
       if (cancelled) return;
       if (st.moved){
@@ -2417,6 +2426,12 @@ function bindGame(){
             sfx.tileTap();
             render();
           }
+        } else if (targetDiscard){
+          const tileId = Number(st.el.dataset.tile);
+          const isClose = S.me && S.me.canClose;
+          if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
+          sel.clear();
+          act({type:"discard", tile:tileId}, "discard");
         }
         return;
       }
@@ -2443,7 +2458,19 @@ function bindGame(){
   const stock = $("#pileStock");
   if (stock && S.me && S.me.canDraw) stock.onclick = ()=>act({type:"draw_stock"}, "draw");
   const disc = $("#pileDiscard");
-  if (disc && S.me && S.me.canTakeDiscard) disc.onclick = ()=>act({type:"draw_discard"}, "draw");
+  if (disc){
+    disc.onclick = ()=>{
+      if (!S.me) return;
+      if (S.me.canTakeDiscard){ act({type:"draw_discard"}, "draw"); return; }
+      if (S.me.canDiscard && sel.size === 1){
+        const t = [...sel][0];
+        const isClose = !!S.me.canClose;
+        if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
+        sel.clear();
+        act({type:"discard", tile:t}, "discard");
+      }
+    };
+  }
 
   const b = (id, fn)=>{ const el = $(id); if (el) el.onclick = fn; };
   b("#btnSort777", ()=>sortRemiRack("777"));
@@ -3180,7 +3207,7 @@ function renderLobby(){
             </select></div>`}
           <div class="settings-row"><label>Timp pe tură</label>
             <select class="inp" id="optTime">
-              ${(isTable?[20,30,45,60,90]:[20,30,45,60]).map(n=>`<option value="${n}" ${S.opts.turn_seconds===n?"selected":""}>${n} secunde</option>`).join("")}
+              ${[30,45,60,90].map(n=>`<option value="${n}" ${S.opts.turn_seconds===n?"selected":""}>${n} secunde</option>`).join("")}
             </select></div>
           <div class="settings-row"><label>${isTable?"Meci până la":"Scor final"}</label>
             <select class="inp" id="optTarget">
