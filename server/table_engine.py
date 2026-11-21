@@ -191,65 +191,177 @@ class TableRoom:
                 n += c[1]
         return n
 
-    def _all_home(self, p):
-        if self.bar[p]:
+    def _all_home_state(self, board, bar, off, p):
+        if bar[p]:
             return False
-        return self._count_on(p, self._home_points(p)) + self.off[p] == 15
+        pts = self._home_points(p)
+        n = sum(board[i][1] for i in pts if i in board and board[i][0] == p)
+        return n + off[p] == 15
 
-    def _can_land(self, p, to):
-        c = self.board.get(to)
+    def _all_home(self, p):
+        return self._all_home_state(self.board, self.bar, self.off, p)
+
+    def _can_land_state(self, board, p, to):
+        c = board.get(to)
         if not c:
             return True
         if c[0] == p:
             return True
         return c[1] == 1
 
-    def legal_for_die(self, p, d):
+    def _can_land(self, p, to):
+        return self._can_land_state(self.board, p, to)
+
+    def _legal_for_die_state(self, board, bar, off, p, d, only_from=None):
         out = []
-        if self.bar[p] > 0:
+        if bar[p] > 0:
+            if only_from is not None and only_from != "bar":
+                return out
             to = 25 - d if p == WHITE else d
-            if 1 <= to <= 24 and self._can_land(p, to):
+            if 1 <= to <= 24 and self._can_land_state(board, p, to):
                 out.append({"from": "bar", "to": to, "die": d})
             return out
-        home = self._all_home(p)
-        for i in range(1, 25):
-            c = self.board.get(i)
+        home = self._all_home_state(board, bar, off, p)
+        pts = [only_from] if (isinstance(only_from, int) and 1 <= only_from <= 24) else range(1, 25)
+        for i in pts:
+            c = board.get(i)
             if not c or c[0] != p:
                 continue
             if not home:
                 to = i + self._dir(p) * d
-                if 1 <= to <= 24 and self._can_land(p, to):
+                if 1 <= to <= 24 and self._can_land_state(board, p, to):
                     out.append({"from": i, "to": to, "die": d})
             else:
                 # în casa proprie se poate muta și normal, nu doar scoate
                 to = i + self._dir(p) * d
-                if 1 <= to <= 24 and self._can_land(p, to):
+                if 1 <= to <= 24 and self._can_land_state(board, p, to):
                     out.append({"from": i, "to": to, "die": d})
                 dist = i if p == WHITE else (25 - i)
                 if d == dist:
                     out.append({"from": i, "to": "off", "die": d})
                 elif d > dist:
                     if p == WHITE:
-                        further = sum(c2[1] for j, c2 in self.board.items() if c2[0] == p and j > i)
+                        further = sum(c2[1] for j, c2 in board.items() if c2[0] == p and j > i)
                     else:
-                        further = sum(c2[1] for j, c2 in self.board.items() if c2[0] == p and j < i)
+                        further = sum(c2[1] for j, c2 in board.items() if c2[0] == p and j < i)
                     if further == 0:
                         out.append({"from": i, "to": "off", "die": d})
         return out
 
+    def legal_for_die(self, p, d):
+        return self._legal_for_die_state(self.board, self.bar, self.off, p, d)
+
+    def _sim_step(self, board, bar, off, p, frm, to):
+        hit = 0
+        if frm == "bar":
+            bar[p] -= 1
+        else:
+            c = board[frm]
+            c[1] -= 1
+            if c[1] == 0:
+                del board[frm]
+        if to == "off":
+            off[p] += 1
+            return hit
+        c = board.get(to)
+        if c and c[0] != p:
+            bar[c[0]] += 1
+            board[to] = [p, 1]
+            hit = 1
+        elif c:
+            c[1] += 1
+        else:
+            board[to] = [p, 1]
+        return hit
+
     def legal_moves(self, p=None):
         if p is None:
             p = self.turn
-        seen = set()
-        out = []
+        best = {}
+        # 1. Mutări cu un singur zar
         for d in sorted(set(self.dice)):
             for mv in self.legal_for_die(p, d):
                 key = (mv["from"], mv["to"])
-                if key in seen:
-                    continue
-                seen.add(key)
-                out.append(mv)
-        return out
+                if key not in best:
+                    best[key] = {
+                        "from": mv["from"],
+                        "to": mv["to"],
+                        "die": d,
+                        "dice": [d],
+                        "path": [mv["to"]],
+                    }
+        # 2. Mutări combinate ale aceleiași piese (2..N zaruri într-un singur clic)
+        if len(self.dice) > 1:
+            start_points = sorted({mv["from"] for mv in best.values()}, key=lambda x: (0 if x == "bar" else 1, str(x)))
+            dice_avail = list(self.dice)
+            # generăm secvențe distincte de zaruri de lungime 2..len(dice_avail)
+            combos_by_len = {}
+            def gen_seq(used_idx, seq):
+                if len(seq) >= 2:
+                    combos_by_len.setdefault(len(seq), set()).add(tuple(seq))
+                if len(seq) == len(dice_avail):
+                    return
+                seen_d = set()
+                for idx, val in enumerate(dice_avail):
+                    if idx in used_idx or val in seen_d:
+                        continue
+                    seen_d.add(val)
+                    used_idx.add(idx)
+                    seq.append(val)
+                    gen_seq(used_idx, seq)
+                    seq.pop()
+                    used_idx.remove(idx)
+            gen_seq(set(), [])
+
+            for frm in start_points:
+                for k in sorted(combos_by_len):
+                    best_for_k = {}
+                    for seq in sorted(combos_by_len[k]):
+                        sim_b = {pt: [c[0], c[1]] for pt, c in self.board.items()}
+                        sim_bar = list(self.bar)
+                        sim_off = list(self.off)
+                        cur = frm
+                        path = []
+                        inter_hits = 0
+                        ok = True
+                        for step_i, d in enumerate(seq):
+                            if cur == "off":
+                                ok = False
+                                break
+                            cands = self._legal_for_die_state(sim_b, sim_bar, sim_off, p, d, only_from=cur)
+                            if not cands:
+                                ok = False
+                                break
+                            # dacă nu e ultimul pas, nu putem scoate piesa înainte de final
+                            if step_i < k - 1:
+                                cands = [c for c in cands if c["to"] != "off"]
+                                if not cands:
+                                    ok = False
+                                    break
+                            chosen = cands[0]
+                            h = self._sim_step(sim_b, sim_bar, sim_off, p, cur, chosen["to"])
+                            if step_i < k - 1:
+                                inter_hits += h
+                            cur = chosen["to"]
+                            path.append(cur)
+                        if not ok:
+                            continue
+                        key = (frm, cur)
+                        if key in best:
+                            continue
+                        prev = best_for_k.get(key)
+                        if prev is None or inter_hits < prev[0]:
+                            best_for_k[key] = (inter_hits, {
+                                "from": frm,
+                                "to": cur,
+                                "die": sum(seq),
+                                "dice": list(seq),
+                                "path": path,
+                            })
+                    for key, (_, mv) in best_for_k.items():
+                        if key not in best:
+                            best[key] = mv
+        return list(best.values())
 
     # ------------------------------------------------------------- acțiuni
     def handle_action(self, pid, action):
@@ -319,10 +431,15 @@ class TableRoom:
         if not candidates:
             raise TableError("Mutare ilegală.")
         mv = candidates[0]
-        self._apply_move(self.turn, mv)
-        self._remove_die(mv["die"])
+        steps_dice = mv.get("dice") or [mv["die"]]
+        steps_path = mv.get("path") or [to]
+        cur_from = frm
+        for step_d, step_to in zip(steps_dice, steps_path):
+            self._apply_move(self.turn, {"from": cur_from, "to": step_to, "die": step_d})
+            self._remove_die(step_d)
+            self.last_moves.append({"seat": self.turn, "from": cur_from, "to": step_to})
+            cur_from = step_to
         p = self.player(pid)
-        self.last_moves.append({"seat": self.turn, "from": frm, "to": to})
         if len(self.last_moves) > 6:
             self.last_moves = self.last_moves[-6:]
         if to == "off":
