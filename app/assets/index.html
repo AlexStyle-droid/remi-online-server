@@ -97,8 +97,28 @@
   .rowline .k{color:var(--muted);font-size:13px;font-weight:600;}
   .plist{display:flex;flex-direction:column;gap:8px;}
   .pitem{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:12px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.05);}
-  .pitem .av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  .pitem .av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;
     font-weight:900;font-size:15px;color:#0c1a16;background:linear-gradient(180deg,#f0d17f,#c9a227);flex:none;}
+  .pitem .av img,.pitem .av svg,.opp .av img,.opp .av svg,.mybar .me-av img,.mybar .me-av svg{width:100%;height:100%;object-fit:cover;display:block;}
+  .avpick{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin:2px 0 6px;}
+  .avopt{width:40px;height:40px;border-radius:50%;padding:2px;border:2px solid rgba(255,255,255,.15);overflow:hidden;
+    background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;flex:none;}
+  .avopt.on{border-color:var(--gold);box-shadow:0 0 12px rgba(232,198,106,.55);transform:scale(1.06);}
+  .avopt svg,.avopt img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;}
+  .avup{height:38px;padding:0 11px;border-radius:99px;border:1px dashed rgba(232,198,106,.55);
+    background:rgba(232,198,106,.08);color:var(--gold);font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:5px;}
+  .home-links{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .lb-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+  .lb-row{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:12px;
+    background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.07);}
+  .lb-row.top1{border-color:rgba(250,204,21,.5);background:rgba(250,204,21,.08);}
+  .lb-rank{width:26px;text-align:center;font-weight:900;font-size:14px;color:var(--gold);flex:none;}
+  .lb-av{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;background:#1a2b25;border:1px solid rgba(255,255,255,.15);}
+  .lb-av img,.lb-av svg{width:100%;height:100%;object-fit:cover;display:block;}
+  .lb-info{flex:1;min-width:0;text-align:left;}
+  .lb-nm{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lb-sub{font-size:11px;color:var(--muted);font-weight:700;}
+  .lb-pts{font-weight:900;font-size:13px;color:var(--gold);text-align:right;white-space:nowrap;}
   .pitem .nm{font-weight:700;font-size:15px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .pitem .badge{font-size:11px;font-weight:800;padding:4px 8px;border-radius:20px;background:rgba(255,255,255,.08);color:var(--muted);}
   .pitem .badge.ready{background:rgba(52,211,153,.15);color:#6ee7b7;}
@@ -122,7 +142,7 @@
     border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:4px 6px;position:relative;transition:box-shadow .25s,border-color .25s;}
   .opp.turn{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 22px rgba(232,198,106,.28);}
   .opp .l1{display:flex;align-items:center;gap:5px;}
-  .opp .av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  .opp .av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;
     font-size:10px;font-weight:900;color:#0c1a16;flex:none;background:linear-gradient(180deg,#f0d17f,#c9a227);}
   .opp .nm{font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
   .opp .l2{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:10px;color:var(--muted);font-weight:700;white-space:nowrap;}
@@ -204,7 +224,7 @@
   /* ---------- MY AREA ---------- */
   .mybar{display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid rgba(255,255,255,.06);
     background:rgba(0,0,0,.25);font-size:12px;font-weight:800;color:var(--muted);}
-  .mybar .me-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  .mybar .me-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;
     font-size:11px;font-weight:900;color:#0c1a16;background:linear-gradient(180deg,#f0d17f,#c9a227);}
   .mybar .nm{color:var(--text);font-size:13px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .mybar .pill{font-size:10px;padding:3px 7px;border-radius:20px;background:rgba(255,255,255,.07);}
@@ -316,7 +336,7 @@
   .tpbox.turn .tpav-lg{box-shadow:0 0 22px rgba(250,204,21,.75);}
   .tpav-inner{width:100%;height:100%;border-radius:50%;overflow:hidden;
     background:radial-gradient(circle at 35% 28%,#2b2936,#0c0b10);display:flex;align-items:center;justify-content:center;}
-  .tpav-inner svg{width:100%;height:100%;display:block;}
+  .tpav-inner svg,.tpav-inner img{width:100%;height:100%;object-fit:cover;display:block;}
   .tpav-lg .pdot{position:absolute;bottom:1px;right:1px;width:18px;height:18px;border-radius:50%;
     border:2px solid #120906;}
   .tpav-lg .pdot.w{background:radial-gradient(circle at 35% 30%,#fffdf5,#d8ccb0);}
@@ -337,7 +357,7 @@
   .tturnsub b{color:#fde68a;}
 
   .twrap{flex:1;min-width:0;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:10px;}
-  .tboard-outer{flex:1;max-width:960px;min-width:0;min-height:0;display:flex;align-items:stretch;
+  .tboard-outer{flex:1;max-width:min(1320px, 148vh);min-width:0;min-height:0;display:flex;align-items:stretch;
     border-radius:14px;padding:8px;position:relative;
     background:
       repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 3px, rgba(0,0,0,.04) 3px 7px),
@@ -393,7 +413,7 @@
   .point .stack{position:absolute;left:0;right:0;width:100%;display:flex;flex-direction:column;align-items:center;z-index:2;gap:1px;}
   .point.top .stack{top:4px;}
   .point.bottom .stack{bottom:4px;flex-direction:column-reverse;}
-  .chk{width:min(82%, 7.6vh, 50px);height:auto;aspect-ratio:1;
+  .chk{width:min(82%, 7.8vh, 58px);height:auto;aspect-ratio:1;
     border-radius:50%;flex:none;position:relative;transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s;
     box-shadow:0 3px 6px rgba(0,0,0,.55), 0 1px 1px rgba(0,0,0,.4);}
   .point .stack.dense .chk + .chk{margin-top:-28%;}
@@ -414,7 +434,7 @@
   .point.selpt .tri{filter:brightness(1.22) drop-shadow(0 0 8px rgba(250,204,21,.8));}
 
   /* Ghost destination preview checker with die number */
-  .ghost-chk{width:min(82%, 7.6vh, 50px);height:auto;aspect-ratio:1;
+  .ghost-chk{width:min(82%, 7.8vh, 58px);height:auto;aspect-ratio:1;
     border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
     font-size:15px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);
     background:radial-gradient(circle at 35% 30%, rgba(110,231,183,.72), rgba(16,185,129,.52));
@@ -495,7 +515,7 @@
   .vs-ring.b{background:linear-gradient(135deg,#f87171,#b91c1c);box-shadow:0 0 28px rgba(239,68,68,.65);}
   .vs-av{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#27272a,#09090b);
     display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .vs-av svg{width:100%;height:100%;display:block;}
+  .vs-av svg,.vs-av img{width:100%;height:100%;object-fit:cover;display:block;}
   .vs-name{font-size:clamp(15px,2.5vw,21px);font-weight:900;color:#fff;text-align:center;}
   .vs-sub{font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.1);color:#fde68a;}
   .vs-mid{display:flex;flex-direction:column;align-items:center;gap:10px;}
@@ -539,8 +559,6 @@
     .tdock{flex-direction:row;width:auto;height:auto;justify-content:center;gap:8px;padding-bottom:2px;}
     .tdockbtn{flex:1;height:40px;max-width:74px;}
   }
-    .tscorepill{font-size:10px;padding:2px 7px;}
-  }
 
   @media (min-width:700px){
     .actionbar{max-width:640px;margin:0 auto;}
@@ -580,10 +598,36 @@ const COLORS = ["R","Y","B","K"];
 const COLOR_NAME = {R:"roșu", Y:"galben", B:"albastru", K:"negru", J:"joker"};
 const LS = {
   name: "remi.name",
+  avatar: "remi.avatar",
   server: "remi.server",
   session: "remi.session",
   sound: "remi.sound",
 };
+const AVATAR_PRESETS = ["p1","p2","p3","p4","p5","p6"];
+function getAvatar(){ return localStorage.getItem(LS.avatar) || "p1"; }
+function setAvatar(v){ localStorage.setItem(LS.avatar, v || "p1"); }
+function compressImageFile(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onerror = ()=>reject(new Error("Nu pot citi imaginea"));
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onerror = ()=>reject(new Error("Fișier invalid"));
+      img.onload = ()=>{
+        const sz = 96;
+        const c = document.createElement("canvas");
+        c.width = sz; c.height = sz;
+        const ctx = c.getContext("2d");
+        const side = Math.min(img.width, img.height);
+        const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, sz, sz);
+        resolve(c.toDataURL("image/jpeg", 0.72));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 const ANDROID = (typeof window.AndroidBridge !== "undefined");
 function vibrate(ms){
@@ -1101,16 +1145,27 @@ function backTileHTML(size="md", extra=""){
 /* ---------------------------- HOME ---------------------------- */
 function renderHome(){
   const savedName = localStorage.getItem(LS.name) || "";
+  const av = getAvatar();
+  const isCustom = av.startsWith("data:image/");
   const isApp = (location.protocol === "file:" || ANDROID);
   const srv = localStorage.getItem(LS.server) || DEFAULT_SERVER;
   return `
   <div class="home-wrap">
     <div class="home">
       <div class="brand">Remi<small>ONLINE</small></div>
-      <p class="tag">Remi Etalat • jucători reali • 2–4 la masă</p>
+      <p class="tag">Remi Etalat & Table • jucători reali</p>
       <div class="field">
-        <label>Numele tău</label>
+        <label>Numele tău (poreclă)</label>
         <input class="inp" id="nameInput" maxlength="18" placeholder="ex: Andrei" value="${esc(savedName)}">
+      </div>
+      <div class="field">
+        <label>Avatar sau poză personală</label>
+        <div class="avpick">
+          ${AVATAR_PRESETS.map(p=>`<button type="button" class="avopt ${av===p?'on':''}" data-av="${p}" title="Avatar ${p}">${avatarHTML(p, 0, savedName||"J")}</button>`).join("")}
+          ${isCustom ? `<button type="button" class="avopt on" data-av="custom" title="Poza ta">${avatarHTML(av, 0, savedName||"J")}</button>` : ""}
+          <button type="button" class="avup" id="btnPickPhoto">📷 Poză</button>
+          <input type="file" id="avatarFile" accept="image/*" style="display:none">
+        </div>
       </div>
       <div class="gamepick">
         <button class="gp ${gameSel==='remi'?'on':''}" data-game="remi">
@@ -1123,7 +1178,10 @@ function renderHome(){
       <button class="btn primary big block" id="btnCreate">🎯 Creează o cameră de ${gameSel==='table'?'Table':'Remi'}</button>
       <button class="btn block" id="btnJoin">🔑 Intră cu cod</button>
       <button class="btn gold-outline block" id="btnQuick">⚡ Joc rapid ${gameSel==='table'?'la Table':'la Remi'}</button>
-      <button class="linkbtn" id="btnRules">📖 Regulile jocului</button>
+      <div class="home-links">
+        <button class="linkbtn" id="btnRules">📖 Regulile jocului</button>
+        <button class="linkbtn" id="btnLeaderboard">🏆 Clasament Top 10</button>
+      </div>
       ${isApp ? `
         <div class="card" style="text-align:left">
           <h3>Server de joc</h3>
@@ -1146,14 +1204,38 @@ function bindHome(){
     localStorage.setItem(LS.name, n);
     return n;
   };
-  if (nameEl) nameEl.addEventListener("keydown", e=>{ if (e.key === "Enter") $("#btnCreate").click(); });
+  if (nameEl){
+    nameEl.addEventListener("input", ()=>{ localStorage.setItem(LS.name, nameEl.value.trim()); });
+    nameEl.addEventListener("keydown", e=>{ if (e.key === "Enter") $("#btnCreate").click(); });
+  }
+  $$(".avopt[data-av]").forEach(el=>{
+    el.onclick = ()=>{
+      if (el.dataset.av !== "custom") setAvatar(el.dataset.av);
+      render();
+    };
+  });
+  const fileEl = $("#avatarFile");
+  const pickBtn = $("#btnPickPhoto");
+  if (pickBtn && fileEl){
+    pickBtn.onclick = ()=>fileEl.click();
+    fileEl.onchange = async (e)=>{
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      try{
+        const dataUrl = await compressImageFile(f);
+        setAvatar(dataUrl);
+        toast("✅ Poza de profil a fost salvată!");
+        render();
+      }catch(err){ toast(err.message || "Imagine invalidă", "err"); }
+    };
+  }
   $$(".gp").forEach(el=>{
     el.onclick = ()=>{ gameSel = el.dataset.game; localStorage.setItem("remi.game", gameSel); render(); };
   });
   $("#btnCreate").onclick = async ()=>{
     const name = getName();
     try{
-      const r = await api("/api/create", {name, game: gameSel});
+      const r = await api("/api/create", {name, avatar: getAvatar(), game: gameSel});
       startSession(r);
     }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
   };
@@ -1161,11 +1243,12 @@ function bindHome(){
   $("#btnQuick").onclick = async ()=>{
     const name = getName();
     try{
-      const r = await api("/api/quick", {name, game: gameSel});
+      const r = await api("/api/quick", {name, avatar: getAvatar(), game: gameSel});
       startSession(r);
     }catch(e){ toast(e.message || "Nu mă pot conecta la server", "err"); sfx.err(); }
   };
   $("#btnRules").onclick = ()=>showRules();
+  $("#btnLeaderboard").onclick = ()=>showLeaderboard();
   const srvInput = $("#serverInput");
   if (srvInput){
     srvInput.addEventListener("change", ()=>{
@@ -1216,9 +1299,50 @@ function showJoinModal(){
 
 async function joinRoom(code, name){
   try{
-    const r = await api("/api/join", {code, name});
+    const r = await api("/api/join", {code, name, avatar: getAvatar()});
     startSession(r);
   }catch(e){ toast(e.message || "Nu pot intra în cameră", "err"); sfx.err(); }
+}
+async function showLeaderboard(){
+  const existing = document.getElementById("lbOverlay");
+  if (existing) existing.remove();
+  const div = document.createElement("div");
+  div.innerHTML = `<div class="overlay" id="lbOverlay"><div class="modal-wrap"><div class="modal">
+    <button class="close-x" onclick="document.getElementById('lbOverlay').remove()">×</button>
+    <h2>🏆 Clasament Top 10</h2>
+    <p class="tag" style="margin-bottom:8px">Jucători ordonați după victorii și puncte acumulate</p>
+    <div id="lbBody" style="padding:18px 0;text-align:center;color:var(--muted)">Se încarcă clasamentul…</div>
+    <div class="mfoot"><button class="btn primary" onclick="document.getElementById('lbOverlay').remove()">Închide</button></div>
+  </div></div></div>`;
+  document.body.appendChild(div.firstElementChild);
+  try{
+    const res = await fetch(apiBase() + "/api/leaderboard", {method:"GET"});
+    const data = await res.json();
+    const list = (data && (data.top || data.leaders)) || [];
+    const body = document.getElementById("lbBody");
+    if (!body) return;
+    if (!list.length){
+      body.innerHTML = `<div style="padding:18px 0;color:var(--muted)">Încă nu există meciuri terminate.<br>Fii primul care intră în Top 10!</div>`;
+      return;
+    }
+    const medals = ["🥇","🥈","🥉"];
+    body.innerHTML = `<div class="lb-list">${list.map((row, idx)=>{
+      const rank = medals[idx] || ("#" + (idx+1));
+      const pct = row.games ? Math.round((row.wins / row.games) * 100) : 0;
+      return `<div class="lb-row ${idx===0?'top1':''}">
+        <div class="lb-rank">${rank}</div>
+        <div class="lb-av">${avatarHTML(row.avatar, idx%2, row.name)}</div>
+        <div class="lb-info">
+          <div class="lb-nm">${esc(row.name)}</div>
+          <div class="lb-sub">${row.wins} victorii din ${row.games} meciuri (${pct}%)</div>
+        </div>
+        <div class="lb-pts">${row.points}p</div>
+      </div>`;
+    }).join("")}</div>`;
+  }catch(e){
+    const body = document.getElementById("lbBody");
+    if (body) body.innerHTML = `<div style="color:#fca5a5">Nu pot încărca clasamentul de pe server.</div>`;
+  }
 }
 function startSession(r){
   if (!r || !r.token) { toast("Eroare la conectare", "err"); return; }
@@ -1259,7 +1383,7 @@ function renderGame(){
     const leftPct = p.isTurn && S.phase==="playing" ? Math.max(0, Math.min(100, (S.turnLeft / S.turnSeconds) * 100)) : 0;
     parts.push(`<div class="opp ${p.isTurn && S.phase==="playing"?"turn":""}">
       <div class="l1">
-        <div class="av">${esc(initials(p.name))}</div>
+        <div class="av">${avatarHTML(p.avatar, p.seat??0, p.name)}</div>
         <div class="nm">${esc(p.name)}</div>
       </div>
       <div class="l2">
@@ -1318,7 +1442,7 @@ function renderGame(){
   // bara mea
   const meldInfo = me.firstMeld ? `<span class="pill ok">etalat ✓</span>` : `<span class="pill warn">neetalat</span>`;
   parts.push(`<div class="mybar">
-    <div class="me-av">${esc(initials(me.name))}</div>
+    <div class="me-av">${avatarHTML(meP.avatar, meP.seat??0, me.name)}</div>
     <span class="nm">${esc(me.name)}</span>
     <span class="pill">${(meP.score||0)}p</span>
     ${meldInfo}
@@ -1578,33 +1702,49 @@ let tVsShownKey = "";
 let tVsActive = false;
 let tVsTimer = null;
 
-function avatarSVG(seat, name){
-  const bg = seat === 0 ? "#1e3a8a" : "#7f1d1d";
-  const accent = seat === 0 ? "#93c5fd" : "#fca5a5";
-  const hair = seat === 0 ? "#2c1a12" : "#1c1917";
-  const shirt = seat === 0 ? "#1d4ed8" : "#991b1b";
+function avatarSVG(seat, name, preset=""){
+  const themes = {
+    p1: {bg:"#1e3a8a", acc:"#93c5fd", hair:"#2c1a12", shirt:"#1d4ed8", fem:true},
+    p2: {bg:"#7f1d1d", acc:"#fca5a5", hair:"#1c1917", shirt:"#991b1b", fem:false},
+    p3: {bg:"#14532d", acc:"#fde047", hair:"#451a03", shirt:"#15803d", crown:true},
+    p4: {bg:"#4c1d95", acc:"#e9d5ff", hair:"#09090b", shirt:"#6d28d9", glasses:true},
+    p5: {bg:"#7c2d12", acc:"#fdba74", hair:"#78350f", shirt:"#c2410c", fem:true},
+    p6: {bg:"#0f172a", acc:"#38bdf8", hair:"#334155", shirt:"#0369a1", beard:true},
+  };
+  const key = themes[preset] ? preset : (seat===0 ? "p1" : "p2");
+  const th = themes[key];
+  const gid = "av_" + key + "_" + seat + "_" + Math.random().toString(36).slice(2,6);
   const ini = esc(initials(name));
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="avbg${seat}" cx="40%" cy="30%" r="75%">
-        <stop offset="0%" stop-color="${accent}" stop-opacity=".42"/>
-        <stop offset="100%" stop-color="${bg}"/>
+      <radialGradient id="${gid}" cx="40%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="${th.acc}" stop-opacity=".45"/>
+        <stop offset="100%" stop-color="${th.bg}"/>
       </radialGradient>
     </defs>
-    <rect width="100" height="100" fill="url(#avbg${seat})"/>
-    <path d="M18 100 C20 74, 34 68, 50 68 C66 68, 80 74, 82 100 Z" fill="${shirt}"/>
+    <rect width="100" height="100" fill="url(#${gid})"/>
+    <path d="M18 100 C20 74, 34 68, 50 68 C66 68, 80 74, 82 100 Z" fill="${th.shirt}"/>
     <rect x="42" y="55" width="16" height="16" rx="7" fill="#e5b899"/>
     <circle cx="50" cy="40" r="19" fill="#f1c7a7"/>
-    ${seat===0
-      ? `<path d="M29 42 C29 22, 71 22, 71 42 C67 30, 56 26, 50 28 C44 26, 33 30, 29 42 Z" fill="${hair}"/>
-         <path d="M28 40 C26 56, 31 66, 35 67 L35 46 Z M72 40 C74 56, 69 66, 65 67 L65 46 Z" fill="${hair}"/>`
-      : `<path d="M30 38 C30 20, 70 20, 70 38 C64 29, 36 29, 30 38 Z" fill="${hair}"/>`}
+    ${th.fem
+      ? `<path d="M29 42 C29 22, 71 22, 71 42 C67 30, 56 26, 50 28 C44 26, 33 30, 29 42 Z" fill="${th.hair}"/>
+         <path d="M28 40 C26 56, 31 66, 35 67 L35 46 Z M72 40 C74 56, 69 66, 65 67 L65 46 Z" fill="${th.hair}"/>`
+      : `<path d="M30 38 C30 20, 70 20, 70 38 C64 29, 36 29, 30 38 Z" fill="${th.hair}"/>`}
+    ${th.crown ? `<path d="M34 25 L39 14 L50 21 L61 14 L66 25 Z" fill="#facc15" stroke="#854d0e" stroke-width="1.5"/>` : ""}
     <circle cx="43" cy="41" r="2.2" fill="#1f1612"/>
     <circle cx="57" cy="41" r="2.2" fill="#1f1612"/>
+    ${th.glasses ? `<circle cx="43" cy="41" r="5.5" fill="none" stroke="#1e293b" stroke-width="1.6"/><circle cx="57" cy="41" r="5.5" fill="none" stroke="#1e293b" stroke-width="1.6"/><line x1="48.5" y1="41" x2="51.5" y2="41" stroke="#1e293b" stroke-width="1.6"/>` : ""}
+    ${th.beard ? `<path d="M36 48 Q50 61 64 48 Q61 59 50 60 Q39 59 36 48 Z" fill="${th.hair}"/>` : ""}
     <path d="M44 50 Q50 54 56 50" stroke="#9f5b44" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <circle cx="80" cy="20" r="12" fill="rgba(0,0,0,.55)" stroke="${accent}" stroke-width="1.5"/>
+    <circle cx="80" cy="20" r="12" fill="rgba(0,0,0,.55)" stroke="${th.acc}" stroke-width="1.5"/>
     <text x="80" y="24" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-family="sans-serif">${ini}</text>
   </svg>`;
+}
+function avatarHTML(avatarVal, seat=0, name=""){
+  if (typeof avatarVal === "string" && avatarVal.startsWith("data:image/")){
+    return `<img src="${avatarVal}" alt="${esc(initials(name))}">`;
+  }
+  return avatarSVG(seat, name, avatarVal||"");
 }
 
 function dicePips(v, small=false){
@@ -1742,7 +1882,7 @@ function renderTableVS(p0, p1){
   return `<div class="vs-overlay" id="vsOverlay">
     <div class="vs-stage">
       <div class="vs-card">
-        <div class="vs-ring w"><div class="vs-av">${avatarSVG(0, p0.name)}</div></div>
+        <div class="vs-ring w"><div class="vs-av">${avatarHTML(p0.avatar, 0, p0.name)}</div></div>
         <div class="vs-name">${esc(p0.name)}${S.mySeat===0?" (tu)":""}</div>
         <div class="vs-sub">⚪ Piese Albe · ${p0.score||0}p</div>
       </div>
@@ -1752,7 +1892,7 @@ function renderTableVS(p0, p1){
         <div class="dicerow" style="background:transparent">${dicePips(6)}${dicePips(5)}</div>
       </div>
       <div class="vs-card">
-        <div class="vs-ring b"><div class="vs-av">${avatarSVG(1, p1.name)}</div></div>
+        <div class="vs-ring b"><div class="vs-av">${avatarHTML(p1.avatar, 1, p1.name)}</div></div>
         <div class="vs-name">${esc(p1.name)}${S.mySeat===1?" (tu)":""}</div>
         <div class="vs-sub">⚫ Piese Negre · ${p1.score||0}p</div>
       </div>
@@ -1838,7 +1978,7 @@ function renderTableGame(){
   return `<div class="screen tgame">
     <aside class="tsidebar">
       <div class="tpbox ${S.phase==="playing" && S.turnSeat===0 ? "turn":""}">
-        <div class="tpav-lg w"><div class="tpav-inner">${avatarSVG(0, p0.name)}</div><span class="pdot w"></span></div>
+        <div class="tpav-lg w"><div class="tpav-inner">${avatarHTML(p0.avatar, 0, p0.name)}</div><span class="pdot w"></span></div>
         <div style="min-width:0;width:100%">
           <div class="tpbox-name">${esc(p0.name)}${S.mySeat===0?" (tu)":""}</div>
           <div class="tpstats"><span class="tppill">${p0.score||0}p</span><span class="tppill">${pip0} pip</span></div>
@@ -1853,7 +1993,7 @@ function renderTableGame(){
       </div>
 
       <div class="tpbox ${S.phase==="playing" && S.turnSeat===1 ? "turn":""}">
-        <div class="tpav-lg b"><div class="tpav-inner">${avatarSVG(1, p1.name)}</div><span class="pdot b"></span></div>
+        <div class="tpav-lg b"><div class="tpav-inner">${avatarHTML(p1.avatar, 1, p1.name)}</div><span class="pdot b"></span></div>
         <div style="min-width:0;width:100%">
           <div class="tpbox-name">${esc(p1.name)}${S.mySeat===1?" (tu)":""}</div>
           <div class="tpstats"><span class="tppill">${p1.score||0}p</span><span class="tppill">${pip1} pip</span></div>
@@ -2053,8 +2193,8 @@ function renderLobby(){
         <div class="card">
           <h3>${isTable?"🎲 Table":"🃏 Remi Etalat"} · jucători (${S.players.length}/${maxPl})</h3>
           <div class="plist" id="plist">
-            ${S.players.map(p=>`<div class="pitem">
-              <div class="av">${esc(initials(p.name))}</div>
+            ${S.players.map((p,idx)=>`<div class="pitem">
+              <div class="av">${avatarHTML(p.avatar, p.seat??idx, p.name)}</div>
               <div class="nm">${esc(p.name)}${p.id===YOU?" (tu)":""}</div>
               ${p.id===S.hostPid?`<span class="badge host">HOST</span>`:``}
               <span class="badge ${p.ready?"ready":""}">${p.ready?"GATA":"AȘTEAPTĂ"}</span>
@@ -2412,5 +2552,5 @@ render = function(){
 window.addEventListener("load", boot);
 window.logout = function(){ clearSession(); session=null; S=null; YOU=null; ui.lastV=-1; render(); };
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5e0af9d3919e452',t:'MTc5NTI3NDUwNQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5e0af9d3919e452',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
