@@ -694,14 +694,15 @@ class Room:
         p = self.player(pid)
         if not p:
             return False
+        if self.turns_completed < 1:
+            return False
         if tile is None:
             if not self.discard:
                 return False
             tile = self.discard[-1]
-        if is_joker(tile):
-            return False
         hand = list(p["hand"])
-        # 1) extindere a unei formatiuni existente (daca jucatorul e etalat)
+        hand_plus = hand + [tile]
+        # 1) extindere / inlocuire joker la o formatiune existenta (daca jucatorul e etalat)
         if p["first_meld"]:
             for g in self.groups.values():
                 gid_tiles = [x["t"] for x in g["tiles"]]
@@ -709,31 +710,55 @@ class Room:
                     r = resolve_group(cand)
                     if r and r["type"] == g["type"]:
                         return True
-                # inlocuire joker
-                for x in g["tiles"]:
-                    if is_joker(x["t"]):
-                        newt = [x2["t"] for x2 in g["tiles"]]
-                        newt[newt.index(x["t"])] = tile
-                        if resolve_group(newt):
-                            return True
-        # 2) formatie noua folosind piesa + piese din mana
-        # terta
-        same_val = [h for h in hand if not is_joker(h) and tile_number(h) == tile_number(tile)]
-        if len(same_val) >= 1:
-            pair = [h for h in same_val if tile_color(h) != tile_color(tile)]
-            if len(pair) >= 1:
+                if not is_joker(tile):
+                    for x in g["tiles"]:
+                        if is_joker(x["t"]):
+                            newt = [x2["t"] for x2 in g["tiles"]]
+                            newt[newt.index(x["t"])] = tile
+                            if resolve_group(newt):
+                                return True
+            # sau formatie noua in mana care contine piesa (inclusiv joker)
+            for g in gen_valid_groups(hand_plus):
+                if tile in g:
+                    return True
+            return False
+
+        # 2) prima etalare (>= 45p + cel putin o suita + foloseste `tile` + ramane >= 1 piesa de aruncat)
+        all_g = gen_valid_groups(hand_plus)
+        g_info = []
+        for g in all_g:
+            r = resolve_group(g)
+            if r:
+                g_info.append((g, set(g), r["points_pre"], r["type"] == "seq"))
+        with_tile = [x for x in g_info if tile in x[1]]
+        if not with_tile:
+            return False
+        with_tile.sort(key=lambda x: (-int(x[3]), -x[2]))
+        other_g = sorted([x for x in g_info if tile not in x[1]], key=lambda x: (-x[2], -int(x[3])))
+        max_used = max(0, len(hand_plus) - 1)
+        nodes = [0]
+
+        def rec(idx, used_set, pts, has_seq):
+            nodes[0] += 1
+            if nodes[0] > 1800:
+                return False
+            if has_seq and pts >= 45 and len(used_set) <= max_used:
                 return True
-        # suita: cauta vecini in aceeasi culoare
-        same_color = [h for h in hand if tile_color(h) == tile_color(tile)]
-        nums = {tile_number(h) for h in same_color}
-        v = tile_number(tile)
-        for d in (-2, -1, 1, 2):
-            if v + d in nums:
+            if len(used_set) >= max_used:
+                return False
+            for i in range(idx, len(other_g)):
+                g, gset, gp, gseq = other_g[i]
+                if len(used_set) + len(gset) > max_used:
+                    continue
+                if used_set & gset:
+                    continue
+                if rec(i + 1, used_set | gset, pts + gp, has_seq or gseq):
+                    return True
+            return False
+
+        for g, gset, gp, gseq in with_tile:
+            if len(gset) <= max_used and rec(0, gset, gp, gseq):
                 return True
-        if v == 1 and ({12, 13} & nums):
-            return True
-        if v == 13 and ({1, 11} & nums):
-            return True
         return False
 
     def _draw_discard(self, pid):
