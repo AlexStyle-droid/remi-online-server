@@ -1152,21 +1152,21 @@ function findRackContiguousGroups(hand){
   }
   return groups;
 }
-function findBestFirstMeldFromHand(hand){
+function findBestFirstMeldFromHand(hand, reqTile){
   if (!hand || hand.length < 4) return null;
   const maxTiles = hand.length - 1; // pastram minim 1 piesa de aruncat
   const allG = genValidGroupsFast(hand);
   if (!allG.length) return null;
   const gInfo = allG.map(g=>{
     const r = _resolveCached(g);
-    return r ? {g, pts: r.pts, type: r.type, len: g.length} : null;
-  }).filter(Boolean).sort((a,b)=>(b.pts - a.pts) || (b.len - a.len));
+    return r ? {g, pts: r.pts, type: r.type, len: g.length, hasReq: (reqTile!=null && g.indexOf(reqTile)>=0)} : null;
+  }).filter(Boolean).sort((a,b)=>(Number(b.hasReq) - Number(a.hasReq)) || (b.pts - a.pts) || (b.len - a.len));
   let best = null;
   let nodes = 0;
   const LIMIT = 2500;
-  const rec = (idx, rem, acc, usedCnt, pts, hasSeq) => {
+  const rec = (idx, rem, acc, usedCnt, pts, hasSeq, hasReq) => {
     if (++nodes > LIMIT) return;
-    if (hasSeq && pts >= 45 && usedCnt <= maxTiles){
+    if (hasSeq && pts >= 45 && usedCnt <= maxTiles && (reqTile == null || hasReq)){
       if (!best || pts > best.pts || (pts === best.pts && usedCnt > best.usedCnt)){
         best = {groups: acc.slice(), pts, usedCnt, hasSeq: true};
       }
@@ -1181,33 +1181,39 @@ function findBestFirstMeldFromHand(hand){
       const next = new Set(rem);
       for (const t of item.g) next.delete(t);
       acc.push(item.g);
-      rec(i + 1, next, acc, usedCnt + item.len, pts + item.pts, hasSeq || item.type === "seq");
+      rec(i + 1, next, acc, usedCnt + item.len, pts + item.pts, hasSeq || item.type === "seq", hasReq || item.hasReq);
       acc.pop();
     }
   };
-  rec(0, new Set(hand), [], 0, 0, false);
+  rec(0, new Set(hand), [], 0, 0, false, false);
   return best;
 }
 function findAutoMeldGroups(me){
   if (!me || !me.canMeld || !me.hand || me.hand.length < 4) return null;
   const maxTiles = me.hand.length - 1;
+  const reqTile = (me.drawnFrom === "discard" && me.takenDiscardTile != null && me.hand.indexOf(me.takenDiscardTile) >= 0)
+    ? me.takenDiscardTile : null;
+  const containsReq = (groups) => reqTile == null || groups.some(g => g.indexOf(reqTile) >= 0);
+
   // 1. Verifica grupurile deja asezate pe suport cu spatii intre ele
   const rackG = findRackContiguousGroups(me.hand);
   if (rackG.length){
     let totalUsed = rackG.reduce((s,g)=>s+g.length, 0);
     const trimmed = rackG.slice();
     while (totalUsed > maxTiles && trimmed.length > 1){
-      // scoate cel mai mic grup ca punctaj ca sa ramana minim 1 piesa de aruncat
-      let minIdx = 0, minPts = 1e9;
+      // scoate cel mai mic grup ca punctaj (dar pastreaza piesa luata de jos, daca exista)
+      let minIdx = -1, minPts = 1e9;
       for (let i = 0; i < trimmed.length; i++){
+        if (reqTile != null && trimmed[i].indexOf(reqTile) >= 0) continue;
         const r = _resolveCached(trimmed[i]);
         const p = r ? r.pts : 0;
         if (p < minPts){ minPts = p; minIdx = i; }
       }
+      if (minIdx < 0) minIdx = 0;
       totalUsed -= trimmed[minIdx].length;
       trimmed.splice(minIdx, 1);
     }
-    if (trimmed.length && totalUsed <= maxTiles){
+    if (trimmed.length && totalUsed <= maxTiles && containsReq(trimmed)){
       const info = groupsPoints(trimmed);
       if (info && info.ok){
         if (me.firstMeld) return {groups: trimmed, pts: info.pts, hasSeq: info.hasSeq};
@@ -1215,10 +1221,20 @@ function findAutoMeldGroups(me){
       }
     }
   }
-  // 2. Pentru prima etalare (45p+), cauta automat si in toata mana (chiar daca nu a pus spatii pe suport)
+  // 2. Pentru prima etalare (45p+) sau cand a luat piesa de jos, cauta automat in toata mana
   if (!me.firstMeld){
-    const found = findBestFirstMeldFromHand(me.hand);
+    const found = findBestFirstMeldFromHand(me.hand, reqTile);
     if (found) return found;
+  } else if (reqTile != null){
+    const allG = genValidGroupsFast(me.hand).filter(g => g.indexOf(reqTile) >= 0 && g.length <= maxTiles);
+    if (allG.length){
+      allG.sort((a,b)=>{
+        const ra = _resolveCached(a), rb = _resolveCached(b);
+        return (rb?rb.pts:0) - (ra?ra.pts:0);
+      });
+      const r0 = _resolveCached(allG[0]);
+      if (r0) return {groups: [allG[0]], pts: r0.pts, hasSeq: r0.type === "seq"};
+    }
   }
   return null;
 }
@@ -2280,6 +2296,7 @@ function renderGame(){
 
     <div class="handhint" style="color:#e9d5ff;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
       <span>${hint}</span>
+      ${me.canTakeDiscard ? `<button type="button" class="btn primary small" id="btnQuickTake" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">← Ia ${S.discardTop!=null?tileLabel(S.discardTop):"piesa de jos"}</button>` : ``}
       ${(!isTabla && canMeldBtn) ? `<button type="button" class="btn primary small" id="btnQuickMeld" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">★ ${meldLabel} acum</button>` : ``}
       ${(canDiscardBtn && sel.size === 1) ? `<button type="button" class="btn small" id="btnQuickDiscard" style="padding:4px 12px;font-size:12px;border-radius:999px;background:#15803d;color:#fff;border:1px solid #86efac">${isCloseBtn?"🏁 Închide":"↑ Aruncă piesa"}</button>` : ``}
     </div>
@@ -2640,6 +2657,13 @@ function bindGame(){
         if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
         sel.clear();
         act({type:"discard", tile:t}, "discard");
+        return;
+      }
+      if (!S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
+      if (!S.me.drew && S.discardTop != null){
+        toast("Poți lua piesa de jos doar dacă o folosești imediat într-o formație validă (minim 45p cu suită la prima etalare). Trage din grămadă (+).");
+      } else if (S.me.drew && sel.size !== 1){
+        toast("Selectează 1 piesă sau trage piesa direct aici ca să o arunci.");
       }
     };
   }
@@ -2649,6 +2673,7 @@ function bindGame(){
   b("#btnSort123", ()=>sortRemiRack("123"));
   b("#btnDraw", ()=>act({type:"draw_stock"}, "draw"));
   b("#btnTakeDiscard", ()=>act({type:"draw_discard"}, "draw"));
+  b("#btnQuickTake", ()=>act({type:"draw_discard"}, "draw"));
   b("#btnClear", ()=>{ sel.clear(); ui.targetMode=false; render(); });
   b("#btnChatQuick", ()=>{ ui.chatOpen = true; render(); });
   b("#btnQuickDialogR", ()=>{ rQuickOpen = !rQuickOpen; render(); });
@@ -3417,7 +3442,7 @@ function renderLobby(){
             </select></div>`}
           <div class="settings-row"><label>Timp pe tură</label>
             <select class="inp" id="optTime">
-              ${[30,45,60,90].map(n=>`<option value="${n}" ${S.opts.turn_seconds===n?"selected":""}>${n} secunde</option>`).join("")}
+              ${[30,45,60,90,120].map(n=>`<option value="${n}" ${S.opts.turn_seconds===n?"selected":""}>${n} secunde</option>`).join("")}
             </select></div>
           <div class="settings-row"><label>${isTable?"Meci până la":"Scor final"}</label>
             <select class="inp" id="optTarget">
