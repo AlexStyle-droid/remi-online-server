@@ -289,8 +289,8 @@
   .tile:after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;border-radius:inherit;
     background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 42%);pointer-events:none;}
   .tile.cR{color:#dc2626;}
-  .tile.cY{color:#d97706;text-shadow:0 1px 0 rgba(120,53,15,.35), 0 0 1px rgba(120,53,15,.25);}
-  .tile.cY .pip{background:#d97706;box-shadow:0 0 0 1px rgba(120,53,15,.32);}
+  .tile.cY{color:#eab308;-webkit-text-stroke:.55px #854d0e;text-shadow:0 1px 0 #713f12, 0 0 1px rgba(113,63,18,.65);}
+  .tile.cY .pip{background:#eab308;box-shadow:0 0 0 1px #854d0e;}
   .tile.cB{color:#1d4ed8;}
   .tile.cK{color:#0f172a;}
   .tile.cJ{color:#7c3aed;border-color:#c4b5fd;}
@@ -367,7 +367,7 @@
   .rg-sidebtn{width:62px;flex:none;border-radius:16px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;
     justify-content:center;gap:4px;font-size:20px;font-weight:900;color:#fff;cursor:pointer;transition:.15s;
     border:2px solid rgba(250,204,21,.35);box-shadow:0 6px 16px rgba(0,0,0,.55);}
-  .rg-sidebtn.drop-hover,.rg-discard.drop-hover{border-color:#4ade80 !important;box-shadow:0 0 24px rgba(74,222,128,.95) !important;transform:scale(1.03);}
+  .rg-sidebtn.drop-hover,.rg-discard.drop-hover,.rg-grp.drop-hover{border-color:#4ade80 !important;box-shadow:0 0 24px rgba(74,222,128,.95) !important;transform:scale(1.03);}
   .rg-sidebtn span{font-size:10px;font-weight:900;text-align:center;line-height:1.15;}
   .rg-sidebtn.meld{background:linear-gradient(180deg,#5b4b1e,#2e2409);color:#fde68a;}
   .rg-sidebtn.meld.hot{background:linear-gradient(180deg,#eab308,#a16207);color:#1c1202;border-color:#fef08a;
@@ -2612,6 +2612,7 @@ function bindGame(){
     if (dragSt.ghost) dragSt.ghost.remove();
     if (dragSt.srcEl) dragSt.srcEl.classList.remove("dragging");
     if (dragSt.hoverEl) dragSt.hoverEl.classList.remove("drop-hover");
+    $$("#groupsArea .rg-grp.drag-target").forEach(el=>el.classList.remove("drag-target","target"));
     window.removeEventListener("pointermove", onWinMove);
     window.removeEventListener("pointerup", onWinUp);
     window.removeEventListener("pointercancel", onWinCancel);
@@ -2631,6 +2632,18 @@ function bindGame(){
       if (dx*dx + dy*dy < 144) return; // 12px threshold
       dragSt.moved = true;
       dragSt.srcEl.classList.add("dragging");
+      if (S.me && S.me.canMeld && S.me.firstMeld){
+        const tileId = Number(dragSt.el.dataset.tile);
+        $$("#groupsArea .rg-grp[data-gid]").forEach(candGrp=>{
+          const g = (S.groups || []).find(x => x.id === Number(candGrp.dataset.gid));
+          if (g){
+            const gt = g.tiles.map(x => x.t);
+            if (canAddToGroup(gt, tileId, g.type) || canSwapJoker(gt, tileId)){
+              candGrp.classList.add("target", "drag-target");
+            }
+          }
+        });
+      }
       const g = dragSt.srcEl.cloneNode(true);
       g.classList.remove("dragging", "sel");
       g.classList.add("drag-ghost");
@@ -2674,15 +2687,21 @@ function bindGame(){
     const under = !cancelled && st.moved ? document.elementFromPoint(pt.x, pt.y) : null;
     const targetSlot = under ? under.closest(".rg-slot") : null;
     let targetGrp = null;
-    if (!targetSlot && !cancelled && st.moved && S.me && S.me.canMeld && S.me.firstMeld && under){
+    let wrongGrp = false;
+    if (!targetSlot && !cancelled && st.moved && under){
       const candGrp = under.closest(".rg-grp[data-gid]");
       if (candGrp){
-        const gid = Number(candGrp.dataset.gid);
-        const g = (S.groups || []).find(x => x.id === gid);
-        const tileId = Number(st.el.dataset.tile);
-        if (g){
-          const gt = g.tiles.map(x => x.t);
-          if (canAddToGroup(gt, tileId, g.type) || canSwapJoker(gt, tileId)) targetGrp = gid;
+        if (S.me && S.me.canMeld && S.me.firstMeld){
+          const gid = Number(candGrp.dataset.gid);
+          const g = (S.groups || []).find(x => x.id === gid);
+          const tileId = Number(st.el.dataset.tile);
+          if (g){
+            const gt = g.tiles.map(x => x.t);
+            if (canAddToGroup(gt, tileId, g.type) || canSwapJoker(gt, tileId)) targetGrp = gid;
+            else wrongGrp = true;
+          }
+        } else {
+          wrongGrp = true;
         }
       }
     }
@@ -2704,6 +2723,13 @@ function bindGame(){
         const tileId = Number(st.el.dataset.tile);
         sel.clear();
         stickTileToGroup(targetGrp, tileId);
+      } else if (wrongGrp){
+        const tileId = Number(st.el.dataset.tile);
+        if (!S.me || !S.me.isTurn) toast("Așteaptă rândul tău pentru a lipi pe masă.", "err");
+        else if (!S.me.drew) toast("Trage întâi o piesă (+).", "err");
+        else if (!S.me.firstMeld) toast("Trebuie să te etalezi mai întâi (minim 45p cu o suită).", "err");
+        else toast(`Piesa ${tileLabel(tileId)} nu se potrivește la această formație.`, "err");
+        sfx.err();
       } else if (targetDiscard){
         const tileId = Number(st.el.dataset.tile);
         const isClose = S.me && S.me.canClose;
