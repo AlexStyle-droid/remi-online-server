@@ -2379,11 +2379,17 @@ function renderGame(){
             <div class="rg-discard ${(me.canTakeDiscard || usableDiscardArr.length)?"glow":""}" id="pileDiscard" title="${me.firstMeld?"Piese aruncate — după etalare poți lua orice piesă evidențiată cu verde dacă formează pe loc o formație":"Piese aruncate — până la etalare poți lua doar prima piesă din stânga pentru 45p+"}">
               <span style="color:#fde68a;font-size:13px;font-weight:900;margin-right:2px">←</span>
               ${trail.length ? trail.map((t,i)=>{
-                const canPickThis = usableDiscardSet.has(t) && (isTabla || me.firstMeld || i === 0);
+                const isLockedOpen = (!isTabla && S.openingDiscardLocked && S.discardCount <= trail.length && i === trail.length - 1);
+                const handLen = (me.hand || []).length;
+                const allowPos = isTabla || (!me.firstMeld ? i === 0 : (handLen >= 4 || (handLen === 3 && i === 0)));
+                const canPickThis = !isLockedOpen && allowPos && usableDiscardSet.has(t);
+                const extraStyle = isLockedOpen
+                  ? `style="opacity:.45;outline:1px dashed rgba(248,113,113,.55)" title="Prima piesă aruncată la începutul rundei — nu se poate lua nicicum"`
+                  : (i===0 && !canPickThis ? `style="box-shadow:0 0 0 2px #facc15"` : (!canPickThis && i>0 ? `style="opacity:.78"` : ""));
                 return tileHTML(t,{
                   size:"sm",
                   extraCls: canPickThis ? "d-usable" : "",
-                  data: `data-dtile="${t}" data-didx="${i}"` + (i===0 && !canPickThis ? ` style="box-shadow:0 0 0 2px #facc15"` : (!canPickThis && i>0 ? ` style="opacity:.78"` : ""))
+                  data: `data-dtile="${t}" data-didx="${i}" data-locked="${isLockedOpen?1:0}" ` + extraStyle
                 });
               }).join("")
                 : `<span style="font-size:11px;color:#d6b899;opacity:.6">Aruncate</span>`}
@@ -2447,9 +2453,15 @@ function handHint(me){
     return `<span>${n} piese pe suport</span>`;
   }
   if (!me.drew && me.canDraw){
+    if (!isTabla && !me.firstTurnDone){
+      return `<span>👉 Prima ta tură: apasă pe + pentru a trage o piesă (etalarea începe de la tura următoare)</span>`;
+    }
     return isTabla
       ? `<span>👉 Trage o piesă din grămadă (+) sau ia ultima piesă aruncată (←)</span>`
       : `<span>👉 Apasă pe + sau pe piesa de jos pentru a trage o piesă</span>`;
+  }
+  if (!isTabla && !me.firstTurnDone && me.drew){
+    return `<span>⏳ Prima ta tură — etalarea începe de la tura 2; selectează o piesă și apasă Aruncă</span>`;
   }
   if (isTabla){
     if (sel.size === 1){
@@ -2778,9 +2790,30 @@ function bindGame(){
         if (S.me.drew){ toast("Ai tras deja o piesă în această tură."); return; }
         const dtile = Number(tel.dataset.dtile);
         const didx = Number(tel.dataset.didx || 0);
-        if (!S.me.firstMeld && didx > 0 && !(S.opts && S.opts.mode === "tabla")){
-          toast("Până nu te etalezi (45p), poți lua doar ultima piesă aruncată (cea din stânga), dacă te etalezi pe loc cu ea.");
-          return;
+        const isLocked = tel.dataset.locked === "1";
+        const isT = !!(S.opts && S.opts.mode === "tabla");
+        if (!isT){
+          if (isLocked){
+            toast("Prima piesă aruncată la începutul rundei nu se poate ridica nicicum.");
+            return;
+          }
+          if (!S.me.firstTurnDone){
+            toast("În prima ta tură nu poți lua de jos și nu poți etala — trage din grămadă (+).");
+            return;
+          }
+          const hlen = (S.me.hand || []).length;
+          if (S.me.firstMeld && hlen <= 2){
+            toast("Când mai ai 1 sau 2 piese pe tablă, nu mai poți lua din cele aruncate — trage din grămadă (+).");
+            return;
+          }
+          if (S.me.firstMeld && hlen === 3 && didx > 0){
+            toast("Când mai ai doar 3 piese pe tablă, poți lua doar ultima piesă aruncată (cea din stânga), dacă face o formație.");
+            return;
+          }
+          if (!S.me.firstMeld && didx > 0){
+            toast("Până nu te etalezi (45p), poți lua doar ultima piesă aruncată (cea din stânga), dacă te etalezi pe loc cu ea.");
+            return;
+          }
         }
         act({type:"draw_discard", tile: dtile}, "draw");
       };
@@ -2798,12 +2831,17 @@ function bindGame(){
       }
       if (!S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
       if (!S.me.drew && S.discardTop != null){
-        if (S.me.firstMeld && S.me.usableDiscardTiles && S.me.usableDiscardTiles.length){
+        const hlen = (S.me.hand || []).length;
+        if (!S.me.firstTurnDone){
+          toast("În prima ta tură nu poți lua de jos — trage din grămadă (+).");
+        } else if (S.me.firstMeld && hlen <= 2){
+          toast("Când mai ai doar 1 sau 2 piese pe tablă, nu mai poți lua din cele aruncate — trage din grămadă (+).");
+        } else if (S.me.firstMeld && S.me.usableDiscardTiles && S.me.usableDiscardTiles.length){
           toast("Apasă direct pe piesa evidențiată cu verde din rândul de jos pentru a o lua!");
         } else if (S.me.firstMeld){
-          toast("Poți lua o piesă de jos doar dacă formează imediat o formație (în mână sau lipită pe masă). Trage din grămadă (+).");
+          toast("Poți lua o piesă de jos doar dacă creează imediat o formație cu piesele de pe tablă. Trage din grămadă (+).");
         } else {
-          toast("Poți lua piesa de jos doar dacă o folosești imediat într-o formație validă (minim 45p cu suită la prima etalare). Trage din grămadă (+).");
+          toast("Poți lua ultima piesă aruncată doar dacă formezi imediat o etalare de minim 45p cu suită. Trage din grămadă (+).");
         }
       } else if (S.me.drew && sel.size !== 1){
         toast("Selectează 1 piesă sau trage piesa direct aici ca să o arunci.");
@@ -2832,7 +2870,7 @@ function bindGame(){
   const doMeldAction = ()=>{
     if (!S.me || !S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
     if (!S.me.drew){ toast("Trage întâi o piesă (+)."); return; }
-    if (!S.me.canMeld){ toast("Primul jucător începe cu aruncarea unei piese; etalarea începe imediat după."); return; }
+    if (!S.me.canMeld){ toast("Nu poți etala din prima ta tură! Etalarea începe de la a doua tură."); return; }
     if (!sel.size){
       const auto = findAutoMeldGroups(S.me);
       if (auto && auto.groups && auto.groups.length){
