@@ -416,6 +416,14 @@ class GameError(Exception):
     pass
 
 
+def _sort_group_tiles(gtype, items):
+    if gtype != "seq" or not items:
+        return items
+    effs = {it["eff"] for it in items}
+    ace_high = 1 in effs and (12 in effs or 13 in effs or (len(items) >= 3 and any(v >= 11 for v in effs if v != 1)))
+    return sorted(items, key=lambda it: 14 if (it["eff"] == 1 and ace_high) else it["eff"])
+
+
 class Room:
     def __init__(self, opts=None):
         self.code = new_code()
@@ -825,11 +833,12 @@ class Room:
         for g, r in resolved:
             gid = self.next_gid
             self.next_gid += 1
+            items = [{"t": t, "eff": r["eff"][i], "by": pid} for i, t in enumerate(g)]
             self.groups[gid] = {
                 "id": gid,
                 "type": r["type"],
                 "owner": pid,
-                "tiles": [{"t": t, "eff": r["eff"][i], "by": pid} for i, t in enumerate(g)],
+                "tiles": _sort_group_tiles(r["type"], items),
             }
             self.placed_this_turn.update(g)
         for t in all_ids:
@@ -853,8 +862,6 @@ class Room:
             raise GameError("Formația nu există.")
         if tile not in p["hand"]:
             raise GameError("Piesa nu este în mâna ta.")
-        if g["owner"] != pid and self.melded_this_turn:
-            raise GameError("În tura în care te etalezi nu poți lipi la formațiile altor jucători.")
         tiles = [x["t"] for x in g["tiles"]]
         best = None
         opts = []
@@ -872,7 +879,9 @@ class Room:
             raise GameError("Piesa nu poate fi lipită la această formație.")
         cand, r = best
         order = cand
-        g["tiles"] = [{"t": t, "eff": r["eff"][i], "by": pid} for i, t in enumerate(order)]
+        old_by = {x["t"]: x["by"] for x in g["tiles"]}
+        items = [{"t": t, "eff": r["eff"][i], "by": pid if t == tile else old_by.get(t, pid)} for i, t in enumerate(order)]
+        g["tiles"] = _sort_group_tiles(g["type"], items)
         p["hand"].remove(tile)
         self.placed_this_turn.add(tile)
         self.add_log(f"{p['name']} a lipit {tile_label(tile)} la o formație.")
@@ -899,9 +908,10 @@ class Room:
             cand[i] = tile
             r = resolve_group(cand)
             if r and r["type"] == g["type"]:
-                g["tiles"] = [{"t": t, "eff": r["eff"][k], "by": pid if t == tile else
-                               next((x["by"] for x in g["tiles"] if x["t"] == t), pid)}
-                              for k, t in enumerate(cand)]
+                old_by = {x["t"]: x["by"] for x in g["tiles"]}
+                items = [{"t": t, "eff": r["eff"][k], "by": pid if t == tile else old_by.get(t, pid)}
+                         for k, t in enumerate(cand)]
+                g["tiles"] = _sort_group_tiles(g["type"], items)
                 p["hand"].remove(tile)
                 p["hand"].append(tiles[i])  # jokerul intra in mana
                 done = True
