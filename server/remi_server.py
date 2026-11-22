@@ -769,7 +769,7 @@ class Room:
                 return True
         return False
 
-    def _draw_discard(self, pid):
+    def _draw_discard(self, pid, tile=None):
         p = self.player(pid)
         if self.turn_pid != pid:
             raise GameError("Nu este rândul tău.")
@@ -777,9 +777,27 @@ class Room:
             raise GameError("Ai tras deja o piesă în această tură.")
         if not self.discard:
             raise GameError("Nu există piese aruncate.")
-        if self.opts.get("mode") != "tabla" and not self.can_use_discard(pid):
-            raise GameError("Poți lua piesa de jos doar dacă o folosești imediat într-o formație.")
-        t = self.discard.pop()
+        is_tabla = (self.opts.get("mode") == "tabla")
+        if tile is not None:
+            try:
+                tile = int(tile)
+            except (TypeError, ValueError):
+                raise GameError("Piesă invalidă.")
+        if tile is None or tile == self.discard[-1]:
+            t = self.discard[-1]
+            if not is_tabla and not self.can_use_discard(pid, tile=t):
+                raise GameError("Poți lua piesa de jos doar dacă o folosești imediat într-o formație.")
+            self.discard.pop()
+        else:
+            if is_tabla or not p["first_meld"]:
+                raise GameError("Până nu te etalezi (45p), poți lua doar ultima piesă aruncată (cea din stânga).")
+            if tile not in self.discard:
+                raise GameError("Piesa aleasă nu mai este în șirul de jos.")
+            if not self.can_use_discard(pid, tile=tile):
+                raise GameError(f"Nu poți lua {tile_label(tile)} — trebuie să formeze imediat o formație validă.")
+            # scoate cea mai recenta aparitie a piesei alese din sirul de jos
+            idx = len(self.discard) - 1 - self.discard[::-1].index(tile)
+            t = self.discard.pop(idx)
         p["hand"].append(t)
         self.drew = True
         self.drawn_from = "discard"
@@ -1217,6 +1235,19 @@ class Room:
             can_take_disc = (me["id"] == self.turn_pid and not self.drew and bool(self.discard)
                              and self.phase == "playing"
                              and (True if is_tabla else self.can_use_discard(me["id"])))
+            usable_disc = []
+            if me["id"] == self.turn_pid and not self.drew and bool(self.discard) and self.phase == "playing":
+                if is_tabla:
+                    usable_disc = [self.discard[-1]]
+                elif me["first_meld"]:
+                    seen_d = set()
+                    for dt in reversed(self.discard):
+                        if dt not in seen_d:
+                            seen_d.add(dt)
+                            if self.can_use_discard(me["id"], tile=dt):
+                                usable_disc.append(dt)
+                elif self.can_use_discard(me["id"]):
+                    usable_disc = [self.discard[-1]]
             me_state = {
                 "id": me["id"],
                 "name": me["name"],
@@ -1230,6 +1261,7 @@ class Room:
                 "takenDiscardTile": self.taken_discard_tile if (me["id"] == self.turn_pid and self.drawn_from == "discard") else None,
                 "canDraw": (me["id"] == self.turn_pid and not self.drew and self.phase == "playing"),
                 "canTakeDiscard": can_take_disc,
+                "usableDiscardTiles": usable_disc,
                 "canMeld": bool(me["id"] == self.turn_pid and self.drew and can_meld_round),
                 "canDiscard": bool(me["id"] == self.turn_pid and self.drew and self.phase == "playing"),
                 "canAnnounceAtu": bool(me["atu"] and not me["atu_declared"] and self.phase == "playing"
@@ -1253,7 +1285,7 @@ class Room:
             "turnSeconds": self.opts["turn_seconds"],
             "stockCount": len(self.stock),
             "discardTop": self.discard[-1] if self.discard else None,
-            "discardTrail": list(reversed(self.discard[-10:])),
+            "discardTrail": list(reversed(self.discard[-24:])),
             "discardCount": len(self.discard),
             "atuTile": self.atu_tile,
             "groups": groups,
@@ -1674,7 +1706,7 @@ class Handler(BaseHTTPRequestHandler):
                 if typ == "draw_stock":
                     room._draw_stock(pid)
                 elif typ == "draw_discard":
-                    room._draw_discard(pid)
+                    room._draw_discard(pid, tile=action.get("tile"))
                 elif typ == "meld":
                     room.action_meld(pid, action.get("groups") or [])
                 elif typ == "add":
