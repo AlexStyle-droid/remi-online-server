@@ -459,6 +459,7 @@ class Room:
         self.turn_seconds_left = 0
         self.stock = []
         self.discard = []
+        self.opening_discard_locked = False
         self.atu_tile = None
         self.groups = {}              # gid -> {"id":gid,"type":..,"owner":pid,"tiles":[{"t":id,"eff":v,"by":pid}]}
         self.next_gid = 1
@@ -475,6 +476,7 @@ class Room:
         self.drawn_from = None
         self.taken_discard_tile = None
         self.placed_this_turn = set()
+        self.placed_in_new_group = set()
         self.melded_this_turn = False
 
     # ---------------------------------------------------------------- utils
@@ -608,6 +610,7 @@ class Room:
                     p["atu"] = True
         self.stock = deck
         self.discard = []
+        self.opening_discard_locked = False
         self.groups = {}
         self.next_gid = 1
         self.turns_completed = 0
@@ -626,6 +629,7 @@ class Room:
         self.drawn_from = None
         self.taken_discard_tile = None
         self.placed_this_turn = set()
+        self.placed_in_new_group = set()
         self.melded_this_turn = False
         self.turn_deadline = time.time() + self.opts["turn_seconds"]
         self.turn_seconds_left = self.opts["turn_seconds"]
@@ -695,43 +699,42 @@ class Room:
             random.shuffle(rest)
             self.stock = rest
             self.discard = [top]
+            self.opening_discard_locked = False
             self.add_log("Grămada a fost reconstruită din piesa aruncată.")
 
     def can_use_discard(self, pid, tile=None):
         """Poate jucatorul sa foloseasca imediat piesa de jos intr-o formatie?"""
         p = self.player(pid)
-        if not p:
+        if not p or not p["first_turn_done"]:
             return False
-        if self.turns_completed < 1:
+        if not self.discard:
+            return False
+        avail = self.discard[1:] if self.opening_discard_locked else self.discard
+        if not avail:
             return False
         if tile is None:
-            if not self.discard:
-                return False
             tile = self.discard[-1]
+        if tile not in avail:
+            return False
         hand = list(p["hand"])
         hand_plus = hand + [tile]
-        # 1) extindere / inlocuire joker la o formatiune existenta (daca jucatorul e etalat)
         if p["first_meld"]:
-            for g in self.groups.values():
-                gid_tiles = [x["t"] for x in g["tiles"]]
-                for cand in (gid_tiles + [tile], [tile] + gid_tiles):
-                    r = resolve_group(cand)
-                    if r and r["type"] == g["type"]:
-                        return True
-                if not is_joker(tile):
-                    for x in g["tiles"]:
-                        if is_joker(x["t"]):
-                            newt = [x2["t"] for x2 in g["tiles"]]
-                            newt[newt.index(x["t"])] = tile
-                            if resolve_group(newt):
-                                return True
-            # sau formatie noua in mana care contine piesa (inclusiv joker)
+            # cu 1 sau 2 piese pe tabla nu mai ai voie sa iei din cele aruncate
+            if len(hand) <= 2:
+                return False
+            # cu 3 piese pe tabla poti lua doar ultima piesa aruncata
+            if len(hand) == 3 and tile != self.discard[-1]:
+                return False
+            # trebuie sa creeze o formatie noua cu piesele de pe tabla si sa ramana >=1 piesa de aruncat
+            max_used = len(hand_plus) - 1
             for g in gen_valid_groups(hand_plus):
-                if tile in g:
+                if tile in g and len(g) <= max_used:
                     return True
             return False
 
-        # 2) prima etalare (>= 45p + cel putin o suita + foloseste `tile` + ramane >= 1 piesa de aruncat)
+        # ne-etalat: doar ultima piesa aruncata, pentru deschidere >=45p + minim o suita + >=1 piesa de aruncat
+        if tile != self.discard[-1]:
+            return False
         all_g = gen_valid_groups(hand_plus)
         g_info = []
         for g in all_g:
@@ -783,20 +786,34 @@ class Room:
                 tile = int(tile)
             except (TypeError, ValueError):
                 raise GameError("Piesă invalidă.")
+        if not is_tabla:
+            if not p["first_turn_done"]:
+                raise GameError("În prima ta tură nu poți lua de jos și nu poți etala — trage din grămadă (+).")
+            if self.opening_discard_locked and len(self.discard) <= 1:
+                raise GameError("Prima piesă aruncată la începutul rundei nu se poate ridica nicicum.")
+            if p["first_meld"] and len(p["hand"]) <= 2:
+                raise GameError("Când mai ai doar 1 sau 2 piese pe tablă, nu mai poți lua din cele aruncate.")
         if tile is None or tile == self.discard[-1]:
             t = self.discard[-1]
             if not is_tabla and not self.can_use_discard(pid, tile=t):
-                raise GameError("Poți lua piesa de jos doar dacă o folosești imediat într-o formație.")
+                if p["first_meld"]:
+                    raise GameError("Poți lua ultima piesă doar dacă creează imediat o formație cu piesele de pe tablă.")
+                raise GameError("Poți lua ultima piesă doar dacă formează imediat o etalare de minim 45p cu suită.")
             self.discard.pop()
         else:
             if is_tabla or not p["first_meld"]:
                 raise GameError("Până nu te etalezi (45p), poți lua doar ultima piesă aruncată (cea din stânga).")
-            if tile not in self.discard:
-                raise GameError("Piesa aleasă nu mai este în șirul de jos.")
+            if len(p["hand"]) == 3:
+                raise GameError("Când mai ai doar 3 piese pe tablă, poți lua doar ultima piesă aruncată (cea din stânga).")
+            avail = self.discard[1:] if self.opening_discard_locked else self.discard
+            if tile not in avail:
+                if self.opening_discard_locked and tile == self.discard[0]:
+                    raise GameError("Prima piesă aruncată la începutul rundei nu se poate ridica nicicum.")
+                raise GameError("Piesa aleasă nu mai este disponibilă în șirul de jos.")
             if not self.can_use_discard(pid, tile=tile):
-                raise GameError(f"Nu poți lua {tile_label(tile)} — trebuie să formeze imediat o formație validă.")
-            # scoate cea mai recenta aparitie a piesei alese din sirul de jos
-            idx = len(self.discard) - 1 - self.discard[::-1].index(tile)
+                raise GameError(f"Nu poți lua {tile_label(tile)} — trebuie să formeze imediat o formație cu piesele de pe tablă.")
+            start_idx = 1 if self.opening_discard_locked else 0
+            idx = len(self.discard) - 1 - self.discard[start_idx:][::-1].index(tile)
             t = self.discard.pop(idx)
         p["hand"].append(t)
         self.drew = True
@@ -815,8 +832,9 @@ class Room:
             raise GameError("Jocul nu este în desfășurare.")
         if not self.drew:
             raise GameError("Trage întâi o piesă.")
-        if self.turns_completed < 1:
-            raise GameError("Primul jucător începe jocul aruncând o piesă; etalarea începe imediat după.")
+        p = self.player(pid)
+        if not p or not p["first_turn_done"]:
+            raise GameError("Nu poți etala din prima ta tură! Etalarea începe de la a doua tură.")
 
     def action_meld(self, pid, groups):
         self._can_meld_now(pid)
@@ -859,6 +877,7 @@ class Room:
                 "tiles": _sort_group_tiles(r["type"], items),
             }
             self.placed_this_turn.update(g)
+            self.placed_in_new_group.update(g)
         for t in all_ids:
             p["hand"].remove(t)
         if first:
@@ -973,14 +992,17 @@ class Room:
             self._next_turn()
             return
         if self.drawn_from == "discard" and self.taken_discard_tile is not None:
-            if self.taken_discard_tile not in self.placed_this_turn:
-                raise GameError("Ai luat piesa de jos — trebuie să o folosești într-o formație în această tură.")
+            if self.taken_discard_tile not in self.placed_in_new_group:
+                raise GameError("Ai luat piesa de jos — trebuie să formezi imediat o suită/terță nouă cu ea pe masă.")
+        was_opening = (self.turns_completed == 0 and len(self.discard) == 0)
         p["hand"].remove(tile)
         closing = (len(p["hand"]) == 0 and p["first_meld"])
         if closing:
             self._end_round(closer=pid, closing_tile=tile, reason="close")
             return
         self.discard.append(tile)
+        if was_opening:
+            self.opening_discard_locked = True
         p["first_turn_done"] = True
         self.turns_completed += 1
         if not auto:
@@ -1229,9 +1251,10 @@ class Room:
             })
         groups.sort(key=lambda g: g["id"])
         is_tabla = (self.opts.get("mode") == "tabla")
-        can_meld_round = (not is_tabla) and self.turns_completed >= 1 and self.phase == "playing"
+        can_meld_round = (not is_tabla) and self.phase == "playing" and bool(me and me["first_turn_done"])
         me_state = None
         if me:
+            avail_disc = self.discard[1:] if self.opening_discard_locked else self.discard
             can_take_disc = (me["id"] == self.turn_pid and not self.drew and bool(self.discard)
                              and self.phase == "playing"
                              and (True if is_tabla else self.can_use_discard(me["id"])))
@@ -1239,20 +1262,27 @@ class Room:
             if me["id"] == self.turn_pid and not self.drew and bool(self.discard) and self.phase == "playing":
                 if is_tabla:
                     usable_disc = [self.discard[-1]]
-                elif me["first_meld"]:
-                    seen_d = set()
-                    for dt in reversed(self.discard):
-                        if dt not in seen_d:
-                            seen_d.add(dt)
-                            if self.can_use_discard(me["id"], tile=dt):
-                                usable_disc.append(dt)
-                elif self.can_use_discard(me["id"]):
-                    usable_disc = [self.discard[-1]]
+                elif me["first_turn_done"] and avail_disc:
+                    if me["first_meld"] and len(me["hand"]) <= 2:
+                        usable_disc = []
+                    elif me["first_meld"] and len(me["hand"]) == 3:
+                        if self.can_use_discard(me["id"], tile=self.discard[-1]):
+                            usable_disc = [self.discard[-1]]
+                    elif me["first_meld"] and len(me["hand"]) >= 4:
+                        seen_d = set()
+                        for dt in reversed(avail_disc):
+                            if dt not in seen_d:
+                                seen_d.add(dt)
+                                if self.can_use_discard(me["id"], tile=dt):
+                                    usable_disc.append(dt)
+                    elif self.can_use_discard(me["id"]):
+                        usable_disc = [self.discard[-1]]
             me_state = {
                 "id": me["id"],
                 "name": me["name"],
                 "hand": sorted(me["hand"], key=lambda t: (is_joker(t), tile_color(t), tile_number(t))),
                 "firstMeld": me["first_meld"],
+                "firstTurnDone": bool(me["first_turn_done"]),
                 "atu": me["atu"],
                 "atuDeclared": me["atu_declared"],
                 "isTurn": me["id"] == self.turn_pid,
@@ -1287,6 +1317,7 @@ class Room:
             "discardTop": self.discard[-1] if self.discard else None,
             "discardTrail": list(reversed(self.discard[-24:])),
             "discardCount": len(self.discard),
+            "openingDiscardLocked": bool(self.opening_discard_locked and len(self.discard) > 0),
             "atuTile": self.atu_tile,
             "groups": groups,
             "me": me_state,
