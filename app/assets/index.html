@@ -289,11 +289,12 @@
   .tile:after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;border-radius:inherit;
     background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 42%);pointer-events:none;}
   .tile.cR{color:#dc2626;}
-  .tile.cY{color:#eab308;text-shadow:0 1px 0 rgba(113,63,18,.45), 0 0 1px rgba(113,63,18,.45);}
-  .tile.cY .pip{background:#eab308;box-shadow:0 0 0 1px rgba(113,63,18,.38);}
-  .tile.cB{color:#1d64d8;}
-  .tile.cK{color:#111827;}
+  .tile.cY{color:#d97706;text-shadow:0 1px 0 rgba(120,53,15,.35), 0 0 1px rgba(120,53,15,.25);}
+  .tile.cY .pip{background:#d97706;box-shadow:0 0 0 1px rgba(120,53,15,.32);}
+  .tile.cB{color:#1d4ed8;}
+  .tile.cK{color:#0f172a;}
   .tile.cJ{color:#7c3aed;border-color:#c4b5fd;}
+  .tile.d-usable{box-shadow:0 0 0 2.5px #4ade80, 0 0 14px rgba(74,222,128,.85) !important;opacity:1 !important;transform:translateY(-2px);cursor:pointer;}
   .tile .num{position:relative;z-index:1;line-height:.95;}
   .tile .pip{width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:2px;opacity:.92;position:relative;z-index:1;}
   .tile .jk{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;line-height:1;}
@@ -419,6 +420,43 @@
     font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;
     box-shadow:0 6px 18px rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.9);}
   .rg-roundbtn:hover{transform:scale(1.06);}
+
+  @media (min-width:960px){
+    .rg-board{max-width:1460px;padding:10px 14px;}
+    .rg-grp{padding:6px 8px;gap:4px;}
+    .rg-grp .tile.sm{width:38px;height:50px;font-size:24px;border-radius:7px;padding-bottom:4px;}
+    .rg-grp .tile.sm .pip{width:4.5px;height:4.5px;margin-top:2px;}
+    .rg-grp .meta{font-size:11px;}
+    .rg-rackwrap{max-width:1520px;padding:0 64px;gap:10px;}
+    .rg-racktop{min-height:58px;gap:10px;}
+    .rg-drawbtn{padding:6px 12px 6px 8px;}
+    .rg-drawplus{width:32px;height:32px;font-size:22px;}
+    .rg-drawcnt{font-size:14px;}
+    .rg-discard{height:58px;padding:4px 10px;gap:6px;}
+    .rg-discard .tile.sm,.rg-atu-wrap .tile.sm{width:36px;height:48px;font-size:22px;border-radius:6px;}
+    .rg-sortbtn{height:44px;padding:0 13px;font-size:14px;}
+    .rg-row{min-height:78px;gap:5px;padding:5px 7px;}
+    .rg-slot{min-height:70px;}
+    .rg-slot .tile{max-width:60px;height:68px;font-size:32px;border-radius:9px;}
+    .rg-slot .tile .pip{width:6px;height:6px;margin-top:3px;}
+    .rg-sidebtn{width:76px;font-size:23px;}
+    .rg-sidebtn span{font-size:11.5px;}
+    .handhint{height:auto;min-height:28px;font-size:13px;}
+  }
+  @media (min-width:1360px){
+    .rg-col{width:124px;}
+    .rg-pav{width:64px;height:64px;}
+    .rg-pname{font-size:13px;}
+    .rg-pscore{font-size:13.5px;}
+    .rg-grp .tile.sm{width:44px;height:58px;font-size:28px;border-radius:8px;}
+    .rg-grp .tile.sm .pip{width:5px;height:5px;margin-top:2px;}
+    .rg-discard{height:64px;}
+    .rg-discard .tile.sm,.rg-atu-wrap .tile.sm{width:40px;height:52px;font-size:25px;border-radius:7px;}
+    .rg-row{min-height:88px;gap:6px;}
+    .rg-slot{min-height:82px;}
+    .rg-slot .tile{max-width:72px;height:78px;font-size:38px;border-radius:10px;}
+    .rg-slot .tile .pip{width:7px;height:7px;margin-top:3px;}
+  }
 
   @media (max-width:719px){
     .rgame{padding:4px 5px 6px;gap:4px;}
@@ -1705,6 +1743,7 @@ function tileHTML(id, opts={}){
   const cls = [
     "tile", "c"+t.c, size,
     opts.sel ? "sel" : "",
+    opts.extraCls || "",
   ].join(" ");
   const dataAttr = opts.data || "";
   if (t.joker){
@@ -2258,6 +2297,13 @@ function renderGame(){
   const trail = (S.discardTrail && S.discardTrail.length)
     ? S.discardTrail
     : (S.discardTop !== null && S.discardTop !== undefined ? [S.discardTop] : []);
+  const usableDiscardArr = (me.usableDiscardTiles && me.usableDiscardTiles.length)
+    ? me.usableDiscardTiles
+    : (me.canTakeDiscard && S.discardTop != null ? [S.discardTop] : []);
+  const usableDiscardSet = new Set(usableDiscardArr);
+  const quickTakeTile = me.canTakeDiscard && S.discardTop != null
+    ? S.discardTop
+    : (usableDiscardArr.length ? usableDiscardArr[0] : null);
 
   const hint = handHint(me);
   const modals = [];
@@ -2303,7 +2349,7 @@ function renderGame(){
 
     <div class="handhint" style="color:#e9d5ff;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
       <span>${hint}</span>
-      ${me.canTakeDiscard ? `<button type="button" class="btn primary small" id="btnQuickTake" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">← Ia ${S.discardTop!=null?tileLabel(S.discardTop):"piesa de jos"}</button>` : ``}
+      ${quickTakeTile !== null ? `<button type="button" class="btn primary small" id="btnQuickTake" data-dtile="${quickTakeTile}" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">← Ia ${tileLabel(quickTakeTile)} de jos</button>` : ``}
       ${(!isTabla && canMeldBtn) ? `<button type="button" class="btn primary small" id="btnQuickMeld" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">★ ${meldLabel} acum</button>` : ``}
       ${(!isTabla && canTargetBtn) ? `<button type="button" class="btn primary small" id="btnQuickTarget" style="padding:4px 14px;font-size:12px;border-radius:999px;background:#16a34a;color:#fff;border:1px solid #86efac;box-shadow:0 4px 14px rgba(74,222,128,.5)">★ ${meldLabel} pe masă</button>` : ``}
       ${(canDiscardBtn && sel.size === 1) ? `<button type="button" class="btn small" id="btnQuickDiscard" style="padding:4px 12px;font-size:12px;border-radius:999px;background:#15803d;color:#fff;border:1px solid #86efac">${isCloseBtn?"🏁 Închide":"↑ Aruncă piesa"}</button>` : ``}
@@ -2329,10 +2375,17 @@ function renderGame(){
               <span class="rg-drawplus">+</span>
               <span class="rg-drawcnt">${S.stockCount}</span>
             </button>
-            <div title="Atu">${S.atuTile !== null && S.atuTile !== undefined ? tileHTML(S.atuTile, {size:"sm", data:`data-group="atu"`}) : ""}</div>
-            <div class="rg-discard ${me.canTakeDiscard?"glow":""}" id="pileDiscard" title="Piese aruncate (apasă pentru a lua ultima piesă)">
+            <div class="rg-atu-wrap" title="Atu">${S.atuTile !== null && S.atuTile !== undefined ? tileHTML(S.atuTile, {size:"sm", data:`data-group="atu"`}) : ""}</div>
+            <div class="rg-discard ${(me.canTakeDiscard || usableDiscardArr.length)?"glow":""}" id="pileDiscard" title="${me.firstMeld?"Piese aruncate — după etalare poți lua orice piesă evidențiată cu verde dacă formează pe loc o formație":"Piese aruncate — până la etalare poți lua doar prima piesă din stânga pentru 45p+"}">
               <span style="color:#fde68a;font-size:13px;font-weight:900;margin-right:2px">←</span>
-              ${trail.length ? trail.map((t,i)=>tileHTML(t,{size:"sm", data: i===0 ? `style="box-shadow:0 0 0 2px #facc15"` : `style="opacity:.78"`})).join("")
+              ${trail.length ? trail.map((t,i)=>{
+                const canPickThis = usableDiscardSet.has(t) && (isTabla || me.firstMeld || i === 0);
+                return tileHTML(t,{
+                  size:"sm",
+                  extraCls: canPickThis ? "d-usable" : "",
+                  data: `data-dtile="${t}" data-didx="${i}"` + (i===0 && !canPickThis ? ` style="box-shadow:0 0 0 2px #facc15"` : (!canPickThis && i>0 ? ` style="opacity:.78"` : ""))
+                });
+              }).join("")
                 : `<span style="font-size:11px;color:#d6b899;opacity:.6">Aruncate</span>`}
             </div>
             <div class="rg-sortbtns">
@@ -2716,6 +2769,22 @@ function bindGame(){
   if (stock && S.me && S.me.canDraw) stock.onclick = ()=>act({type:"draw_stock"}, "draw");
   const disc = $("#pileDiscard");
   if (disc){
+    $$("#pileDiscard .tile[data-dtile]").forEach(tel=>{
+      tel.onclick = (ev)=>{
+        if (!S.me) return;
+        if (S.me.canDiscard && sel.size === 1) return; // lasa click-ul pe zona de aruncare sa arunce piesa selectata
+        ev.stopPropagation();
+        if (!S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
+        if (S.me.drew){ toast("Ai tras deja o piesă în această tură."); return; }
+        const dtile = Number(tel.dataset.dtile);
+        const didx = Number(tel.dataset.didx || 0);
+        if (!S.me.firstMeld && didx > 0 && !(S.opts && S.opts.mode === "tabla")){
+          toast("Până nu te etalezi (45p), poți lua doar ultima piesă aruncată (cea din stânga), dacă te etalezi pe loc cu ea.");
+          return;
+        }
+        act({type:"draw_discard", tile: dtile}, "draw");
+      };
+    });
     disc.onclick = ()=>{
       if (!S.me) return;
       if (S.me.canTakeDiscard){ act({type:"draw_discard"}, "draw"); return; }
@@ -2729,7 +2798,13 @@ function bindGame(){
       }
       if (!S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
       if (!S.me.drew && S.discardTop != null){
-        toast("Poți lua piesa de jos doar dacă o folosești imediat într-o formație validă (minim 45p cu suită la prima etalare). Trage din grămadă (+).");
+        if (S.me.firstMeld && S.me.usableDiscardTiles && S.me.usableDiscardTiles.length){
+          toast("Apasă direct pe piesa evidențiată cu verde din rândul de jos pentru a o lua!");
+        } else if (S.me.firstMeld){
+          toast("Poți lua o piesă de jos doar dacă formează imediat o formație (în mână sau lipită pe masă). Trage din grămadă (+).");
+        } else {
+          toast("Poți lua piesa de jos doar dacă o folosești imediat într-o formație validă (minim 45p cu suită la prima etalare). Trage din grămadă (+).");
+        }
       } else if (S.me.drew && sel.size !== 1){
         toast("Selectează 1 piesă sau trage piesa direct aici ca să o arunci.");
       }
@@ -2741,7 +2816,11 @@ function bindGame(){
   b("#btnSort123", ()=>sortRemiRack("123"));
   b("#btnDraw", ()=>act({type:"draw_stock"}, "draw"));
   b("#btnTakeDiscard", ()=>act({type:"draw_discard"}, "draw"));
-  b("#btnQuickTake", ()=>act({type:"draw_discard"}, "draw"));
+  b("#btnQuickTake", ()=>{
+    const qt = $("#btnQuickTake");
+    const dt = qt && qt.dataset.dtile ? Number(qt.dataset.dtile) : undefined;
+    act(dt !== undefined ? {type:"draw_discard", tile: dt} : {type:"draw_discard"}, "draw");
+  });
   b("#btnClear", ()=>{ sel.clear(); ui.targetMode=false; render(); });
   b("#btnChatQuick", ()=>{ ui.chatOpen = true; render(); });
   b("#btnQuickDialogR", ()=>{ rQuickOpen = !rQuickOpen; render(); });
