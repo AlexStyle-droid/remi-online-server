@@ -849,6 +849,17 @@
 <div class="toast-wrap" id="toasts"></div>
 
 <script>
+window.addEventListener("error", function(ev){
+  try{
+    var app = document.getElementById("app");
+    if (app && !app.innerHTML.trim()){
+      app.innerHTML = '<div style="padding:24px;color:#fff;font-family:sans-serif"><h3>Eroare la pornire</h3><p>' +
+        String(ev.message || "Eroare necunoscută") + '</p><button onclick="localStorage.clear();location.reload()" style="padding:10px 16px;border-radius:8px;border:0;background:#16a34a;color:#fff;font-weight:bold">Reîncarcă</button></div>';
+    }
+  }catch(_){}
+});
+</script>
+<script>
 "use strict";
 /* =====================================================================
    Remi Online — client
@@ -897,7 +908,7 @@ function vibrate(ms){
 }
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-const esc = (s) => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc = (s) => String(s==null?"":s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ---------------------------- piese ---------------------------- */
 function tileInfo(id){
@@ -1091,7 +1102,7 @@ function _partitionGroupsInner(all){
 const _tablaClosersCache = new Map();
 function findTablaClosersCached(hand, skipTile){
   if (!hand || hand.length !== 15) return [];
-  const key = [...hand].sort((a,b)=>a-b).join(",") + "|" + (skipTile ?? "");
+  const key = [...hand].sort((a,b)=>a-b).join(",") + "|" + (skipTile==null?"":skipTile);
   if (_tablaClosersCache.has(key)) return _tablaClosersCache.get(key);
   const res = [];
   for (const t of hand){
@@ -1309,19 +1320,20 @@ async function api(path, body){
     throw new Error("Setează adresa serverului de joc (secțiunea „Server de joc”).");
   }
   const url = base ? base + path : path;
-  const ctrl = new AbortController();
-  const timer = setTimeout(()=>ctrl.abort(), 65000);
+  const ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  const timer = ctrl ? setTimeout(()=>ctrl.abort(), 65000) : null;
   try{
-    const res = await fetch(url, {
+    const fetchOpts = {
       method: "POST",
       headers: {"Content-Type": "text/plain;charset=UTF-8"},
       body: JSON.stringify(body || {}),
-      signal: ctrl.signal,
-    });
+    };
+    if (ctrl) fetchOpts.signal = ctrl.signal;
+    const res = await fetch(url, fetchOpts);
     const data = await res.json().catch(()=>({error:"Răspuns invalid de la server"}));
     if (!res.ok && data.error) throw new Error(data.error);
     return data;
-  } finally { clearTimeout(timer); }
+  } finally { if (timer) clearTimeout(timer); }
 }
 
 /* ---------------------------- sunete ---------------------------- */
@@ -1421,11 +1433,11 @@ async function pollLoop(){
       continue;
     }
     if (ui.pollAbort) ui.pollAbort.abort();
-    ui.pollAbort = new AbortController();
+    ui.pollAbort = (typeof AbortController !== "undefined") ? new AbortController() : null;
     try{
       const base = apiBase();
       const url = `${base}/api/state?code=${encodeURIComponent(session.code)}&token=${encodeURIComponent(session.token)}&v=${ui.lastV}`;
-      const res = await fetch(url, {signal: ui.pollAbort.signal});
+      const res = await fetch(url, ui.pollAbort ? {signal: ui.pollAbort.signal} : {});
       const data = await res.json();
       if (data.error){
         if (res.status === 401 || res.status === 404){
@@ -1573,7 +1585,7 @@ function tileHTML(id, opts={}){
     const eff = (opts.eff !== undefined && opts.eff !== null) ? `<b>${opts.eff===1?"1":opts.eff}</b>` : `<b>JOKER</b>`;
     return `<div class="${cls}" ${dataAttr}><span class="jk">★${eff}</span></div>`;
   }
-  return `<div class="${cls}" ${dataAttr}><span class="num">${opts.eff ?? t.v}</span><span class="pip"></span></div>`;
+  return `<div class="${cls}" ${dataAttr}><span class="num">${(opts.eff!==undefined&&opts.eff!==null)?opts.eff:t.v}</span><span class="pip"></span></div>`;
 }
 function backTileHTML(size="md", extra=""){
   return `<div class="tile back ${size} ${extra}"><span class="num">★</span></div>`;
@@ -1995,13 +2007,13 @@ function sortRemiRack(mode){
       const ta = tileInfo(a), tb = tileInfo(b);
       if (ta.joker !== tb.joker) return ta.joker ? 1 : -1;
       if (ta.v !== tb.v) return ta.v - tb.v;
-      return (colorOrder[ta.c]??9) - (colorOrder[tb.c]??9);
+      return (colorOrder[ta.c]!==undefined?colorOrder[ta.c]:9) - (colorOrder[tb.c]!==undefined?colorOrder[tb.c]:9);
     });
   } else {
     tiles.sort((a,b)=>{
       const ta = tileInfo(a), tb = tileInfo(b);
       if (ta.joker !== tb.joker) return ta.joker ? 1 : -1;
-      if (ta.c !== tb.c) return (colorOrder[ta.c]??9) - (colorOrder[tb.c]??9);
+      if (ta.c !== tb.c) return (colorOrder[ta.c]!==undefined?colorOrder[ta.c]:9) - (colorOrder[tb.c]!==undefined?colorOrder[tb.c]:9);
       return ta.v - tb.v;
     });
   }
@@ -2025,7 +2037,7 @@ function renderRemiPlayerCard(p){
   const cnt = isMe ? ((S.me && S.me.hand) ? S.me.hand.length : 0) : p.handCount;
   return `<div class="rg-pcard ${isTurn?"turn":""}">
     <div style="position:relative">
-      <div class="rg-pav">${avatarHTML(p.avatar, p.seat??0, p.name)}</div>
+      <div class="rg-pav">${avatarHTML(p.avatar, (p.seat!==undefined&&p.seat!==null)?p.seat:0, p.name)}</div>
       <span class="rg-cnt">${cnt}</span>
     </div>
     <div class="rg-pname">${esc(p.name)}${isMe?" (tu)":""}</div>
@@ -2628,10 +2640,16 @@ async function act(action, sfxName, onError){
   }
 }
 async function refreshNow(){
+  if (!session || !session.code || !session.token) return;
   try{
     const base = apiBase();
     const res = await fetch(`${base}/api/state?code=${encodeURIComponent(session.code)}&token=${encodeURIComponent(session.token)}&v=-1`);
     const data = await res.json();
+    if (data.error && (res.status === 401 || res.status === 404)){
+      clearSession(); session = null; S = null; YOU = null;
+      ui.screen = "home"; render();
+      return;
+    }
     if (data.state){
       ui.lastV = data.state.v;
       S = data.state; YOU = data.you;
@@ -3078,12 +3096,12 @@ function renderLegEnd(){
   return `<div class="modal-wrap"><div class="modal">
     <div class="bigwin">${iWon?"🏆":"🎲"}</div>
     <h2 style="text-align:center">${iWon?"Ai câștigat legul!":`${esc(ll.winner_name||"Adversarul")} a câștigat legul`}</h2>
-    <p class="tag" style="text-align:center">${kindText} · scoase: ${ll.off?.[0]} / ${ll.off?.[1]}</p>
+    <p class="tag" style="text-align:center">${kindText} · scoase: ${ll.off?ll.off[0]:0} / ${ll.off?ll.off[1]:0}</p>
     <div class="result-table" style="display:flex;justify-content:center;gap:20px;padding:10px 0">
       <div style="text-align:center"><div class="tag" style="margin:0">${esc((S.players.find(p=>p.seat===0)||{}).name||"")}</div>
-        <div style="font-size:26px;font-weight:900;color:var(--gold)">${ll.scores?.[0] ?? 0}</div></div>
+        <div style="font-size:26px;font-weight:900;color:var(--gold)">${(ll.scores&&ll.scores[0]!==undefined)?ll.scores[0]:0}</div></div>
       <div style="text-align:center"><div class="tag" style="margin:0">${esc((S.players.find(p=>p.seat===1)||{}).name||"")}</div>
-        <div style="font-size:26px;font-weight:900;color:var(--gold)">${ll.scores?.[1] ?? 0}</div></div>
+        <div style="font-size:26px;font-weight:900;color:var(--gold)">${(ll.scores&&ll.scores[1]!==undefined)?ll.scores[1]:0}</div></div>
     </div>
     <div class="mfoot">
       <button class="btn" id="btnHideLeg">Vezi masa</button>
@@ -3211,7 +3229,7 @@ function renderLobby(){
           <h3>${isTable?"🎲 Table":(S.opts.mode==="tabla"?"🪵 Remi pe Tablă":"🃏 Remi Etalat")} · jucători (${S.players.length}/${maxPl})</h3>
           <div class="plist" id="plist">
             ${S.players.map((p,idx)=>`<div class="pitem">
-              <div class="av">${avatarHTML(p.avatar, p.seat??idx, p.name)}</div>
+              <div class="av">${avatarHTML(p.avatar, (p.seat!==undefined&&p.seat!==null)?p.seat:idx, p.name)}</div>
               <div class="nm">${esc(p.name)}${p.id===YOU?" (tu)":""}</div>
               ${p.id===S.hostPid?`<span class="badge host">HOST</span>`:``}
               <span class="badge ${p.ready?"ready":""}">${p.ready?"GATA":"AȘTEAPTĂ"}</span>
