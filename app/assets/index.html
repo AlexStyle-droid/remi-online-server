@@ -60,7 +60,7 @@
   /* ---------- HOME (Screenshot 2026-11-21 230050.jpg style) ---------- */
   .screen{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;}
   .home-wrap{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:14px 20px;}
-  .home{width:min(450px,100%);margin:auto 0;display:flex;flex-direction:column;gap:10px;text-align:center;padding-bottom:16px;}
+  .home{width:100%;max-width:450px;width:min(450px,100%);margin:auto 0;display:flex;flex-direction:column;gap:10px;text-align:center;padding-bottom:16px;}
   .hv-screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;
     background:radial-gradient(120% 80% at 50% 0%, #154552 0%, #0b2a34 55%, #071b22 100%);}
   .hv-top{flex:none;height:52px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -82,7 +82,7 @@
     filter:drop-shadow(0 2px 8px rgba(232,198,106,.3));white-space:nowrap;}
   .hv-logo small{font-size:10px;letter-spacing:2px;margin-left:3px;opacity:.9;}
 
-  .hv-main{flex:1;min-height:0;overflow:auto;width:min(480px,100%);margin:0 auto;padding:12px 12px 10px;
+  .hv-main{flex:1;min-height:0;overflow:auto;width:100%;max-width:480px;width:min(480px,100%);margin:0 auto;padding:12px 12px 10px;
     display:flex;flex-direction:column;gap:11px;justify-content:center;}
   .hv-hero{position:relative;border-radius:20px;padding:14px 16px 14px;min-height:185px;flex:1.1;
     background:radial-gradient(90% 80% at 50% 25%, #b565ff 0%, #8b3dff 55%, #6520cc 100%);
@@ -90,7 +90,7 @@
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;overflow:hidden;transition:transform .14s, border-color .14s;}
   .hv-hero:hover,.hv-card:hover{transform:translateY(-2px);}
   .hv-hero.sel,.hv-card.sel{border-color:#fde047;box-shadow:0 0 0 3px rgba(253,224,71,.35), 0 16px 34px rgba(0,0,0,.45);}
-  .hv-hero-title{font-size:clamp(42px,10vw,64px);font-weight:900;letter-spacing:2px;line-height:.92;
+  .hv-hero-title{font-size:52px;font-size:clamp(42px,10vw,64px);font-weight:900;letter-spacing:2px;line-height:.92;
     background:linear-gradient(180deg,#fff3a8 0%,#facc15 55%,#d97706 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
     filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));margin-top:2px;}
@@ -116,11 +116,11 @@
     box-shadow:0 12px 26px rgba(17,64,168,.48), inset 0 1px 0 rgba(255,255,255,.35);}
   .hv-card.red{background:radial-gradient(90% 80% at 50% 20%, #fb5a5a 0%, #dc2f2f 60%, #a51616 100%);
     box-shadow:0 12px 26px rgba(145,18,18,.48), inset 0 1px 0 rgba(255,255,255,.35);}
-  .hv-card-title-red{font-size:clamp(22px,5.2vw,28px);font-weight:900;letter-spacing:.6px;line-height:1;
+  .hv-card-title-red{font-size:24px;font-size:clamp(22px,5.2vw,28px);font-weight:900;letter-spacing:.6px;line-height:1;
     background:linear-gradient(180deg,#fff3a8,#facc15 60%,#d97706);
     -webkit-background-clip:text;background-clip:text;color:transparent;
     filter:drop-shadow(0 3px 6px rgba(0,0,0,.38));}
-  .hv-card-title-blue{font-size:clamp(28px,6.5vw,36px);font-weight:900;font-style:italic;color:#fff;line-height:.95;
+  .hv-card-title-blue{font-size:32px;font-size:clamp(28px,6.5vw,36px);font-weight:900;font-style:italic;color:#fff;line-height:.95;
     text-shadow:0 4px 0 #0f172a, 0 8px 16px rgba(0,0,0,.45);transform:rotate(-5deg);margin:4px 0;}
   .hv-rackmini{width:100%;max-width:168px;background:linear-gradient(180deg,#5d331d,#3a1e10);
     border:2px solid #7d4728;border-radius:12px;padding:8px 6px 6px;display:flex;justify-content:center;
@@ -164,7 +164,7 @@
 
   /* ---------- LOBBY ---------- */
   .lobby{flex:1;overflow:auto;padding:18px 16px 30px;display:flex;flex-direction:column;gap:14px;align-items:center;}
-  .lobby-inner{width:min(520px,100%);display:flex;flex-direction:column;gap:14px;}
+  .lobby-inner{width:100%;max-width:520px;width:min(520px,100%);display:flex;flex-direction:column;gap:14px;}
   .card{
     background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
     border:1px solid var(--line);border-radius:var(--radius);padding:16px;
@@ -244,7 +244,7 @@
       radial-gradient(90% 60% at 50% 45%, rgba(33,99,79,.55) 0%, rgba(6,25,20,0) 70%),
       linear-gradient(180deg,#0a2f25 0%, #08251d 55%, #061a15 100%);
     border-top:1px solid rgba(255,255,255,.05);}
-  .tablewrap:before{content:"";position:absolute;inset:8px;border:1px solid rgba(232,198,106,.13);border-radius:22px;pointer-events:none;}
+  .tablewrap:before{content:"";position:absolute;top:8px;right:8px;bottom:8px;left:8px;border:1px solid rgba(232,198,106,.13);border-radius:22px;pointer-events:none;}
   .tablewrap:after{content:"REMI";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
     font-size:54px;font-weight:900;letter-spacing:10px;color:rgba(232,198,106,.045);
     pointer-events:none;user-select:none;}
@@ -256,12 +256,12 @@
   .pile .lbl{font-size:10px;font-weight:800;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;}
   .deck{position:relative;width:48px;height:65px;border-radius:9px;cursor:pointer;transition:transform .1s;}
   .deck:active{transform:scale(.97);}
-  .deck .back{position:absolute;inset:0;border-radius:9px;border:1px solid rgba(232,198,106,.5);
+  .deck .back{position:absolute;top:0;right:0;bottom:0;left:0;border-radius:9px;border:1px solid rgba(232,198,106,.5);
     background:
       repeating-linear-gradient(45deg, rgba(232,198,106,.16) 0 4px, transparent 4px 8px),
       linear-gradient(160deg,#1d4a3b,#0c2a21);
     box-shadow:0 6px 14px rgba(0,0,0,.4), inset 0 0 0 3px rgba(0,0,0,.18);}
-  .deck .back:after{content:"★";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  .deck .back:after{content:"★";position:absolute;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;
     color:rgba(232,198,106,.75);font-size:20px;}
   .deck .count{position:absolute;right:-6px;bottom:-6px;background:#0b1f19;border:1px solid rgba(232,198,106,.5);
     color:var(--gold);font-size:10.5px;font-weight:900;padding:2px 6px;border-radius:20px;}
@@ -286,7 +286,7 @@
     background:linear-gradient(175deg,#fffcf2 0%,#f5ebd6 68%,#e2d2b3 100%);
     box-shadow:0 3px 0 #b8a37e, 0 5px 10px rgba(0,0,0,.45), inset 0 1px 0 #fff;
     border:1px solid #d5c39f;flex:none;overflow:hidden;padding-bottom:4px;}
-  .tile:after{content:"";position:absolute;inset:0;border-radius:inherit;
+  .tile:after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;border-radius:inherit;
     background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 42%);pointer-events:none;}
   .tile.cR{color:#dc2626;}
   .tile.cY{color:#eab308;text-shadow:0 1px 0 rgba(113,63,18,.45), 0 0 1px rgba(113,63,18,.45);}
@@ -461,9 +461,9 @@
   .actionbar .btn{flex:1;min-width:0;padding:11px 8px;font-size:14px;border-radius:12px;white-space:nowrap;overflow:hidden;}
 
   /* ---------- MODALS ---------- */
-  .overlay{position:fixed;inset:0;background:rgba(2,8,6,.72);backdrop-filter:blur(6px);z-index:60;
+  .overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(2,8,6,.72);backdrop-filter:blur(6px);z-index:60;
     display:flex;align-items:center;justify-content:center;padding:16px;}
-  .modal{width:min(520px,100%);max-height:86dvh;overflow:auto;border-radius:20px;
+  .modal{width:100%;max-width:520px;width:min(520px,100%);max-height:86vh;max-height:86dvh;overflow:auto;border-radius:20px;
     background:linear-gradient(180deg,#12281f,#0b1a15);border:1px solid rgba(232,198,106,.28);
     box-shadow:0 24px 70px rgba(0,0,0,.6);padding:20px;}
   .modal h2{margin:0 0 6px;font-size:20px;}
@@ -485,7 +485,7 @@
   .bigwin{font-size:34px;text-align:center;margin:6px 0 0;}
 
   /* chat */
-  .chatbox{display:flex;flex-direction:column;height:min(60dvh,420px);}
+  .chatbox{display:flex;flex-direction:column;height:400px;max-height:60vh;height:min(60dvh,420px);}
   .chatmsgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:7px;padding:8px 2px;}
   .msg{max-width:85%;padding:8px 11px;border-radius:12px;background:rgba(255,255,255,.06);font-size:13px;line-height:1.35;}
   .msg b{color:var(--gold);font-size:11.5px;display:block;margin-bottom:2px;}
@@ -760,7 +760,7 @@
   .qd-footbtn.muted{background:rgba(239,68,68,.2);border-color:rgba(248,113,113,.55);color:#fca5a5;}
 
   /* VS Intro overlay */
-  .vs-overlay{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;align-items:center;
+  .vs-overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:120;display:flex;flex-direction:column;align-items:center;
     justify-content:center;padding:20px;cursor:pointer;
     background:radial-gradient(ellipse at center, #2d1846 0%, #140c24 55%, #07050e 100%);
     animation:vsFadeIn .25s ease-out;}
@@ -1113,6 +1113,114 @@ function findTablaClosersCached(hand, skipTile){
   if (_tablaClosersCache.size > 120) _tablaClosersCache.clear();
   _tablaClosersCache.set(key, res);
   return res;
+}
+
+/* Detectare automata a formatiilor de pe suport / din mana pentru butonul Etaleaza */
+function findRackContiguousGroups(hand){
+  const handSet = new Set(hand || []);
+  const groups = [];
+  const used = new Set();
+  const pushSeg = (seg) => {
+    if (seg.length < 3) return;
+    const r = _resolveCached(seg);
+    if (r){
+      groups.push(seg);
+      for (const t of seg) used.add(t);
+    } else if (seg.length >= 6){
+      const subs = partitionGroups(seg);
+      if (subs){
+        for (const g of subs){
+          groups.push(g);
+          for (const t of g) used.add(t);
+        }
+      }
+    }
+  };
+  for (let row = 0; row < 2; row++){
+    const start = row * 15, end = start + 15;
+    let seg = [];
+    for (let i = start; i < end; i++){
+      const t = rRackSlots[i];
+      if (t !== null && t !== undefined && handSet.has(t) && !used.has(t)){
+        seg.push(t);
+      } else {
+        pushSeg(seg);
+        seg = [];
+      }
+    }
+    pushSeg(seg);
+  }
+  return groups;
+}
+function findBestFirstMeldFromHand(hand){
+  if (!hand || hand.length < 4) return null;
+  const maxTiles = hand.length - 1; // pastram minim 1 piesa de aruncat
+  const allG = genValidGroupsFast(hand);
+  if (!allG.length) return null;
+  const gInfo = allG.map(g=>{
+    const r = _resolveCached(g);
+    return r ? {g, pts: r.pts, type: r.type, len: g.length} : null;
+  }).filter(Boolean).sort((a,b)=>(b.pts - a.pts) || (b.len - a.len));
+  let best = null;
+  let nodes = 0;
+  const LIMIT = 2500;
+  const rec = (idx, rem, acc, usedCnt, pts, hasSeq) => {
+    if (++nodes > LIMIT) return;
+    if (hasSeq && pts >= 45 && usedCnt <= maxTiles){
+      if (!best || pts > best.pts || (pts === best.pts && usedCnt > best.usedCnt)){
+        best = {groups: acc.slice(), pts, usedCnt, hasSeq: true};
+      }
+    }
+    if (usedCnt >= maxTiles) return;
+    for (let i = idx; i < gInfo.length; i++){
+      const item = gInfo[i];
+      if (usedCnt + item.len > maxTiles) continue;
+      let ok = true;
+      for (const t of item.g){ if (!rem.has(t)){ ok = false; break; } }
+      if (!ok) continue;
+      const next = new Set(rem);
+      for (const t of item.g) next.delete(t);
+      acc.push(item.g);
+      rec(i + 1, next, acc, usedCnt + item.len, pts + item.pts, hasSeq || item.type === "seq");
+      acc.pop();
+    }
+  };
+  rec(0, new Set(hand), [], 0, 0, false);
+  return best;
+}
+function findAutoMeldGroups(me){
+  if (!me || !me.canMeld || !me.hand || me.hand.length < 4) return null;
+  const maxTiles = me.hand.length - 1;
+  // 1. Verifica grupurile deja asezate pe suport cu spatii intre ele
+  const rackG = findRackContiguousGroups(me.hand);
+  if (rackG.length){
+    let totalUsed = rackG.reduce((s,g)=>s+g.length, 0);
+    const trimmed = rackG.slice();
+    while (totalUsed > maxTiles && trimmed.length > 1){
+      // scoate cel mai mic grup ca punctaj ca sa ramana minim 1 piesa de aruncat
+      let minIdx = 0, minPts = 1e9;
+      for (let i = 0; i < trimmed.length; i++){
+        const r = _resolveCached(trimmed[i]);
+        const p = r ? r.pts : 0;
+        if (p < minPts){ minPts = p; minIdx = i; }
+      }
+      totalUsed -= trimmed[minIdx].length;
+      trimmed.splice(minIdx, 1);
+    }
+    if (trimmed.length && totalUsed <= maxTiles){
+      const info = groupsPoints(trimmed);
+      if (info && info.ok){
+        if (me.firstMeld) return {groups: trimmed, pts: info.pts, hasSeq: info.hasSeq};
+        if (info.pts >= 45 && info.hasSeq) return {groups: trimmed, pts: info.pts, hasSeq: true};
+      }
+    }
+  }
+  // 2. Pentru prima etalare (45p+), cauta automat si in toata mana (chiar daca nu a pus spatii pe suport)
+  if (!me.firstMeld){
+    const found = findBestFirstMeldFromHand(me.hand);
+    if (found) return found;
+  }
+  return null;
 }
 function combinations(arr, k){
   const out = [];
@@ -2078,6 +2186,7 @@ function renderGame(){
   // Calcule pentru butoanele stânga / dreapta ale suportului de lemn
   const selArr = [...sel];
   let canMeldBtn = false, meldLabel = isTabla ? "Închide" : "Etalează", canTargetBtn = false, canDiscardBtn = false, isCloseBtn = false, canCloseTablaBtn = false;
+  let autoMeld = null;
   if (S.phase === "playing" && myTurn && me.drew){
     if (isTabla){
       if (sel.size === 1){
@@ -2116,6 +2225,12 @@ function renderGame(){
       if (sel.size === 1){
         canDiscardBtn = true;
         isCloseBtn = !!me.canClose;
+      }
+    } else if (me.canMeld){
+      autoMeld = findAutoMeldGroups(me);
+      if (autoMeld){
+        canMeldBtn = true;
+        meldLabel = `Etalează ${autoMeld.pts}p`;
       }
     }
   }
@@ -2163,7 +2278,11 @@ function renderGame(){
       <div class="rg-col right">${rightPlayers.map(renderRemiPlayerCard).join("")}</div>
     </div>
 
-    <div class="handhint" style="color:#e9d5ff">${hint}</div>
+    <div class="handhint" style="color:#e9d5ff;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+      <span>${hint}</span>
+      ${(!isTabla && canMeldBtn) ? `<button type="button" class="btn primary small" id="btnQuickMeld" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">★ ${meldLabel} acum</button>` : ``}
+      ${(canDiscardBtn && sel.size === 1) ? `<button type="button" class="btn small" id="btnQuickDiscard" style="padding:4px 12px;font-size:12px;border-radius:999px;background:#15803d;color:#fff;border:1px solid #86efac">${isCloseBtn?"🏁 Închide":"↑ Aruncă piesa"}</button>` : ``}
+    </div>
 
     ${S.phase === "round_end" || S.phase === "game_over" ? `
       <div class="actionbar" id="actionBar">${actionButtons(me)}</div>
@@ -2363,6 +2482,11 @@ function bindGame(){
     render();
   };
   let dragSt = null;
+  const ptXY = (e) => {
+    const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+    return t ? {x: t.clientX, y: t.clientY, id: t.identifier != null ? t.identifier : 0}
+             : {x: e.clientX, y: e.clientY, id: e.pointerId != null ? e.pointerId : 1};
+  };
   const clearDrag = () => {
     if (!dragSt) return;
     if (dragSt.ghost) dragSt.ghost.remove();
@@ -2371,11 +2495,18 @@ function bindGame(){
     window.removeEventListener("pointermove", onWinMove);
     window.removeEventListener("pointerup", onWinUp);
     window.removeEventListener("pointercancel", onWinCancel);
+    window.removeEventListener("mousemove", onWinMove);
+    window.removeEventListener("mouseup", onWinUp);
+    window.removeEventListener("touchmove", onWinMove);
+    window.removeEventListener("touchend", onWinUp);
+    window.removeEventListener("touchcancel", onWinCancel);
     dragSt = null;
   };
   function onWinMove(e){
-    if (!dragSt || e.pointerId !== dragSt.pid) return;
-    const dx = e.clientX - dragSt.sx, dy = e.clientY - dragSt.sy;
+    if (!dragSt) return;
+    const pt = ptXY(e);
+    if (pt.id !== dragSt.pid) return;
+    const dx = pt.x - dragSt.sx, dy = pt.y - dragSt.sy;
     if (!dragSt.moved){
       if (dx*dx + dy*dy < 144) return; // 12px threshold
       dragSt.moved = true;
@@ -2388,12 +2519,13 @@ function bindGame(){
       document.body.appendChild(g);
       dragSt.ghost = g;
     }
+    if (e.cancelable && e.type === "touchmove") e.preventDefault();
     if (dragSt.ghost){
-      dragSt.ghost.style.transform = `translate3d(${(e.clientX - dragSt.ox).toFixed(1)}px, ${(e.clientY - dragSt.oy).toFixed(1)}px, 0) scale(1.08)`;
+      dragSt.ghost.style.transform = `translate3d(${(pt.x - dragSt.ox).toFixed(1)}px, ${(pt.y - dragSt.oy).toFixed(1)}px, 0) scale(1.08)`;
     }
-    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const under = document.elementFromPoint(pt.x, pt.y);
     const slotEl = under ? under.closest(".rg-slot") : null;
-    const discEl = (!slotEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
+    const discEl = (!slotEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard") || under.closest("#btnQuickDiscard")) : null;
     const nextHover = slotEl || discEl;
     if (dragSt.hoverEl && dragSt.hoverEl !== nextHover){
       dragSt.hoverEl.classList.remove("drop-hover");
@@ -2402,12 +2534,14 @@ function bindGame(){
     if (nextHover) nextHover.classList.add("drop-hover");
   }
   function finishPointer(e, cancelled){
-    if (!dragSt || e.pointerId !== dragSt.pid) return;
+    if (!dragSt) return;
+    const pt = ptXY(e);
+    if (pt.id !== dragSt.pid) return;
     const st = dragSt;
-    const under = !cancelled && st.moved ? document.elementFromPoint(e.clientX, e.clientY) : null;
+    const under = !cancelled && st.moved ? document.elementFromPoint(pt.x, pt.y) : null;
     const targetSlot = under ? under.closest(".rg-slot") : null;
     const targetDiscard = (!targetSlot && !cancelled && st.moved && S.me && S.me.canDiscard && under)
-      ? (under.closest("#pileDiscard") || under.closest("#btnDiscard")) : null;
+      ? (under.closest("#pileDiscard") || under.closest("#btnDiscard") || under.closest("#btnQuickDiscard")) : null;
     clearDrag();
     if (cancelled) return;
     if (st.moved){
@@ -2435,32 +2569,48 @@ function bindGame(){
   function onWinCancel(e){ finishPointer(e, true); }
   _rackDragCleanup = clearDrag;
 
-  $$("#myHand .tile").forEach(el=>{
-    el.addEventListener("pointerdown", (e)=>{
-      if (e.button && e.button !== 0) return;
-      const slot = el.closest(".rg-slot");
-      if (!slot) return;
-      clearDrag();
-      const rect = el.getBoundingClientRect();
-      dragSt = {
-        pid: e.pointerId,
-        el,
-        srcEl: el,
-        fromIdx: Number(slot.dataset.slot),
-        sx: e.clientX,
-        sy: e.clientY,
-        ox: e.clientX - rect.left,
-        oy: e.clientY - rect.top,
-        w: rect.width,
-        h: rect.height,
-        moved: false,
-        ghost: null,
-        hoverEl: null,
-      };
+  const startDrag = (el, e, kind) => {
+    if (kind === "mouse" && e.button && e.button !== 0) return;
+    const slot = el.closest(".rg-slot");
+    if (!slot) return;
+    clearDrag();
+    const pt = ptXY(e);
+    const rect = el.getBoundingClientRect();
+    dragSt = {
+      pid: pt.id,
+      el,
+      srcEl: el,
+      fromIdx: Number(slot.dataset.slot),
+      sx: pt.x,
+      sy: pt.y,
+      ox: pt.x - rect.left,
+      oy: pt.y - rect.top,
+      w: rect.width,
+      h: rect.height,
+      moved: false,
+      ghost: null,
+      hoverEl: null,
+    };
+    if (kind === "pointer"){
       window.addEventListener("pointermove", onWinMove);
       window.addEventListener("pointerup", onWinUp);
       window.addEventListener("pointercancel", onWinCancel);
-    });
+    } else if (kind === "touch"){
+      window.addEventListener("touchmove", onWinMove, {passive:false});
+      window.addEventListener("touchend", onWinUp);
+      window.addEventListener("touchcancel", onWinCancel);
+    } else {
+      window.addEventListener("mousemove", onWinMove);
+      window.addEventListener("mouseup", onWinUp);
+    }
+  };
+  $$("#myHand .tile").forEach(el=>{
+    if (window.PointerEvent){
+      el.addEventListener("pointerdown", (e)=>startDrag(el, e, "pointer"));
+    } else {
+      el.addEventListener("touchstart", (e)=>startDrag(el, e, "touch"), {passive:true});
+      el.addEventListener("mousedown", (e)=>startDrag(el, e, "mouse"));
+    }
   });
   $$("#myHand .rg-slot.empty").forEach(slotEl=>{
     slotEl.addEventListener("click", ()=>{
@@ -2507,11 +2657,22 @@ function bindGame(){
   b("#btnMuteDialogR", ()=>{ tDialogMuted = !tDialogMuted; toast(tDialogMuted?"Dialog oprit":"Dialog pornit"); render(); });
   b("#btnMenu", ()=>{ rQuickOpen = false; ui.menuOpen = true; render(); });
   b("#btnAtu", ()=>act({type:"announce_atu"}, "meld"));
-  b("#btnMeld", ()=>{
+  const doMeldAction = ()=>{
     if (!S.me || !S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
     if (!S.me.drew){ toast("Trage întâi o piesă (+)."); return; }
     if (!S.me.canMeld){ toast("Primul jucător începe cu aruncarea unei piese; etalarea începe imediat după."); return; }
-    if (!sel.size){ toast("Selectează piesele pentru suită/tertă și apoi apasă Etalează."); return; }
+    if (!sel.size){
+      const auto = findAutoMeldGroups(S.me);
+      if (auto && auto.groups && auto.groups.length){
+        sel.clear();
+        act({type:"meld", groups: auto.groups}, "meld");
+        return;
+      }
+      toast(S.me.firstMeld
+        ? "Selectează piesele pentru suită/tertă și apasă Etalează."
+        : "Nu ai încă minim 45 puncte cu o suită pentru prima etalare (sau selectează manual piesele).", "err");
+      return;
+    }
     const groups = partitionGroups([...sel]);
     if (!groups){ toast("Piesele selectate nu formează o suită sau tertă validă.", "err"); return; }
     const info = groupsPoints(groups);
@@ -2521,8 +2682,8 @@ function bindGame(){
       if (info.pts < 45){ toast(`Prima etalare cere minim 45 puncte (ai ${info.pts}p).`, "err"); return; }
     }
     act({type:"meld", groups}, "meld");
-  });
-  b("#btnDiscard", ()=>{
+  };
+  const doDiscardAction = ()=>{
     if (!S.me || !S.me.isTurn || S.phase !== "playing"){ toast("Așteaptă rândul tău."); return; }
     if (!S.me.drew){ toast("Trage întâi o piesă din grămadă (+)."); return; }
     if (sel.size !== 1){ toast("Selectează o singură piesă de aruncat (sau trage piesa direct în Aruncate)."); return; }
@@ -2535,7 +2696,11 @@ function bindGame(){
     if (isClose && !confirm("Închizi runda? Piesa rămasă va fi aruncată cu fața în jos.")) return;
     sel.clear();
     act({type:"discard", tile:t}, "discard");
-  });
+  };
+  b("#btnMeld", doMeldAction);
+  b("#btnQuickMeld", doMeldAction);
+  b("#btnDiscard", doDiscardAction);
+  b("#btnQuickDiscard", doDiscardAction);
   b("#btnCloseTabla", ()=>{
     if (!S.me) return;
     const hand = S.me.hand || [];
