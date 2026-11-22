@@ -1395,11 +1395,13 @@ function canAddToGroup(groupTiles, tile, type){
 }
 function canSwapJoker(groupTiles, tile){
   if (tileInfo(tile).joker) return false;
-  const idx = groupTiles.findIndex(t=>tileInfo(t).joker);
-  if (idx < 0) return false;
-  const cand = [...groupTiles];
-  cand[idx] = tile;
-  return !!resolveGroup(cand);
+  for (let i = 0; i < groupTiles.length; i++){
+    if (!tileInfo(groupTiles[i]).joker) continue;
+    const cand = [...groupTiles];
+    cand[i] = tile;
+    if (resolveGroup(cand)) return true;
+  }
+  return false;
 }
 
 /* ---------------------------- stare ---------------------------- */
@@ -2231,11 +2233,13 @@ function renderGame(){
         canMeldBtn = true;
         meldLabel = `Etalează ${info.pts}p`;
       } else if (sel.size === 1 && me.canMeld && me.firstMeld){
-        const canAdd = (S.groups||[]).some(g=>canAddToGroup(g.tiles.map(x=>x.t), selArr[0], g.type));
-        const canSwap = (S.groups||[]).some(g=>canSwapJoker(g.tiles.map(x=>x.t), selArr[0]));
-        if (canAdd || canSwap){
+        const tSel = selArr[0];
+        const canSwapExact = (S.groups||[]).some(g=>g.tiles.some(x=>tileInfo(x.t).joker && (x.eff===tileInfo(tSel).v || (tileInfo(tSel).v===1 && x.eff===14))) && canSwapJoker(g.tiles.map(x=>x.t), tSel));
+        const canAdd = (S.groups||[]).some(g=>canAddToGroup(g.tiles.map(x=>x.t), tSel, g.type));
+        const canSwap = (S.groups||[]).some(g=>canSwapJoker(g.tiles.map(x=>x.t), tSel));
+        if (canSwapExact || canSwap || canAdd){
           canTargetBtn = true;
-          meldLabel = "Lipește";
+          meldLabel = (canSwapExact || (!canAdd && canSwap)) ? "Ia ★ Joker" : "Lipește";
         }
       }
       if (sel.size === 1){
@@ -2279,8 +2283,11 @@ function renderGame(){
         <div class="rg-groups" id="groupsArea">
           ${S.groups.length ? S.groups.map(g=>{
             const owner = playerById(g.owner)||{name:"?"};
-            const targetable = (!isTabla && ui.targetMode && sel.size === 1) ? canAddToGroup(g.tiles.map(x=>x.t), [...sel][0], g.type) : false;
-            return `<div class="rg-grp ${g.mine?"mine":""} ${targetable?"target":""}" ${targetable?`data-target-group="${g.id}"`:""}>
+            const gt = g.tiles.map(x=>x.t);
+            const canTAdd = (!isTabla && S.phase === "playing" && myTurn && me.drew && me.canMeld && me.firstMeld && sel.size === 1) ? canAddToGroup(gt, selArr[0], g.type) : false;
+            const canTSwap = (!isTabla && S.phase === "playing" && myTurn && me.drew && me.canMeld && me.firstMeld && sel.size === 1) ? canSwapJoker(gt, selArr[0]) : false;
+            const targetable = canTAdd || canTSwap;
+            return `<div class="rg-grp ${g.mine?"mine":""} ${targetable?"target":""}" data-gid="${g.id}" ${targetable?`data-target-group="${g.id}" data-target-mode="${canTAdd?"add":"swap"}"`:""}>
               <div class="gtiles">${g.tiles.map(x=>tileHTML(x.t,{size:"sm", eff:x.eff})).join("")}</div>
               <div class="meta"><span>${esc(owner.name)}</span><span class="pts">${g.points}p</span></div>
             </div>`;
@@ -2298,6 +2305,7 @@ function renderGame(){
       <span>${hint}</span>
       ${me.canTakeDiscard ? `<button type="button" class="btn primary small" id="btnQuickTake" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">← Ia ${S.discardTop!=null?tileLabel(S.discardTop):"piesa de jos"}</button>` : ``}
       ${(!isTabla && canMeldBtn) ? `<button type="button" class="btn primary small" id="btnQuickMeld" style="padding:4px 14px;font-size:12px;border-radius:999px;box-shadow:0 4px 14px rgba(250,204,21,.45)">★ ${meldLabel} acum</button>` : ``}
+      ${(!isTabla && canTargetBtn) ? `<button type="button" class="btn primary small" id="btnQuickTarget" style="padding:4px 14px;font-size:12px;border-radius:999px;background:#16a34a;color:#fff;border:1px solid #86efac;box-shadow:0 4px 14px rgba(74,222,128,.5)">★ ${meldLabel} pe masă</button>` : ``}
       ${(canDiscardBtn && sel.size === 1) ? `<button type="button" class="btn small" id="btnQuickDiscard" style="padding:4px 12px;font-size:12px;border-radius:999px;background:#15803d;color:#fff;border:1px solid #86efac">${isCloseBtn?"🏁 Închide":"↑ Aruncă piesa"}</button>` : ``}
     </div>
 
@@ -2490,13 +2498,43 @@ function bindGame(){
     const id = Number(el.dataset.tile);
     vibrate(6);
     sfx.tileTap();
-    if (ui.targetMode) return;
+    ui.targetMode = false;
     if (sel.has(id)) sel.delete(id);
     else {
       if (sel.size >= 14){ toast("Selectează maximum 14 piese odată."); return; }
       sel.add(id);
     }
     render();
+  };
+  const stickTileToGroup = async (gid, tile) => {
+    const g = (S.groups || []).find(x => x.id === gid);
+    const gt = g ? g.tiles.map(x => x.t) : [];
+    const tv = tileInfo(tile).v;
+    const preferSwap = !!(g && g.tiles.some(x => tileInfo(x.t).joker && (x.eff === tv || (tv === 1 && x.eff === 14))) && canSwapJoker(gt, tile));
+    const doSwap = g ? canSwapJoker(gt, tile) : false;
+    const doAdd = g ? canAddToGroup(gt, tile, g.type) : true;
+    ui.targetMode = false;
+    if (preferSwap || (!doAdd && doSwap)){
+      act({type:"swap_joker", gid, tile}, "meld");
+      toast("Ai înlocuit jokerul și l-ai luat în mână!");
+    } else if (doAdd){
+      act({type:"add", gid, tile}, "meld", async (err)=>{
+        if (doSwap){
+          try{
+            await api("/api/action", Object.assign({}, sessBody(), {action:{type:"swap_joker", gid, tile}}));
+            toast("Ai înlocuit jokerul și l-ai luat în mână!");
+            sel.clear(); sfx.meld(); await refreshNow();
+            return;
+          }catch(e2){
+            toast(e2.message || "Nu poți lipi această piesă", "err"); sfx.err(); render();
+            return;
+          }
+        }
+        toast((err && err.message) || "Nu poți lipi această piesă", "err"); sfx.err(); render();
+      });
+    } else {
+      toast("Piesa nu se potrivește la această formație.", "err"); sfx.err();
+    }
   };
   let dragSt = null;
   const ptXY = (e) => {
@@ -2542,8 +2580,21 @@ function bindGame(){
     }
     const under = document.elementFromPoint(pt.x, pt.y);
     const slotEl = under ? under.closest(".rg-slot") : null;
-    const discEl = (!slotEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard") || under.closest("#btnQuickDiscard")) : null;
-    const nextHover = slotEl || discEl;
+    let grpEl = null;
+    if (!slotEl && S.me && S.me.canMeld && S.me.firstMeld && under){
+      const candGrp = under.closest(".rg-grp[data-gid]");
+      if (candGrp){
+        const gid = Number(candGrp.dataset.gid);
+        const g = (S.groups || []).find(x => x.id === gid);
+        const tileId = Number(dragSt.el.dataset.tile);
+        if (g){
+          const gt = g.tiles.map(x => x.t);
+          if (canAddToGroup(gt, tileId, g.type) || canSwapJoker(gt, tileId)) grpEl = candGrp;
+        }
+      }
+    }
+    const discEl = (!slotEl && !grpEl && S.me && S.me.canDiscard && under) ? (under.closest("#pileDiscard") || under.closest("#btnDiscard") || under.closest("#btnQuickDiscard")) : null;
+    const nextHover = slotEl || grpEl || discEl;
     if (dragSt.hoverEl && dragSt.hoverEl !== nextHover){
       dragSt.hoverEl.classList.remove("drop-hover");
     }
@@ -2557,7 +2608,20 @@ function bindGame(){
     const st = dragSt;
     const under = !cancelled && st.moved ? document.elementFromPoint(pt.x, pt.y) : null;
     const targetSlot = under ? under.closest(".rg-slot") : null;
-    const targetDiscard = (!targetSlot && !cancelled && st.moved && S.me && S.me.canDiscard && under)
+    let targetGrp = null;
+    if (!targetSlot && !cancelled && st.moved && S.me && S.me.canMeld && S.me.firstMeld && under){
+      const candGrp = under.closest(".rg-grp[data-gid]");
+      if (candGrp){
+        const gid = Number(candGrp.dataset.gid);
+        const g = (S.groups || []).find(x => x.id === gid);
+        const tileId = Number(st.el.dataset.tile);
+        if (g){
+          const gt = g.tiles.map(x => x.t);
+          if (canAddToGroup(gt, tileId, g.type) || canSwapJoker(gt, tileId)) targetGrp = gid;
+        }
+      }
+    }
+    const targetDiscard = (!targetSlot && targetGrp === null && !cancelled && st.moved && S.me && S.me.canDiscard && under)
       ? (under.closest("#pileDiscard") || under.closest("#btnDiscard") || under.closest("#btnQuickDiscard")) : null;
     clearDrag();
     if (cancelled) return;
@@ -2571,6 +2635,10 @@ function bindGame(){
           sfx.tileTap();
           render();
         }
+      } else if (targetGrp !== null){
+        const tileId = Number(st.el.dataset.tile);
+        sel.clear();
+        stickTileToGroup(targetGrp, tileId);
       } else if (targetDiscard){
         const tileId = Number(st.el.dataset.tile);
         const isClose = S.me && S.me.canClose;
@@ -2742,11 +2810,24 @@ function bindGame(){
     if (!confirm(`Închizi runda aruncând ${tileLabel(chosen)}?`)) return;
     act({type:"close_tabla", tile:chosen}, "meld");
   });
-  b("#btnTarget", ()=>{
-    ui.targetMode = true;
-    toast("Alege formația la care vrei să lipești piesa.");
-    render();
-  });
+  const doTargetAction = ()=>{
+    if (!S.me || sel.size !== 1) return;
+    const tile = [...sel][0];
+    const matches = (S.groups || []).filter(g=>{
+      const gt = g.tiles.map(x=>x.t);
+      return canAddToGroup(gt, tile, g.type) || canSwapJoker(gt, tile);
+    });
+    if (matches.length === 1){
+      stickTileToGroup(matches[0].id, tile);
+    } else if (matches.length > 1){
+      ui.targetMode = true;
+      toast("Apasă pe formația evidențiată cu verde de pe masă unde vrei să lipești.");
+    } else {
+      toast("Piesa selectată nu poate fi lipită la nicio formație de pe masă.", "err");
+    }
+  };
+  b("#btnTarget", doTargetAction);
+  b("#btnQuickTarget", doTargetAction);
   $$("[data-rqd]").forEach(el=>{
     el.onclick = ()=>{
       const txt = el.dataset.rqd;
@@ -2757,22 +2838,13 @@ function bindGame(){
       sendChat(txt);
     };
   });
-  // lipire la formatie (modul tinta)
-  if (ui.targetMode && sel.size === 1){
+  // lipire / inlocuire joker direct la apasarea formatiei evidentiate pe masa
+  if (sel.size === 1 && S.me && S.me.canMeld && S.me.firstMeld){
     const tile = [...sel][0];
     $$("#groupsArea .rg-grp.target").forEach(el=>{
       el.onclick = ()=>{
         const gid = Number(el.dataset.targetGroup);
-        ui.targetMode = false;
-        act({type:"add", gid, tile}, "meld", async ()=>{
-          try{
-            await api("/api/action", {...sessBody(), action:{type:"swap_joker", gid, tile}});
-            toast("Ai înlocuit jokerul și l-ai luat în mână!");
-            sel.clear(); sfx.meld(); await refreshNow();
-          }catch(e2){
-            toast(e2.message || "Nu poți lipi această piesă", "err"); sfx.err(); render();
-          }
-        });
+        stickTileToGroup(gid, tile);
       };
     });
   }
